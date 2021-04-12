@@ -1,0 +1,7 @@
+*.sln
+Debug
+.vs/
+*.vcxproj
+*.vcxproj.*
+*.rc
+res
