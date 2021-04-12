@@ -4,6 +4,7 @@
 
 #pragma once
 #include "ChildView.h"
+#include "Transmission.h"
 
 class CMainFrame : public CFrameWnd
 {
@@ -11,11 +12,11 @@ class CMainFrame : public CFrameWnd
 public:
 	CMainFrame() noexcept;
 protected: 
-	DECLARE_DYNAMIC(CMainFrame)
+	
 
 // 특성입니다.
 public:
-
+	Transmission *m_transmission;
 // 작업입니다.
 public:
 
@@ -33,7 +34,7 @@ public:
 #endif
 
 	CChildView    m_wndView;
-
+	DECLARE_DYNAMIC(CMainFrame)
 // 생성된 메시지 맵 함수
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);

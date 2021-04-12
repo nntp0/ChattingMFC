@@ -11,16 +11,18 @@
 #include "TransmissionReceiver.h"
 
 Transmission::Transmission() : buf(), nbytes(0) {
-	AfxMessageBox(_T("생성자 호출"));
+	AfxMessageBox(_T("Transmission 생성자 호출"));
 	_tsetlocale(LC_ALL, _T(""));
 	AfxSocketInit();
 
 	clientSocket.Create();
 	clientSocket.Connect(_T("127.0.0.1"), 8000);
+
+	AfxBeginThread(RUNTIME_CLASS(TransmissionReceiver));
 }
 
 Transmission::~Transmission() {
-	AfxMessageBox(_T("소멸자 호출"));
+	AfxMessageBox(_T("Transmission 소멸자 호출"));
 	clientSocket.Close();
 
 	m_receiver->PostThreadMessageW(WM_QUIT, 0, 0);

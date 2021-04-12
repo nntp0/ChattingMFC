@@ -30,11 +30,14 @@ END_MESSAGE_MAP()
 
 CMainFrame::CMainFrame() noexcept
 {
-	// TODO: 여기에 멤버 초기화 코드를 추가합니다.
+	AfxMessageBox(_T("MainFrame 생성자 호출!"));
+	m_transmission = new Transmission();
 }
 
 CMainFrame::~CMainFrame()
 {
+	AfxMessageBox(_T("MainFrame 소멸자 호출!"));
+	delete m_transmission;
 }
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -50,6 +53,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 	}
 
+	
 
 
 	return 0;

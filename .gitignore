@@ -5,3 +5,6 @@ Debug
 *.vcxproj.*
 *.rc
 res
+pch.cpp
+pch.h
+Resource.h
