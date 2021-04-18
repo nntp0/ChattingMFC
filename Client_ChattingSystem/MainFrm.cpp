@@ -24,6 +24,7 @@ IMPLEMENT_DYNAMIC(CMainFrame, CFrameWnd)
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
 	ON_WM_SETFOCUS()
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 // CMainFrame 생성/소멸
@@ -31,13 +32,13 @@ END_MESSAGE_MAP()
 CMainFrame::CMainFrame() noexcept
 {
 	AfxMessageBox(_T("MainFrame 생성자 호출!"));
-	m_transmission = new Transmission();
+	//m_transmission = new Transmission();
 }
 
 CMainFrame::~CMainFrame()
 {
 	AfxMessageBox(_T("MainFrame 소멸자 호출!"));
-	delete m_transmission;
+	//delete m_transmission;
 }
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -107,3 +108,11 @@ BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO*
 	return CFrameWnd::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
 }
 
+
+
+void CMainFrame::OnClose()
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	AfxMessageBox(_T("MainFrame OnClose!"));
+	CFrameWnd::OnClose();
+}

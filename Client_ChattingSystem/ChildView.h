@@ -5,7 +5,20 @@
 
 #pragma once
 
+struct CaretInfo {
+	CPoint offset;
+	CArray<int, int> lineInfo;
 
+	CaretInfo() : offset(0, 0), lineInfo() {}
+};
+
+struct BackSpaceInfo {
+	bool isX;
+	int size;
+
+	BackSpaceInfo() : isX(false), size(0) {}
+	BackSpaceInfo(bool isX, int size) : isX(isX), size(size) {}
+};
 // CChildView 창
 
 class CChildView : public CWnd
@@ -16,6 +29,10 @@ public:
 
 // 특성입니다.
 public:
+	CArray<TCHAR, TCHAR> m_str;
+	CArray<BackSpaceInfo, BackSpaceInfo> m_strSize;
+	CaretInfo m_caretInfo;
+	CButton* m_pSendButton = nullptr;
 
 // 작업입니다.
 public:
@@ -33,6 +50,11 @@ protected:
 	afx_msg void OnPaint();
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+//	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void OnSetFocus(CWnd* pOldWnd);
+	afx_msg void OnKillFocus(CWnd* pNewWnd);
+	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg void OnDestroy();
 };
 

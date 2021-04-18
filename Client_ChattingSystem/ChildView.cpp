@@ -19,15 +19,18 @@
 CChildView::CChildView()
 {
 }
-
 CChildView::~CChildView()
 {
 }
 
-
 BEGIN_MESSAGE_MAP(CChildView, CWnd)
 	ON_WM_PAINT()
-	ON_WM_LBUTTONDOWN()
+//	ON_WM_LBUTTONDOWN()
+	ON_WM_CHAR()
+	ON_WM_SETFOCUS()
+	ON_WM_KILLFOCUS()
+	ON_WM_CREATE()
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -49,17 +52,100 @@ BOOL CChildView::PreCreateWindow(CREATESTRUCT& cs)
 
 void CChildView::OnPaint() 
 {
-	CPaintDC dc(this); // 그리기를 위한 디바이스 컨텍스트입니다.
-	
-	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
-	
-	// 그리기 메시지에 대해서는 CWnd::OnPaint()를 호출하지 마십시오.
+	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
+	CRect rect;
+	GetClientRect(&rect);
+
+	CPaintDC dc(this);
+
+	rect.top = rect.bottom - 200;
+	dc.DrawText(m_str.GetData(), m_str.GetCount(), &rect, DT_LEFT);
+
+	CPoint poi(rect.left + m_caretInfo.offset.x, rect.top + m_caretInfo.offset.y);
+	SetCaretPos(poi);
 }
 
 
 
-void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
+//void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
+//{
+//	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+//	delete ((CMainFrame*)AfxGetMainWnd())->m_transmission;
+//}
+
+
+void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-	delete ((CMainFrame*)AfxGetMainWnd())->m_transmission;
+	CClientDC dc(this);
+	CSize fontSize = dc.GetTextExtent((LPCTSTR)&nChar, 1);
+
+	if (nChar == VK_RETURN) {
+
+		m_caretInfo.offset.y += fontSize.cy;
+		m_strSize.Add(BackSpaceInfo(false, fontSize.cy));
+
+		m_caretInfo.lineInfo.Add(m_caretInfo.offset.x);
+		m_caretInfo.offset.x = 0;
+
+		m_str.Add(nChar);
+	}
+	else if (nChar == _T('\b')) {
+
+		if (m_str.GetSize() > 0) {
+			BackSpaceInfo temp = m_strSize.GetAt(m_strSize.GetSize() - 1);
+
+			if (temp.isX) {
+				m_caretInfo.offset.x -= temp.size;
+			}
+			else {
+				m_caretInfo.offset.y -= temp.size;
+				m_caretInfo.offset.x = m_caretInfo.lineInfo.GetAt(m_caretInfo.lineInfo.GetSize() - 1);
+				m_caretInfo.lineInfo.RemoveAt(m_caretInfo.lineInfo.GetSize() - 1);
+			}
+
+			m_strSize.RemoveAt(m_strSize.GetSize() - 1);
+			m_str.RemoveAt(m_str.GetSize() - 1);
+		}
+	}
+	else {
+		m_str.Add(nChar);
+		m_caretInfo.offset.x += fontSize.cx;
+		m_strSize.Add(BackSpaceInfo(true, fontSize.cx));
+	}
+
+	Invalidate();
+}
+
+
+void CChildView::OnSetFocus(CWnd* pOldWnd)
+{
+	CreateSolidCaret(5, 20);
+	ShowCaret();
+}
+
+
+void CChildView::OnKillFocus(CWnd* pNewWnd)
+{
+	HideCaret();
+}
+
+int CChildView::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+	if (CWnd::OnCreate(lpCreateStruct) == -1)
+		return -1;
+
+	// TODO:  여기에 특수화된 작성 코드를 추가합니다.
+	AfxMessageBox(_T("View OnCreate"));
+	
+
+	return 0;
+}
+
+
+void CChildView::OnDestroy()
+{
+	AfxMessageBox(_T("View OnDestroy"));
+	::DestroyCaret();
+
+	CWnd::OnDestroy();
 }
