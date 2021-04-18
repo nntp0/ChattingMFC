@@ -35,3 +35,8 @@ void Transmission::Connect() {
 		Sleep(1000);
 	}
 }
+
+void Transmission::SendMsg(CString msg) {
+	AfxMessageBox(_T("Transmission SendMsg"));
+	clientSocket.Send(msg, msg.GetLength());
+}

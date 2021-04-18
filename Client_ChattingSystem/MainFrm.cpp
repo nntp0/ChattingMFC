@@ -56,7 +56,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	AfxMessageBox(_T("MainFrame OnCreate"));
 
 	m_transmission = new Transmission();
-	m_transmission->Connect();
+	m_transmission->SendMsg(CString(_T("Hello MFC Server")));
 
 	return 0;
 }

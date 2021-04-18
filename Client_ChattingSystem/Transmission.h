@@ -15,5 +15,8 @@ public:
 	Transmission(); 
 	~Transmission();
 
+public:
 	void Connect();
+	void SendMsg(CString msg);
+	void RecvMsg();
 };
