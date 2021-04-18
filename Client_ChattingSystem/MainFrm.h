@@ -16,7 +16,7 @@ protected:
 
 // 특성입니다.
 public:
-	Transmission *m_transmission;
+	Transmission *m_transmission = nullptr;
 // 작업입니다.
 public:
 

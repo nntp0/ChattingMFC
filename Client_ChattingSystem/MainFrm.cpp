@@ -52,10 +52,11 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	{
 		TRACE0("뷰 창을 만들지 못했습니다.\n");
 		return -1;
-	}
+	}	
+	AfxMessageBox(_T("MainFrame OnCreate"));
 
-	
-
+	m_transmission = new Transmission();
+	m_transmission->Connect();
 
 	return 0;
 }
@@ -114,5 +115,9 @@ void CMainFrame::OnClose()
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 	AfxMessageBox(_T("MainFrame OnClose!"));
+
+	delete m_transmission;
+	m_transmission = nullptr;
+
 	CFrameWnd::OnClose();
 }

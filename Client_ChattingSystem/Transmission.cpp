@@ -18,14 +18,14 @@ Transmission::Transmission() : buf(), nbytes(0) {
 	clientSocket.Create();
 	clientSocket.Connect(_T("127.0.0.1"), 8000);
 
-	AfxBeginThread(RUNTIME_CLASS(TransmissionReceiver));
+	//AfxBeginThread(RUNTIME_CLASS(TransmissionReceiver));
 }
 
 Transmission::~Transmission() {
 	AfxMessageBox(_T("Transmission ¼Ò¸êÀÚ È£Ãâ"));
 	clientSocket.Close();
 
-	m_receiver->PostThreadMessageW(WM_QUIT, 0, 0);
+	//m_receiver->PostThreadMessageW(WM_QUIT, 0, 0);
 }
 
 void Transmission::Connect() {
@@ -34,7 +34,4 @@ void Transmission::Connect() {
 		nbytes = clientSocket.Send(buf, 256);
 		Sleep(1000);
 	}
-	
-	/*int val = 600;
-	AfxBeginThread(CalcIt, (LPVOID)val);*/
 }
