@@ -55,6 +55,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}	
 	AfxMessageBox(_T("MainFrame OnCreate"));
 
+	_tsetlocale(LC_ALL, _T(""));
 	m_transmission = new Transmission();
 	m_transmission->SendMsg(CString(_T("Hello MFC Server")));
 
