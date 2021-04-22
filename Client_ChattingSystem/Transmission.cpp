@@ -42,16 +42,12 @@ void Transmission::SendMsg(CString msg) {
 	//AfxMessageBox(buf);
 	LPCWSTR str = msg.GetString();
 
-	for (int i = lstrlen(str) + 8; i <= 100; i++) {
+	/*for (int i = lstrlen(str) + 8; i <= 100; i++) {
 		int send = clientSocket.Send(str, i);
 		Sleep(1000);
-	}
-	/*clientSocket.Send(str, lstrlen(str) + 6);
-	Sleep(1000);
-	clientSocket.Send(str, lstrlen(str) + 7);
-	Sleep(1000);
-	clientSocket.Send(str, 100);*/
+	}*/
+	clientSocket.Send(str, 34);
 
-	//wsprintf(buf, _T("%d"), send);
-	//AfxMessageBox(buf);
+	wsprintf(buf, _T("%d"), sizeof str);
+	AfxMessageBox(buf);
 }
