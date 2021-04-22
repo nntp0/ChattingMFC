@@ -38,8 +38,20 @@ void Transmission::Connect() {
 
 void Transmission::SendMsg(CString msg) {
 	AfxMessageBox(_T("Transmission SendMsg"));
-	wsprintf(buf, _T("%s"), msg.GetString()+1);
-	AfxMessageBox(buf);
+	//wsprintf(buf, _T("%s"), msg.GetString()+1);
+	//AfxMessageBox(buf);
 	LPCWSTR str = msg.GetString();
-	clientSocket.Send(str, 100);
+
+	for (int i = lstrlen(str) + 8; i <= 100; i++) {
+		int send = clientSocket.Send(str, i);
+		Sleep(1000);
+	}
+	/*clientSocket.Send(str, lstrlen(str) + 6);
+	Sleep(1000);
+	clientSocket.Send(str, lstrlen(str) + 7);
+	Sleep(1000);
+	clientSocket.Send(str, 100);*/
+
+	//wsprintf(buf, _T("%d"), send);
+	//AfxMessageBox(buf);
 }
