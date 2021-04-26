@@ -57,7 +57,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	_tsetlocale(LC_ALL, _T(""));
 	m_transmission = new Transmission();
-	m_transmission->SendMsg(CString(_T("Hello MFC Server")));
+	m_transmission->SendMsg(CString(_T("안녕하세요!!")));
 
 	return 0;
 }

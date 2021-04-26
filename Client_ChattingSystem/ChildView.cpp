@@ -59,7 +59,7 @@ void CChildView::OnPaint()
 	CPaintDC dc(this);
 
 	rect.top = rect.bottom - 200;
-	dc.DrawText(m_str.GetData(), m_str.GetCount(), &rect, DT_LEFT);
+	dc.DrawText(m_str.GetString(), m_str.GetLength(), &rect, DT_LEFT);
 
 	CPoint poi(rect.left + m_caretInfo.offset.x, rect.top + m_caretInfo.offset.y);
 	SetCaretPos(poi);
@@ -87,11 +87,11 @@ void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 		m_caretInfo.lineInfo.Add(m_caretInfo.offset.x);
 		m_caretInfo.offset.x = 0;
 
-		m_str.Add(nChar);
+		m_str += (TCHAR)nChar;
 	}
 	else if (nChar == _T('\b')) {
 
-		if (m_str.GetSize() > 0) {
+		if (m_str.GetLength() > 0) {
 			BackSpaceInfo temp = m_strSize.GetAt(m_strSize.GetSize() - 1);
 
 			if (temp.isX) {
@@ -104,11 +104,11 @@ void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 			}
 
 			m_strSize.RemoveAt(m_strSize.GetSize() - 1);
-			m_str.RemoveAt(m_str.GetSize() - 1);
+			m_str.Delete(m_str.GetLength() - 1);
 		}
 	}
 	else {
-		m_str.Add(nChar);
+		m_str += (TCHAR)nChar;
 		m_caretInfo.offset.x += fontSize.cx;
 		m_strSize.Add(BackSpaceInfo(true, fontSize.cx));
 	}

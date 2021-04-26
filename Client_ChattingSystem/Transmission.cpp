@@ -40,14 +40,8 @@ void Transmission::SendMsg(CString msg) {
 	AfxMessageBox(_T("Transmission SendMsg"));
 	//wsprintf(buf, _T("%s"), msg.GetString()+1);
 	//AfxMessageBox(buf);
-	LPCWSTR str = msg.GetString();
+	
+	CW2A str(msg, CP_UTF8);
 
-	/*for (int i = lstrlen(str) + 8; i <= 100; i++) {
-		int send = clientSocket.Send(str, i);
-		Sleep(1000);
-	}*/
 	clientSocket.Send(str, 34);
-
-	wsprintf(buf, _T("%d"), sizeof str);
-	AfxMessageBox(buf);
 }

@@ -29,7 +29,7 @@ public:
 
 // 특성입니다.
 public:
-	CArray<TCHAR, TCHAR> m_str;
+	CString m_str;
 	CArray<BackSpaceInfo, BackSpaceInfo> m_strSize;
 	CaretInfo m_caretInfo;
 	CButton* m_pSendButton = nullptr;
