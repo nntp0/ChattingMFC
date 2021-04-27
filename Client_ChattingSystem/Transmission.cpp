@@ -20,11 +20,9 @@ struct MessageForm {
 	TCHAR message[SIZE_OF_BUFFER];
 };
 
-
-
 Transmission::Transmission() : buf(), nbytes(0) {
 	AfxMessageBox(_T("Transmission 생성자 호출"));
-	_tsetlocale(LC_ALL, _T(""));
+	//_tsetlocale(LC_ALL, _T(""));
 	AfxSocketInit();
 
 	clientSocket.Create();
