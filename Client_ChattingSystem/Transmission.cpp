@@ -36,13 +36,6 @@ Transmission::~Transmission() {
 	clientSocket.Close();
 }
 
-void Transmission::Connect() {
-	for (int i = 0; i < 5; i++) {
-		wsprintf(buf, _T("%d번째 테스트 메시지\r\n"), i + 1);
-		nbytes = clientSocket.Send(buf, 256);
-		Sleep(1000);
-	}
-}
 /* 
 * CString 에 담긴 Message 를 Client 에게 전송합니다.
 * IN:	CString
