@@ -55,9 +55,12 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}	
 	AfxMessageBox(_T("MainFrame OnCreate"));
 
-	_tsetlocale(LC_ALL, _T(""));
 	m_transmission = new Transmission();
-	m_transmission->SendMsg(CString(_T("안녕하세요!!")));
+
+
+
+	//m_transmission->SendMsg(CString(_T("Hello My New World!")));
+	//m_transmission->SendMsg(CString(_T("안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!")));
 
 	return 0;
 }

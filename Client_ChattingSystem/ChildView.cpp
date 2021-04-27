@@ -79,7 +79,7 @@ void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 	CClientDC dc(this);
 	CSize fontSize = dc.GetTextExtent((LPCTSTR)&nChar, 1);
 
-	if (nChar == VK_RETURN) {
+	/*if (nChar == VK_RETURN) {
 
 		m_caretInfo.offset.y += fontSize.cy;
 		m_strSize.Add(BackSpaceInfo(false, fontSize.cy));
@@ -88,6 +88,12 @@ void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 		m_caretInfo.offset.x = 0;
 
 		m_str += (TCHAR)nChar;
+	}*/
+	if (nChar == VK_RETURN) {
+		((CMainFrame*)GetParentFrame())->m_transmission->SendMsg(this->m_str);
+
+		this->InputBufferClear();
+		Invalidate();
 	}
 	else if (nChar == _T('\b')) {
 
@@ -123,7 +129,6 @@ void CChildView::OnSetFocus(CWnd* pOldWnd)
 	ShowCaret();
 }
 
-
 void CChildView::OnKillFocus(CWnd* pNewWnd)
 {
 	HideCaret();
@@ -141,11 +146,16 @@ int CChildView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	return 0;
 }
 
-
 void CChildView::OnDestroy()
 {
 	AfxMessageBox(_T("View OnDestroy"));
 	::DestroyCaret();
 
 	CWnd::OnDestroy();
+}
+
+void CChildView::InputBufferClear() {
+	this->m_str.Empty();
+	this->m_strSize.RemoveAll();
+	this->m_caretInfo.Clear();
 }

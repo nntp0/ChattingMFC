@@ -6,12 +6,20 @@
 #pragma once
 
 struct CaretInfo {
+public:
 	CPoint offset;
 	CArray<int, int> lineInfo;
 
+public:
 	CaretInfo() : offset(0, 0), lineInfo() {}
-};
 
+public:
+	void Clear() {
+		offset.x = 0;
+		offset.y = 0;
+		lineInfo.RemoveAll();
+	}
+};
 struct BackSpaceInfo {
 	bool isX;
 	int size;
@@ -36,6 +44,7 @@ public:
 
 // 작업입니다.
 public:
+	void InputBufferClear();
 
 // 재정의입니다.
 	protected:
