@@ -19,6 +19,6 @@ public:
 
 private:
 	CListenSocket listenSocket;
-	CAcceptSocket acceptSocket;
+	CList<std::shared_ptr<CAcceptSocket>, std::shared_ptr<CAcceptSocket>> acceptSocketList;
 };
 
