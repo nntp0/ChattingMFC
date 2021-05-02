@@ -1,8 +1,12 @@
 #include "pch.h"
 #include "framework.h"
 
-#include <afxsock.h>
 #include "ListenSocket.h"
+
+#ifndef __Transmission_H_INCLUDED__
+#define __Transmission_H_INCLUDED__
+#include "Transmission.h"
+#endif
 #include <Strsafe.h>
 
 CListenSocket::CListenSocket() : m_msg() {

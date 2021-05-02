@@ -1,10 +1,8 @@
 #include "pch.h"
+
 #include "Transmission.h"
 
-#ifndef __MEMORY_H_INCLUDED__
-#define __MEMORY_H_INCLUDED__
-#include <memory>
-#endif
+
 
 Transmission::Transmission() : listenSocket(this), acceptSocketList(){
 
@@ -18,6 +16,4 @@ void Transmission::Accept() {
 		AfxMessageBox(_T("Accept Error!"));
 		return;
 	}
-
-
 }
