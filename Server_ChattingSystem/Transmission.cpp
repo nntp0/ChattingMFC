@@ -1,15 +1,16 @@
 #include "pch.h"
 
 #include "Transmission.h"
-#include "ListenSocket.h"
-#include "AcceptSocket.h"
 
 
-Transmission::Transmission() {
 
+Transmission::Transmission() : acceptSocketList() {
+	AfxMessageBox(_T("Transmission Constructor"));
+	this->listenSocket = new CListenSocket(this);
 }
 Transmission::~Transmission() {
-
+	TRACE("Hello Destructor!");
+	delete this->listenSocket;
 }
 void Transmission::Accept() {
 
@@ -20,4 +21,8 @@ void Transmission::Accept() {
 		AfxMessageBox(_T("Accept Error!"));
 		return;
 	}*/
+}
+
+void Transmission::Close() {
+
 }

@@ -8,6 +8,10 @@
 
 #include "MainFrm.h"
 
+#include "Transmission.h"
+
+#include <conio.h>
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -19,6 +23,7 @@ IMPLEMENT_DYNAMIC(CMainFrame, CFrameWnd)
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
 	ON_WM_SETFOCUS()
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 // CMainFrame 생성/소멸
@@ -44,6 +49,11 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("뷰 창을 만들지 못했습니다.\n");
 		return -1;
 	}
+
+	this->transmission = std::shared_ptr<Transmission>(new Transmission, [](Transmission *t) 
+		{ AfxMessageBox(_T("Hello Lambda")); delete t; }
+	);
+
 	return 0;
 }
 
@@ -59,6 +69,8 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 
 	cs.dwExStyle &= ~WS_EX_CLIENTEDGE;
 	cs.lpszClass = AfxRegisterWndClass(0);
+
+
 	return TRUE;
 }
 
@@ -95,3 +107,14 @@ BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO*
 	return CFrameWnd::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
 }
 
+
+
+void CMainFrame::OnClose()
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+
+	AfxMessageBox(_T("CMainFrame OnClose"));
+	TRACE("Hello World!");
+
+	CFrameWnd::OnClose();
+}

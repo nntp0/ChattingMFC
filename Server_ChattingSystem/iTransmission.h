@@ -4,6 +4,6 @@
 __interface iTransmission
 {
 public:
-	virtual void Accept();
-	virtual void Close();
+	virtual void Accept() = 0;
+	virtual void Close() = 0;
 };

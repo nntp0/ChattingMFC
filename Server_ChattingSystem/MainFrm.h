@@ -4,6 +4,12 @@
 
 #pragma once
 #include "ChildView.h"
+#include "iTransmission.h"
+
+#ifndef __MEMORY_H_INCLUDED__
+#define __MEMORY_H_INCLUDED__
+#include <memory>
+#endif
 
 class CMainFrame : public CFrameWnd
 {
@@ -40,6 +46,11 @@ protected:
 	afx_msg void OnSetFocus(CWnd *pOldWnd);
 	DECLARE_MESSAGE_MAP()
 
+	// properties
+private:
+	std::shared_ptr<iTransmission> transmission;
+public:
+	afx_msg void OnClose();
 };
 
 

@@ -8,6 +8,11 @@
 #include <memory>
 #endif
 
+class Transmission;
+
+#include "ListenSocket.h"
+#include "AcceptSocket.h"
+
 #ifndef __Transmission_H_INCLUDED__
 #define __Transmission_H_INCLUDED__
 class Transmission : public iTransmission
@@ -17,13 +22,14 @@ public:
 	Transmission();
 	virtual ~Transmission();
 
-	// Methods
+	// Override Methods
 public:
 	virtual void Accept();
+	virtual void Close();
 
 	// Properties
 private:
-	/*CListenSocket *listenSocket;
-	CList<std::shared_ptr<CAcceptSocket>, std::shared_ptr<CAcceptSocket>> *acceptSocketList;*/
+	CListenSocket *listenSocket;
+	CList<std::shared_ptr<CAcceptSocket>, std::shared_ptr<CAcceptSocket>> *acceptSocketList;
 };
 #endif

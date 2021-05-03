@@ -2,7 +2,7 @@
 #include "framework.h"
 
 #include "Transmission.h"
-#include "AcceptSocket.h"
+//#include "AcceptSocket.h"
 #include <Strsafe.h>
 
 CAcceptSocket::CAcceptSocket() : transmission() {
