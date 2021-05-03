@@ -8,7 +8,6 @@
 #include "locale.h"
 
 #include "Transmission.h"
-#include "TransmissionReceiver.h"
 
 #include <Strsafe.h>
 
@@ -22,7 +21,7 @@ struct MessageForm {
 
 Transmission::Transmission() : buf(), nbytes(0) {
 	AfxMessageBox(_T("Transmission 생성자 호출"));
-	//_tsetlocale(LC_ALL, _T(""));
+
 	AfxSocketInit();
 
 	clientSocket.Create();

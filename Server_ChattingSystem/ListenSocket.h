@@ -24,7 +24,5 @@ private:
 public:
 	void SetMsg(MessageForm msg);
 	MessageForm GetMsg();
-public:
-	void CListenSocket::Tick();
 };
 #endif

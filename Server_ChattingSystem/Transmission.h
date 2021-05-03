@@ -29,6 +29,7 @@ public:
 
 public:
 	void Receive();
+
 	// Properties
 private:
 	CListenSocket* listenSocket;

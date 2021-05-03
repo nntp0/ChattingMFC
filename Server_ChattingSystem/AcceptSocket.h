@@ -10,7 +10,6 @@ class CAcceptSocket : public CSocket
 {
 	// Constructor, Destructor
 public:
-	CAcceptSocket();
 	CAcceptSocket(Transmission *transmission);
 	virtual ~CAcceptSocket();
 

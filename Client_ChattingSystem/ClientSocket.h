@@ -2,6 +2,8 @@
 
 #include <afxsock.h>
 
+#include <Transmission>;
+
 class CClientSocket : public CSocket {
 
 public:
@@ -10,5 +12,8 @@ public:
 
 public:
 	virtual void OnClose(int nErrorCode);
+	virtual void OnReceive(int nErrorCode);
 private:
+
+	Transmission transmission;
 };

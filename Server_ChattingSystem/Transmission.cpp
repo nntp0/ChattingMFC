@@ -36,7 +36,7 @@ void Transmission::Accept() {
     wsprintf(buf, _T("Login from %s/%d\n"), (LPCTSTR)PeerAddress, PeerPort);
     AfxMessageBox(buf);
 
-
+    this->acceptSocket->Send("Hello Client", 100);
 }
 
 void Transmission::Close() {

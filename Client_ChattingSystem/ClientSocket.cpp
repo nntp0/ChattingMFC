@@ -12,6 +12,12 @@ CClientSocket::~CClientSocket() {
 }
 
 void CClientSocket::OnClose(int nErrorCode) {
-	AfxMessageBox(_T("Close"));
+	AfxMessageBox(_T("CClientSocket OnClose"));
 	this->Close();
+}
+
+void CClientSocket::OnReceive(int nErrorCode) {
+	AfxMessageBox(_T("CClientSocket OnReceive"));
+
+	
 }
