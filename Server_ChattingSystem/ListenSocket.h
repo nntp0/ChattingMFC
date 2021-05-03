@@ -19,5 +19,12 @@ public:
 private:
 	Transmission *transmission;
 	MessageForm m_msg;
+
+	// Getter, Setter
+public:
+	void SetMsg(MessageForm msg);
+	MessageForm GetMsg();
+public:
+	void CListenSocket::Tick();
 };
 #endif

@@ -10,8 +10,6 @@
 
 #include "Transmission.h"
 
-#include <conio.h>
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -50,9 +48,10 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 	}
 
-	this->transmission = std::shared_ptr<Transmission>(new Transmission, [](Transmission *t) 
+	/*this->transmission = std::shared_ptr<Transmission>(new Transmission, [](Transmission *t) 
 		{ AfxMessageBox(_T("Hello Lambda")); delete t; }
-	);
+	);*/
+	this->transmission = std::shared_ptr<Transmission>(new Transmission);
 
 	return 0;
 }
@@ -114,6 +113,8 @@ void CMainFrame::OnClose()
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 
 	AfxMessageBox(_T("CMainFrame OnClose"));
+
+	this->transmission->Close();
 	TRACE("Hello World!");
 
 	CFrameWnd::OnClose();

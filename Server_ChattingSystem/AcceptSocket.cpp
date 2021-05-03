@@ -14,9 +14,20 @@ CAcceptSocket::CAcceptSocket(Transmission *transmission) {
 }
 CAcceptSocket::~CAcceptSocket() {
 	AfxMessageBox(_T("AcceptSocket Closed"));
+	this->Close();
 }
 void CAcceptSocket::SetTransmission(Transmission* transmission) {
 	AfxMessageBox(_T("It's a terrible Day"));
 	this->transmission = transmission;
 }
 
+void CAcceptSocket::OnReceive(int nErrorCode) {
+	AfxMessageBox(_T("You Got Something"));
+
+	this->transmission->Receive();
+}
+void CAcceptSocket::OnClose(int nErrorCode) {
+	AfxMessageBox(_T("AcceptSocket Closed"));
+	this->transmission->Close();
+	this->Close();
+}

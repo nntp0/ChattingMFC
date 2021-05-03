@@ -27,9 +27,12 @@ public:
 	virtual void Accept();
 	virtual void Close();
 
+public:
+	void Receive();
 	// Properties
 private:
-	CListenSocket *listenSocket;
-	CList<std::shared_ptr<CAcceptSocket>, std::shared_ptr<CAcceptSocket>> *acceptSocketList;
+	CListenSocket* listenSocket;
+	CAcceptSocket* acceptSocket;
+	//CList<std::shared_ptr<CAcceptSocket>, std::shared_ptr<CAcceptSocket>> *acceptSocketList;
 };
 #endif

@@ -1,10 +1,12 @@
 #pragma once
 #include <afxsock.h>
 
+#include "ClientSocket.h"
+
 class Transmission {
 
 public:
-	CSocket clientSocket;
+	CClientSocket clientSocket;
 	TCHAR buf[256];
 	int nbytes;
 
