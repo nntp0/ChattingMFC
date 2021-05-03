@@ -1,14 +1,8 @@
 #include "pch.h"
 #include "framework.h"
 
-#ifndef __Transmission_H_INCLUDED__
-#define __Transmission_H_INCLUDED__
 #include "Transmission.h"
-#endif
-#ifndef __AcceptSocket_H_INCLUDED__
-#define __AcceptSocket_H_INCLUDED__
 #include "AcceptSocket.h"
-#endif
 #include <Strsafe.h>
 
 CAcceptSocket::CAcceptSocket() : transmission() {

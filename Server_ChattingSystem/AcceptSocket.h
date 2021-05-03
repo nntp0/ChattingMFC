@@ -4,7 +4,10 @@
 #include <afxsock.h>
 #endif
 
-class CAcceptSocket : public CSocket {
+#ifndef __AcceptSocket_H_INCLUDED__
+#define __AcceptSocket_H_INCLUDED__
+class CAcceptSocket : public CSocket
+{
 public:
 	CAcceptSocket();
 	CAcceptSocket(Transmission *transmission);
@@ -14,3 +17,4 @@ public:
 private:
 	Transmission *transmission;
 };
+#endif

@@ -4,10 +4,12 @@
 #include <afxsock.h>
 #endif
 
+#ifndef __ListenSocket_H_INCLUDED__
+#define __ListenSocket_H_INCLUDED__
 class CListenSocket : public CSocket
 {
 public:
-	CListenSocket();
+	//CListenSocket();
 	CListenSocket(Transmission *transmission);
 	virtual ~CListenSocket();
 public:
@@ -18,4 +20,4 @@ private:
 	Transmission *transmission;
 	MessageForm m_msg;
 };
-
+#endif

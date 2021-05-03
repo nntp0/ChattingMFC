@@ -1,23 +1,19 @@
 #include "pch.h"
 #include "framework.h"
 
-#include "ListenSocket.h"
-
-#ifndef __Transmission_H_INCLUDED__
-#define __Transmission_H_INCLUDED__
 #include "Transmission.h"
-#endif
+#include "ListenSocket.h"
 #include <Strsafe.h>
 
-CListenSocket::CListenSocket() : m_msg() {
-    AfxMessageBox(_T("ListenSocketCreate"));
-
-    AfxSocketInit();
-
-    this->Create(8000);
-    this->Listen();
-}
-CListenSocket::CListenSocket(Transmission *transmission) {
+//CListenSocket::CListenSocket() : m_msg() {
+//    AfxMessageBox(_T("ListenSocketCreate"));
+//
+//    AfxSocketInit();
+//
+//    this->Create(8000);
+//    this->Listen();
+//}
+CListenSocket::CListenSocket(Transmission *transmission) : m_msg() {
     AfxMessageBox(_T("ListenSocketCreated with Transmission"));
     this->transmission = transmission;
 
