@@ -2,18 +2,31 @@
 
 #include <afxsock.h>
 
-#include <Transmission>;
-
+#ifndef __ClientSocket_H_INCLUDED__
+#define __ClientSocket_H_INCLUDED__
 class CClientSocket : public CSocket {
 
 public:
-	CClientSocket();
+	CClientSocket(Transmission *transmission);
 	virtual ~CClientSocket();
 
+	// method override
 public:
 	virtual void OnClose(int nErrorCode);
 	virtual void OnReceive(int nErrorCode);
-private:
 
-	Transmission transmission;
+public:
+	void SetTransmission(Transmission* transmission);
+
+	// properties
+private:
+	Transmission *transmission;
+	MessageForm m_msg;
+
+	// Getter, Setter
+public:
+	void SetMsg(MessageForm msg);
+	MessageForm* GetMsg();
 };
+
+#endif

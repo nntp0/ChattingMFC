@@ -5,7 +5,7 @@
 
 #include <Strsafe.h>
 
-CAcceptSocket::CAcceptSocket(Transmission *transmission) {
+CAcceptSocket::CAcceptSocket(Transmission *transmission) : m_msg() {
 	AfxMessageBox(_T("AcceptSocket Created with Transmission"));
 	this->SetTransmission(transmission);
 }
@@ -26,4 +26,10 @@ void CAcceptSocket::OnClose(int nErrorCode) {
 	AfxMessageBox(_T("AcceptSocket OnClose"));
 
 	this->transmission->Close();
+}
+void CAcceptSocket::SetMsg(MessageForm msg) {
+    this->m_msg = msg;
+}
+MessageForm* CAcceptSocket::GetMsg() {
+    return &(this->m_msg);
 }

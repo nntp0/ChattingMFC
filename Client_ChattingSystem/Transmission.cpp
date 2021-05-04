@@ -11,26 +11,19 @@
 
 #include <Strsafe.h>
 
-#define SIZE_OF_BUFFER 256
-
-
-struct MessageForm {
-	int messageLen;
-	TCHAR message[SIZE_OF_BUFFER];
-};
-
-Transmission::Transmission() : buf(), nbytes(0) {
+Transmission::Transmission() : buf(), nbytes() {
 	AfxMessageBox(_T("Transmission 생성자 호출"));
 
 	AfxSocketInit();
 
-	clientSocket.Create();
-	clientSocket.Connect(_T("127.0.0.1"), 8000);
+	clientSocket = new CClientSocket(this);
 }
 
 Transmission::~Transmission() {
-	AfxMessageBox(_T("Transmission 소멸자 호출"));
-	clientSocket.Close();
+	TRACE(_T("Transmission Destructor"));
+
+	clientSocket->Close();
+	delete clientSocket;
 }
 
 /* 
@@ -38,16 +31,22 @@ Transmission::~Transmission() {
 * IN:	CString
 * OUT:	void
 */
-void Transmission::SendMsg(CString msg) {
-	AfxMessageBox(_T("Transmission SendMsg"));
+void Transmission::Send(CString msg) {
+	AfxMessageBox(_T("Transmission Send"));
 
 	MessageForm* pMsgForm = new MessageForm;
-
+	
 	while (1) {
 		if (msg.GetLength() < SIZE_OF_BUFFER) {
 			pMsgForm->messageLen = msg.GetLength();
+			wsprintf(buf, _T("%d"), pMsgForm->messageLen);
+			AfxMessageBox(buf);
+
 			::StringCchPrintf(pMsgForm->message, SIZE_OF_BUFFER, _T("%s"), msg.GetString());
-			clientSocket.Send(pMsgForm, sizeof MessageForm);
+			AfxMessageBox(pMsgForm->message);
+
+			
+			clientSocket->Send(pMsgForm, sizeof MessageForm);
 			break;
 		}
 		else {
@@ -60,8 +59,44 @@ void Transmission::SendMsg(CString msg) {
 			TCHAR buf[20];
 			wsprintf(buf, _T("%d"), temp);
 			AfxMessageBox(buf);
-			clientSocket.Send(pMsgForm, sizeof MessageForm);
+			clientSocket->Send(pMsgForm, sizeof MessageForm);
 		}
 	}
 	delete pMsgForm;
+}
+
+void Transmission::Receive() {
+	AfxMessageBox(_T("Received Message"));
+	TCHAR buf[SIZE_OF_BUFFER];
+
+	TCHAR msgBuffer[sizeof MessageForm];
+	int nbytes;
+
+	MessageForm* pMsgBuffer = new MessageForm;
+
+	while (1) {
+		nbytes = this->clientSocket->Receive(msgBuffer, sizeof MessageForm);
+		wsprintf(buf, _T("%d\n"), nbytes);
+
+		AfxMessageBox(buf);
+		if (nbytes == 0 || nbytes == SOCKET_ERROR) {
+			AfxMessageBox(_T("Error!"));
+			break;
+		}
+		else {
+			AfxMessageBox(_T("OK!"));
+
+			::CopyMemory(pMsgBuffer, msgBuffer, sizeof MessageForm);
+
+			this->clientSocket->SetMsg(*pMsgBuffer);
+			AfxMessageBox(this->clientSocket->GetMsg()->message);
+
+			// 이 구문을 확인을 못하고 있었다!
+			// 이 구문으로 인해 데이터가 제대로 작동하지 않고 있었음
+			if (pMsgBuffer->messageLen != SIZE_OF_BUFFER) break;
+		}
+	}
+
+	delete pMsgBuffer;
+
 }

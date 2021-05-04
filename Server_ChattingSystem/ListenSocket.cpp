@@ -5,7 +5,7 @@
 
 #include <Strsafe.h>
 
-CListenSocket::CListenSocket(Transmission *transmission) : m_msg() {
+CListenSocket::CListenSocket(Transmission *transmission) {
     AfxMessageBox(_T("ListenSocket Created with Transmission"));
     
     this->SetTransmission(transmission);
@@ -25,10 +25,4 @@ void CListenSocket::SetTransmission(Transmission* transmission) {
 }
 void CListenSocket::OnAccept(int nErrorCode) {
     transmission->Accept();
-}
-void CListenSocket::SetMsg(MessageForm msg) {
-    this->m_msg = msg;
-}
-MessageForm CListenSocket::GetMsg() {
-    return this->m_msg;
 }

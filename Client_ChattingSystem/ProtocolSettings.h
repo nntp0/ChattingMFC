@@ -1,7 +1,5 @@
 #pragma once
 
-
-
 #ifndef __PROTOCOL_H_INCLUDED__
 #define __PROTOCOL_H_INCLUDED__
 

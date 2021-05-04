@@ -1,12 +1,17 @@
 #pragma once
 #include <afxsock.h>
 
+#include "ProtocolSettings.h"
+
+class Transmission;
+
 #include "ClientSocket.h"
 
+#ifndef __Transmission_H_INCLUDED__
+#define __Transmission_H_INCLUDED__
 class Transmission {
 
 public:
-	CClientSocket clientSocket;
 	TCHAR buf[256];
 	int nbytes;
 
@@ -18,6 +23,11 @@ public:
 	~Transmission();
 
 public:
-	void SendMsg(CString msg);
-	void RecvMsg();
+	void Send(CString msg);
+	void Receive();
+
+	// properties
+private:
+	CClientSocket* clientSocket;
 };
+#endif

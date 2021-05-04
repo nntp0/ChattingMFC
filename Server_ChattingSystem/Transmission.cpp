@@ -11,6 +11,8 @@ Transmission::Transmission() : acceptSocket() {
 
 Transmission::~Transmission() {
 	TRACE("Hello Destructor!");
+    this->listenSocket->Close();
+    delete this->listenSocket;
 }
 void Transmission::Accept() {
 
@@ -36,45 +38,56 @@ void Transmission::Accept() {
     wsprintf(buf, _T("Login from %s/%d\n"), (LPCTSTR)PeerAddress, PeerPort);
     AfxMessageBox(buf);
 
-    this->acceptSocket->Send("Hello Client", 100);
+    MessageForm msgBuffer;
+    
+    StringCchCopy(msgBuffer.message, SIZE_OF_BUFFER, _T("Hello World"));
+    this->acceptSocket->Send(&msgBuffer, sizeof MessageForm);
 }
 
 void Transmission::Close() {
     AfxMessageBox(_T("AcceptSocket Close"));
 
     this->acceptSocket->Close();
-    this->listenSocket->Close();
-    delete this->listenSocket;
     delete this->acceptSocket;
 }
 
 void Transmission::Receive() {
-    AfxMessageBox(_T("Received Message"));
-    TCHAR buf[SIZE_OF_BUFFER];
+    AfxMessageBox(_T("Transmission Receive"));
+	TCHAR buf[SIZE_OF_BUFFER];
 
-    TCHAR msgBuffer[sizeof MessageForm];
-    int nbytes;
-    while (1) {
-        nbytes = this->acceptSocket->Receive(msgBuffer, sizeof MessageForm);
-        wsprintf(buf, _T("%d\n"), nbytes);
+	TCHAR msgBuffer[sizeof MessageForm];
+	int nbytes;
 
-        AfxMessageBox(buf);
-        if (nbytes == 0 || nbytes == SOCKET_ERROR) {
-            break;
-        }
-        else {
-            MessageForm* pMsgBuffer = new MessageForm;
+	MessageForm* pMsgBuffer = new MessageForm;
 
+	while (1) {
+		nbytes = this->acceptSocket->Receive(msgBuffer, sizeof MessageForm);
+		wsprintf(buf, _T("%d\n"), nbytes);
 
-            ::CopyMemory(pMsgBuffer, msgBuffer, sizeof MessageForm);
-            if (pMsgBuffer->messageLen != SIZE_OF_BUFFER) break;
+		AfxMessageBox(buf);
+		if (nbytes == 0 || nbytes == SOCKET_ERROR) {
+			AfxMessageBox(_T("Error!"));
+			break;
+		}
+		else {
+			AfxMessageBox(_T("OK!"));
 
-            this->listenSocket->SetMsg(*pMsgBuffer);
-            //::StringCchPrintf(m_msg.message, SIZE_OF_BUFFER, pMsgBuffer->message);
-            wsprintf(buf, _T("%s"), this->listenSocket->GetMsg().message);
-            AfxMessageBox(buf);
+			::CopyMemory(pMsgBuffer, msgBuffer, sizeof MessageForm);
 
-            delete pMsgBuffer;
-        }
-    }
+			wsprintf(buf, _T("%d\n"), pMsgBuffer->messageLen);
+			AfxMessageBox(buf);
+
+			this->acceptSocket->SetMsg(*pMsgBuffer);
+			AfxMessageBox(this->acceptSocket->GetMsg()->message);
+
+			wsprintf(buf, _T("%d\n"), this->acceptSocket->GetMsg()->messageLen);
+			AfxMessageBox(buf);
+
+			// 이 구문을 확인을 못하고 있었다!
+			// 이 구문으로 인해 데이터가 제대로 작동하지 않고 있었음
+			if (pMsgBuffer->messageLen != SIZE_OF_BUFFER) break;
+		}
+	}
+
+	delete pMsgBuffer;
 }

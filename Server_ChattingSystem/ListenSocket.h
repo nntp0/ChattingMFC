@@ -18,11 +18,6 @@ public:
 	virtual void OnAccept(int nErrorCode);
 private:
 	Transmission *transmission;
-	MessageForm m_msg;
 
-	// Getter, Setter
-public:
-	void SetMsg(MessageForm msg);
-	MessageForm GetMsg();
 };
 #endif

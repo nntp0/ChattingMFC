@@ -21,5 +21,11 @@ public:
 	void SetTransmission(Transmission* transmission);
 private:
 	Transmission *transmission;
+	MessageForm m_msg;
+
+	// Getter, Setter
+public:
+	void SetMsg(MessageForm msg);
+	MessageForm* GetMsg();
 };
 #endif
