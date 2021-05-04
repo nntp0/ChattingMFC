@@ -13,10 +13,6 @@ class Transmission {
 
 public:
 	TCHAR buf[256];
-	int nbytes;
-
-	CWinThread* m_sender = nullptr;
-	CWinThread* m_receiver = nullptr;
 
 public:
 	Transmission(); 
@@ -25,6 +21,7 @@ public:
 public:
 	void Send(CString msg);
 	void Receive();
+	void Close();
 
 	// properties
 private:

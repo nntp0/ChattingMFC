@@ -5,7 +5,7 @@
 #ifndef __ClientSocket_H_INCLUDED__
 #define __ClientSocket_H_INCLUDED__
 class CClientSocket : public CSocket {
-
+	// Constructor, Destructor
 public:
 	CClientSocket(Transmission *transmission);
 	virtual ~CClientSocket();

@@ -11,7 +11,7 @@
 
 #include <Strsafe.h>
 
-Transmission::Transmission() : buf(), nbytes() {
+Transmission::Transmission() : buf() {
 	AfxMessageBox(_T("Transmission 생성자 호출"));
 
 	AfxSocketInit();
@@ -98,5 +98,10 @@ void Transmission::Receive() {
 	}
 
 	delete pMsgBuffer;
+}
 
+void Transmission::Close() {
+	AfxMessageBox(_T("Disconnected from Server!"));
+
+	delete clientSocket;
 }

@@ -18,19 +18,18 @@ CClientSocket::~CClientSocket() {
 	this->Close();
 }
 
-
 void CClientSocket::SetTransmission(Transmission* transmission) {
-	AfxMessageBox(_T("CClientSocket SetTransmission"));
+	TRACE(_T("CClientSocket SetTransmission"));
 	this->transmission = transmission;
 }
 
 void CClientSocket::OnClose(int nErrorCode) {
-	AfxMessageBox(_T("CClientSocket OnClose"));
-	//this->Close();
+	TRACE(_T("CClientSocket OnClose"));
+	this->transmission->Close();
 }
 
 void CClientSocket::OnReceive(int nErrorCode) {
-	AfxMessageBox(_T("CClientSocket OnReceive"));
+	TRACE(_T("CClientSocket OnReceive"));
 	this->transmission->Receive();
 }
 

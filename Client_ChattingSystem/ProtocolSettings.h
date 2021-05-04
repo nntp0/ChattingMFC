@@ -6,7 +6,7 @@
 #include <tchar.h>
 #include <strsafe.h>
 
-#define SIZE_OF_BUFFER 30
+#define SIZE_OF_BUFFER 256
 
 struct MessageForm {
 	int messageLen;
