@@ -6,7 +6,9 @@
 #include "ChildView.h"
 #include "Transmission.h"
 
-class CMainFrame : public CFrameWnd
+#include "iMainFrame.h"
+
+class CMainFrame : public CFrameWnd, public iMainFrame
 {
 	
 public:
@@ -16,7 +18,7 @@ protected:
 
 // 특성입니다.
 public:
-	Transmission *m_transmission = nullptr;
+	iTransmission *m_transmission = nullptr;
 // 작업입니다.
 public:
 
@@ -25,6 +27,9 @@ public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	virtual BOOL OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo);
 
+
+	virtual void Tick();
+	virtual void ControlMessage();
 // 구현입니다.
 public:
 	virtual ~CMainFrame();

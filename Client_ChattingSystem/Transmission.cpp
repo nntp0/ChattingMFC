@@ -11,8 +11,11 @@
 
 #include <Strsafe.h>
 
-Transmission::Transmission() : buf() {
-	AfxMessageBox(_T("Transmission 생성자 호출"));
+Transmission::Transmission(iMainFrame* mainFrame) : buf() {
+	AfxMessageBox(_T("Transmission Constructor"));
+
+	SetMainFrame(mainFrame);
+	this->mainFrame->Tick();
 
 	AfxSocketInit();
 
@@ -104,4 +107,8 @@ void Transmission::Close() {
 	AfxMessageBox(_T("Disconnected from Server!"));
 
 	delete clientSocket;
+}
+
+void Transmission::SetMainFrame(iMainFrame* mainFrame) {
+	this->mainFrame = mainFrame;
 }

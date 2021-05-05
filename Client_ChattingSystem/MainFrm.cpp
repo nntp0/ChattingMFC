@@ -11,7 +11,7 @@
 #include <afxsock.h>
 #include "locale.h"
 
-#include "Transmission.h"
+#include "iTransmission.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -55,7 +55,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}	
 	AfxMessageBox(_T("MainFrame OnCreate"));
 
-	m_transmission = new Transmission();
+	m_transmission = new Transmission(this);
 
 
 
@@ -124,4 +124,12 @@ void CMainFrame::OnClose()
 	m_transmission = nullptr;
 
 	CFrameWnd::OnClose();
+}
+
+
+void CMainFrame::Tick() {
+	AfxMessageBox(_T("Tick"));
+}
+void CMainFrame::ControlMessage() {
+	AfxMessageBox(_T("ControlMessage"));
 }

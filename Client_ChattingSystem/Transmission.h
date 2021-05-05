@@ -6,25 +6,32 @@
 class Transmission;
 
 #include "ClientSocket.h"
+#include "iMainFrame.h"
+#include "iTransmission.h"
 
 #ifndef __Transmission_H_INCLUDED__
 #define __Transmission_H_INCLUDED__
-class Transmission {
+class Transmission : public iTransmission {
 
 public:
 	TCHAR buf[256];
 
 public:
-	Transmission(); 
+	Transmission(iMainFrame* mainFrame);
 	~Transmission();
 
+	// Method Override
 public:
-	void Send(CString msg);
+	virtual void Close();
+	virtual void SetMainFrame(iMainFrame* mainFrame);
+	virtual void Send(CString msg);
+
+public:
 	void Receive();
-	void Close();
 
 	// properties
 private:
 	CClientSocket* clientSocket;
+	iMainFrame* mainFrame;
 };
 #endif
