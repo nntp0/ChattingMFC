@@ -65,5 +65,13 @@ public:
 	afx_msg void OnKillFocus(CWnd* pNewWnd);
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnDestroy();
+
+	// properties
+private:
+	CList<CString> messageList;
+
+public:
+	void UpdateMessageList(CString msg);
+	CList<CString>* GetMessageList();
 };
 

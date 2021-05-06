@@ -15,7 +15,6 @@ Transmission::Transmission(iMainFrame* mainFrame) : buf() {
 	AfxMessageBox(_T("Transmission Constructor"));
 
 	SetMainFrame(mainFrame);
-	this->mainFrame->Tick();
 
 	AfxSocketInit();
 

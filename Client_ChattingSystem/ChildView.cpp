@@ -159,3 +159,14 @@ void CChildView::InputBufferClear() {
 	this->m_strSize.RemoveAll();
 	this->m_caretInfo.Clear();
 }
+
+
+
+
+void CChildView::UpdateMessageList(CString msg) {
+	this->messageList.AddTail(msg);
+}
+
+CList<CString>* CChildView::GetMessageList() {
+
+}
