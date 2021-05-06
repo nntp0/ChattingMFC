@@ -21,7 +21,6 @@ int main()
 
     controlModule.ShowMessageListStr();
 
-
     controlModule.UpdateMessageList(std::string("안녕하세요??"));
 
     controlModule.ShowMessageListStr();
@@ -31,6 +30,20 @@ int main()
     controlModule.UpdateMessageList(temp);   
 
     controlModule.ShowMessageListStr();
+
+    std::cout << "=======" << std::endl;
+
+    controlModule.ShowMessageList();
+
+    controlModule.UpdateMessageList(CString("안녕하세요??"));
+
+    controlModule.ShowMessageList();
+
+    CString temp2("만나서 반갑습니다!!");
+
+    controlModule.UpdateMessageList(temp2);
+
+    controlModule.ShowMessageList();
 }
 
 void MessageControlModule::UpdateMessageList(CString msg) {
@@ -42,7 +55,7 @@ void MessageControlModule::UpdateMessageList(std::string msg) {
 void MessageControlModule::ShowMessageList() {
 
     for (auto it = std::begin(this->messageList); it != std::end(this->messageList); it++) {
-        _tprintf(_T("%s\n"), it->GetString());
+        wprintf(_T("%s\n"), it->GetString());
     }
 }
 void MessageControlModule::ShowMessageListStr() {

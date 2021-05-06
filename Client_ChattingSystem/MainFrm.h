@@ -29,7 +29,7 @@ public:
 
 
 	virtual void Tick();
-	virtual void ControlMessage();
+	virtual void ControlMessage(CString str);
 // 구현입니다.
 public:
 	virtual ~CMainFrame();

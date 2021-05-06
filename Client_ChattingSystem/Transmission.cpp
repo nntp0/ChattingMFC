@@ -100,6 +100,8 @@ void Transmission::Receive() {
 	}
 
 	delete pMsgBuffer;
+
+	this->mainFrame->ControlMessage(this->clientSocket->GetMsg()->message);
 }
 
 void Transmission::Close() {

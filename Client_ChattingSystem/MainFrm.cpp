@@ -130,6 +130,8 @@ void CMainFrame::OnClose()
 void CMainFrame::Tick() {
 	AfxMessageBox(_T("Tick"));
 }
-void CMainFrame::ControlMessage() {
+void CMainFrame::ControlMessage(CString str) {
 	AfxMessageBox(_T("ControlMessage"));
+
+	m_wndView.UpdateMessageList(str);
 }

@@ -5,6 +5,6 @@
 __interface iMainFrame {
 public:
 	virtual void Tick();
-	virtual void ControlMessage();
+	virtual void ControlMessage(CString msg);
 };
 #endif

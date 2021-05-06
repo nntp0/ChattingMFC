@@ -47,6 +47,11 @@ BOOL CChildView::PreCreateWindow(CREATESTRUCT& cs)
 	cs.lpszClass = AfxRegisterWndClass(CS_HREDRAW|CS_VREDRAW|CS_DBLCLKS, 
 		::LoadCursor(nullptr, IDC_ARROW), reinterpret_cast<HBRUSH>(COLOR_WINDOW+1), nullptr);
 
+
+	// 여기 수정하세요
+	/*this->messageList.AddTail(CString("Hello World!"));
+	this->messageList.AddTail(CString("Bye World!"));*/
+
 	return TRUE;
 }
 
@@ -58,11 +63,27 @@ void CChildView::OnPaint()
 
 	CPaintDC dc(this);
 
+	DisplayChattingLog(dc, rect);
+
 	rect.top = rect.bottom - 200;
 	dc.DrawText(m_str.GetString(), m_str.GetLength(), &rect, DT_LEFT);
 
 	CPoint poi(rect.left + m_caretInfo.offset.x, rect.top + m_caretInfo.offset.y);
 	SetCaretPos(poi);
+}
+
+void CChildView::DisplayChattingLog(CPaintDC& dc, CRect& rect) {
+
+
+	auto pos = this->messageList.GetHeadPosition();
+	while (pos != NULL) {
+		CString temp = this->messageList.GetNext(pos);
+
+		rect.top = rect.top + 20;
+
+		dc.DrawText(temp.GetString(), temp.GetLength(), &rect, DT_LEFT);
+	}
+
 }
 
 
@@ -164,9 +185,14 @@ void CChildView::InputBufferClear() {
 
 
 void CChildView::UpdateMessageList(CString msg) {
+	AfxMessageBox(_T("CChildView UpdateMessageList"));
+	AfxMessageBox(msg);
+
 	this->messageList.AddTail(msg);
+
+	Invalidate();
 }
 
 CList<CString>* CChildView::GetMessageList() {
-
+	return NULL;
 }

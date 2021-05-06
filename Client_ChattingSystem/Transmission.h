@@ -25,9 +25,8 @@ public:
 	virtual void Close();
 	virtual void SetMainFrame(iMainFrame* mainFrame);
 	virtual void Send(CString msg);
-
+	virtual void Receive();
 public:
-	void Receive();
 
 	// properties
 private:
