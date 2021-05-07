@@ -9,6 +9,6 @@ public:
 	virtual void Close() = 0;
 	virtual void SetMainFrame(iMainFrame* mainFrame) = 0;
 	virtual void Send(CString msg);
-	virtual void Receive();
+	virtual void Receive(CString msg);
 };
 #endif

@@ -9,8 +9,8 @@
 
 #include <Strsafe.h>
 
-SocketTransmission::SocketTransmission(iMainFrame* mainFrame) : buf() {
-	AfxMessageBox(_T("SocketTransmission Constructor"));
+SocketTransmission::SocketTransmission(iMainFrame* mainFrame) {
+	TRACE(_T("SocketTransmission Constructor"));
 
 	SetMainFrame(mainFrame);
 
@@ -28,16 +28,16 @@ SocketTransmission::~SocketTransmission() {
 // Transmission 모듈 자체도 Packaging 을 해줘야합니다.
 // Encoding 과 Decoding 에서 해당 내용을 진행해주세요.
 void SocketTransmission::Send(CString msg) {
-	AfxMessageBox(_T("SocketTransmission Send"));
+	TRACE(_T("SocketTransmission Send"));
 	
 	CString msg1 = this->MessageEncoding(msg);
 	this->clientSocket->SendMsg(msg1);
 }
-void SocketTransmission::Receive() {
+void SocketTransmission::Receive(CString msg) {
 	AfxMessageBox(_T("SocketTransmission Receive"));
 
-	CString msg = this->MessageDecoding(this->clientSocket->GetMsg()->message);
-	this->mainFrame->ControlMessage(msg);
+	CString msg1 = this->MessageDecoding(msg);
+	this->mainFrame->ControlMessage(msg1);
 }
 CString SocketTransmission::MessageEncoding(CString msg) {
 	TRACE(_T("SocketTransmssion MessageEncoding"));
@@ -47,8 +47,6 @@ CString SocketTransmission::MessageDecoding(CString msg) {
 	TRACE(_T("SocketTransmssion MessageDecoding"));
 	return msg;
 }
-
-
 
 void SocketTransmission::Close() {
 	AfxMessageBox(_T("Disconnected from Server!"));

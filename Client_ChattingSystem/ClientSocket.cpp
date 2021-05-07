@@ -14,7 +14,6 @@ CClientSocket::CClientSocket(SocketTransmission *transmission) : m_msg(){
 }
 CClientSocket::~CClientSocket() {
 	TRACE("CClientSocket Destructor");
-
 	this->Close();
 }
 
@@ -32,9 +31,12 @@ void CClientSocket::OnClose(int nErrorCode) {
 void CClientSocket::OnReceive(int nErrorCode) {
 	TRACE(_T("CClientSocket OnReceive"));
 	this->RecvMsg();
-	this->transmission->Receive();
+	this->transmission->Receive(this->m_msg.message);
 }
 
+// Setter / Getter
+
+// 지금은 단순 대입하지만, 추후에 어떤 msg 들이 오고갔는지 로그를 남기는 함수로 변경할 예정
 void CClientSocket::SetMsg(MessageForm msg) {
 	this->m_msg = msg;
 }
@@ -47,19 +49,16 @@ void CClientSocket::RecvMsg() {
 
 	while (1) {
 		int nbytes = this->Receive(&msgBuffer, sizeof MessageForm);
-		
-#ifdef _DEBUG
-		TCHAR buf[SIZE_OF_BUFFER];
-		wsprintf(buf, _T("%d\n"), nbytes);
-		AfxMessageBox(buf);
-#endif
+//#ifdef _DEBUG
+//		TCHAR buf[SIZE_OF_BUFFER];
+//		wsprintf(buf, _T("%d\n"), nbytes);
+//		AfxMessageBox(buf);
+//#endif
 		if (nbytes == 0 || nbytes == SOCKET_ERROR) {
 			AfxMessageBox(_T("Error!"));
 			break;
 		}
 		else {
-			TRACE(_T("OK!"));
-
 			this->SetMsg(msgBuffer);
 
 			// 이 구문을 확인을 못하고 있었다!
@@ -69,7 +68,7 @@ void CClientSocket::RecvMsg() {
 	}
 }
 void CClientSocket::SendMsg(CString msg) {
-	AfxMessageBox(_T("CClientSocket SendMessage"));
+	TRACE(_T("CClientSocket SendMessage"));
 	
 	MessageForm msgForm;
 	while (1) {

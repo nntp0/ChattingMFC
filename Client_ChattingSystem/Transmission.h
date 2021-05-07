@@ -14,7 +14,6 @@ class SocketTransmission;
 class SocketTransmission : public iTransmission {
 
 public:
-	TCHAR buf[256];
 
 public:
 	SocketTransmission(iMainFrame* mainFrame);
@@ -24,13 +23,13 @@ public:
 public:
 	virtual void Close();
 	virtual void SetMainFrame(iMainFrame* mainFrame);
-	virtual void Send(CString msg);
-	virtual void Receive();
+	virtual void Send(CString);
+	virtual void Receive(CString);
 
 	// Methods
 public:
-	CString MessageEncoding(CString msg);
-	CString MessageDecoding(CString msg);
+	CString MessageEncoding(CString);
+	CString MessageDecoding(CString);
 	// properties
 private:
 	CClientSocket* clientSocket;
