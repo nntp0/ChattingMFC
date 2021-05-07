@@ -44,14 +44,14 @@ MessageForm* CClientSocket::GetMsg() {
 
 void CClientSocket::RecvMsg() {
 	TCHAR buf[SIZE_OF_BUFFER];
+	//TCHAR msgBuffer[sizeof MessageForm];
 
-	TCHAR msgBuffer[sizeof MessageForm];
 	int nbytes;
 
-	MessageForm* pMsgBuffer = new MessageForm;
+	MessageForm msgBuffer;
 
 	while (1) {
-		nbytes = this->Receive(msgBuffer, sizeof MessageForm);
+		nbytes = this->Receive(&msgBuffer, sizeof MessageForm);
 		wsprintf(buf, _T("%d\n"), nbytes);
 
 		AfxMessageBox(buf);
@@ -60,19 +60,19 @@ void CClientSocket::RecvMsg() {
 			break;
 		}
 		else {
-			AfxMessageBox(_T("OK!"));
+			TRACE(_T("OK!"));
 
-			::CopyMemory(pMsgBuffer, msgBuffer, sizeof MessageForm);
+			//::CopyMemory(&msgBuffer, msgBuffer, sizeof MessageForm);
 
-			this->SetMsg(*pMsgBuffer);
+			this->SetMsg(msgBuffer);
 			AfxMessageBox(this->GetMsg()->message);
 
 			// 이 구문을 확인을 못하고 있었다!
 			// 이 구문으로 인해 데이터가 제대로 작동하지 않고 있었음
-			if (pMsgBuffer->messageLen != SIZE_OF_BUFFER) break;
+			if (msgBuffer.messageLen != SIZE_OF_BUFFER) break;
 		}
 	}
-	delete pMsgBuffer;
+	//delete msgBuffer;
 }
 void CClientSocket::SendMsg() {
 
