@@ -27,14 +27,13 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
-// CMainFrame 생성/소멸
-
+// CMainFrame Constructor / Destructor
+// Dependency Injection About iTransmission
 CMainFrame::CMainFrame() noexcept
-	: m_transmission(new Transmission(this))
+	: m_transmission(new SocketTransmission(this))
 {
 	TRACE(_T("CMainFrame Constructor"));
 }
-
 CMainFrame::~CMainFrame()
 {
 	TRACE(_T("CMainFrame Destructor"));
@@ -54,12 +53,9 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 	}
 
-	//m_transmission->SendMsg(CString(_T("Hello My New World!")));
-	//m_transmission->SendMsg(CString(_T("안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!")));
-
 	return 0;
 }
-
+// Window Style
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
 	if( !CFrameWnd::PreCreateWindow(cs) )
@@ -76,7 +72,6 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 }
 
 // CMainFrame 진단
-
 #ifdef _DEBUG
 void CMainFrame::AssertValid() const
 {
@@ -89,15 +84,12 @@ void CMainFrame::Dump(CDumpContext& dc) const
 }
 #endif //_DEBUG
 
-
 // CMainFrame 메시지 처리기
-
 void CMainFrame::OnSetFocus(CWnd* /*pOldWnd*/)
 {
 	// 뷰 창으로 포커스를 이동합니다.
 	m_wndView.SetFocus();
 }
-
 BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo)
 {
 	// 뷰에서 첫째 크랙이 해당 명령에 나타나도록 합니다.
@@ -107,9 +99,6 @@ BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO*
 	// 그렇지 않으면 기본 처리합니다.
 	return CFrameWnd::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
 }
-
-
-
 void CMainFrame::OnClose()
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
@@ -118,7 +107,7 @@ void CMainFrame::OnClose()
 	CFrameWnd::OnClose();
 }
 
-
+// Custom Methods
 void CMainFrame::Tick() {
 	AfxMessageBox(_T("Tick"));
 }

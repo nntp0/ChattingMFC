@@ -11,8 +11,8 @@
 
 #include <Strsafe.h>
 
-Transmission::Transmission(iMainFrame* mainFrame) : buf() {
-	AfxMessageBox(_T("Transmission Constructor"));
+SocketTransmission::SocketTransmission(iMainFrame* mainFrame) : buf() {
+	AfxMessageBox(_T("SocketTransmission Constructor"));
 
 	SetMainFrame(mainFrame);
 
@@ -21,8 +21,8 @@ Transmission::Transmission(iMainFrame* mainFrame) : buf() {
 	clientSocket = new CClientSocket(this);
 }
 
-Transmission::~Transmission() {
-	TRACE(_T("Transmission Destructor"));
+SocketTransmission::~SocketTransmission() {
+	TRACE(_T("SocketTransmission Destructor"));
 
 	clientSocket->Close();
 	delete clientSocket;
@@ -33,7 +33,7 @@ Transmission::~Transmission() {
 * IN:	CString
 * OUT:	void
 */
-void Transmission::Send(CString msg) {
+void SocketTransmission::Send(CString msg) {
 	AfxMessageBox(_T("Transmission Send"));
 
 	MessageForm* pMsgForm = new MessageForm;
@@ -67,49 +67,19 @@ void Transmission::Send(CString msg) {
 	delete pMsgForm;
 }
 
-void Transmission::Receive() {
-	AfxMessageBox(_T("Received Message"));
-	TCHAR buf[SIZE_OF_BUFFER];
-
-	TCHAR msgBuffer[sizeof MessageForm];
-	int nbytes;
-
-	MessageForm* pMsgBuffer = new MessageForm;
-
-	while (1) {
-		nbytes = this->clientSocket->Receive(msgBuffer, sizeof MessageForm);
-		wsprintf(buf, _T("%d\n"), nbytes);
-
-		AfxMessageBox(buf);
-		if (nbytes == 0 || nbytes == SOCKET_ERROR) {
-			AfxMessageBox(_T("Error!"));
-			break;
-		}
-		else {
-			AfxMessageBox(_T("OK!"));
-
-			::CopyMemory(pMsgBuffer, msgBuffer, sizeof MessageForm);
-
-			this->clientSocket->SetMsg(*pMsgBuffer);
-			AfxMessageBox(this->clientSocket->GetMsg()->message);
-
-			// 이 구문을 확인을 못하고 있었다!
-			// 이 구문으로 인해 데이터가 제대로 작동하지 않고 있었음
-			if (pMsgBuffer->messageLen != SIZE_OF_BUFFER) break;
-		}
-	}
-
-	delete pMsgBuffer;
+void SocketTransmission::Receive() {
+	AfxMessageBox(_T("SocketTransmission Receive"));
+	AfxMessageBox(this->clientSocket->GetMsg()->message);
 
 	this->mainFrame->ControlMessage(this->clientSocket->GetMsg()->message);
 }
 
-void Transmission::Close() {
+void SocketTransmission::Close() {
 	AfxMessageBox(_T("Disconnected from Server!"));
 
 	delete clientSocket;
 }
 
-void Transmission::SetMainFrame(iMainFrame* mainFrame) {
+void SocketTransmission::SetMainFrame(iMainFrame* mainFrame) {
 	this->mainFrame = mainFrame;
 }

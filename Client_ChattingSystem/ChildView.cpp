@@ -192,7 +192,6 @@ void CChildView::UpdateMessageList(CString msg) {
 
 	Invalidate();
 }
-
 CList<CString>* CChildView::GetMessageList() {
 	return NULL;
 }

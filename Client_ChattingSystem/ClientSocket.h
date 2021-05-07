@@ -7,7 +7,7 @@
 class CClientSocket : public CSocket {
 	// Constructor, Destructor
 public:
-	CClientSocket(Transmission *transmission);
+	CClientSocket(SocketTransmission *transmission);
 	virtual ~CClientSocket();
 
 	// method override
@@ -16,11 +16,13 @@ public:
 	virtual void OnReceive(int nErrorCode);
 
 public:
-	void SetTransmission(Transmission* transmission);
-
+	void SetTransmission(SocketTransmission* transmission);
+	
+	void RecvMsg();
+	void SendMsg();
 	// properties
 private:
-	Transmission *transmission;
+	SocketTransmission *transmission;
 	MessageForm m_msg;
 
 	// Getter, Setter

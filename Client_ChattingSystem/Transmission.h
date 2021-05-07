@@ -3,7 +3,7 @@
 
 #include "ProtocolSettings.h"
 
-class Transmission;
+class SocketTransmission;
 
 #include "ClientSocket.h"
 #include "iMainFrame.h"
@@ -11,14 +11,14 @@ class Transmission;
 
 #ifndef __Transmission_H_INCLUDED__
 #define __Transmission_H_INCLUDED__
-class Transmission : public iTransmission {
+class SocketTransmission : public iTransmission {
 
 public:
 	TCHAR buf[256];
 
 public:
-	Transmission(iMainFrame* mainFrame);
-	~Transmission();
+	SocketTransmission(iMainFrame* mainFrame);
+	~SocketTransmission();
 
 	// Method Override
 public:
@@ -32,5 +32,8 @@ public:
 private:
 	CClientSocket* clientSocket;
 	iMainFrame* mainFrame;
+
+
+	MessageForm m_msg;
 };
 #endif
