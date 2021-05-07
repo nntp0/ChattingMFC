@@ -44,25 +44,22 @@ MessageForm* CClientSocket::GetMsg() {
 
 void CClientSocket::RecvMsg() {
 	TCHAR buf[SIZE_OF_BUFFER];
-	//TCHAR msgBuffer[sizeof MessageForm];
-
-	int nbytes;
 
 	MessageForm msgBuffer;
 
 	while (1) {
-		nbytes = this->Receive(&msgBuffer, sizeof MessageForm);
+		int nbytes = this->Receive(&msgBuffer, sizeof MessageForm);
+		
+#ifdef _DEBUG
 		wsprintf(buf, _T("%d\n"), nbytes);
-
 		AfxMessageBox(buf);
+#endif
 		if (nbytes == 0 || nbytes == SOCKET_ERROR) {
 			AfxMessageBox(_T("Error!"));
 			break;
 		}
 		else {
 			TRACE(_T("OK!"));
-
-			//::CopyMemory(&msgBuffer, msgBuffer, sizeof MessageForm);
 
 			this->SetMsg(msgBuffer);
 			AfxMessageBox(this->GetMsg()->message);
@@ -72,8 +69,37 @@ void CClientSocket::RecvMsg() {
 			if (msgBuffer.messageLen != SIZE_OF_BUFFER) break;
 		}
 	}
-	//delete msgBuffer;
 }
-void CClientSocket::SendMsg() {
+void CClientSocket::SendMsg(CString msg) {
+	AfxMessageBox(_T("CClientSocket SendMessage"));
+	
+	MessageForm* pMsgForm = new MessageForm;
+	while (1) {
+		if (msg.GetLength() < SIZE_OF_BUFFER) {
+			pMsgForm->messageLen = msg.GetLength();
 
+			TCHAR buf[SIZE_OF_BUFFER];
+			wsprintf(buf, _T("%d"), pMsgForm->messageLen);
+			AfxMessageBox(buf);
+
+			::StringCchPrintf(pMsgForm->message, SIZE_OF_BUFFER, _T("%s"), msg.GetString());
+			AfxMessageBox(pMsgForm->message);
+
+			this->Send(pMsgForm, sizeof MessageForm);
+			break;
+		}
+		else {
+			// SIZE_OF_BUFFER-1 은 마지막 문자는 '\0' 이기 때문에 제외했습니다.
+			pMsgForm->messageLen = SIZE_OF_BUFFER - 1;
+
+			::StringCchPrintf(pMsgForm->message, SIZE_OF_BUFFER, _T("%s"), msg.GetString());
+			int temp = msg.Delete(0, SIZE_OF_BUFFER - 1);
+
+			TCHAR buf[20];
+			wsprintf(buf, _T("%d"), temp);
+			AfxMessageBox(buf);
+			this->Send(pMsgForm, sizeof MessageForm);
+		}
+	}
+	delete pMsgForm;
 }

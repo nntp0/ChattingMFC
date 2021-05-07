@@ -19,7 +19,7 @@ public:
 	void SetTransmission(SocketTransmission* transmission);
 	
 	void RecvMsg();
-	void SendMsg();
+	void SendMsg(CString);
 	// properties
 private:
 	SocketTransmission *transmission;

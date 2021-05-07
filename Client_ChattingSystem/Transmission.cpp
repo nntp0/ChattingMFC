@@ -34,37 +34,10 @@ SocketTransmission::~SocketTransmission() {
 * OUT:	void
 */
 void SocketTransmission::Send(CString msg) {
-	AfxMessageBox(_T("Transmission Send"));
-
-	MessageForm* pMsgForm = new MessageForm;
+	AfxMessageBox(_T("SocketTransmission Send"));
 	
-	while (1) {
-		if (msg.GetLength() < SIZE_OF_BUFFER) {
-			pMsgForm->messageLen = msg.GetLength();
-			wsprintf(buf, _T("%d"), pMsgForm->messageLen);
-			AfxMessageBox(buf);
-
-			::StringCchPrintf(pMsgForm->message, SIZE_OF_BUFFER, _T("%s"), msg.GetString());
-			AfxMessageBox(pMsgForm->message);
-
-			
-			clientSocket->Send(pMsgForm, sizeof MessageForm);
-			break;
-		}
-		else {
-			// SIZE_OF_BUFFER-1 은 마지막 문자는 '\0' 이기 때문에 제외했습니다.
-			pMsgForm->messageLen = SIZE_OF_BUFFER-1;
-
-			::StringCchPrintf(pMsgForm->message, SIZE_OF_BUFFER, _T("%s"), msg.GetString());
-			int temp = msg.Delete(0, SIZE_OF_BUFFER-1);
-
-			TCHAR buf[20];
-			wsprintf(buf, _T("%d"), temp);
-			AfxMessageBox(buf);
-			clientSocket->Send(pMsgForm, sizeof MessageForm);
-		}
-	}
-	delete pMsgForm;
+	CString msg1 = this->MessageEncoding(msg);
+	this->clientSocket->SendMsg(msg1);
 }
 
 void SocketTransmission::Receive() {
@@ -79,7 +52,16 @@ void SocketTransmission::Close() {
 
 	delete clientSocket;
 }
-
 void SocketTransmission::SetMainFrame(iMainFrame* mainFrame) {
 	this->mainFrame = mainFrame;
+}
+
+
+CString SocketTransmission::MessageEncoding(CString msg) {
+	TRACE(_T("SocketTransmssion MessageEncoding"));
+	return msg;
+}
+CString SocketTransmission::MessageDecoding(CString msg) {
+	TRACE(_T("SocketTransmssion MessageDecoding"));
+	return msg;
 }

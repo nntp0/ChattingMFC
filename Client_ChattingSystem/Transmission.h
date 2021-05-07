@@ -26,14 +26,14 @@ public:
 	virtual void SetMainFrame(iMainFrame* mainFrame);
 	virtual void Send(CString msg);
 	virtual void Receive();
-public:
 
+	// Methods
+public:
+	CString MessageEncoding(CString msg);
+	CString MessageDecoding(CString msg);
 	// properties
 private:
 	CClientSocket* clientSocket;
 	iMainFrame* mainFrame;
-
-
-	MessageForm m_msg;
 };
 #endif
