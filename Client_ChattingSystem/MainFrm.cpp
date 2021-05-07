@@ -30,16 +30,15 @@ END_MESSAGE_MAP()
 // CMainFrame 생성/소멸
 
 CMainFrame::CMainFrame() noexcept
+	: m_transmission(new Transmission(this))
 {
-
 	TRACE(_T("CMainFrame Constructor"));
-	//m_transmission = new Transmission();
 }
 
 CMainFrame::~CMainFrame()
 {
-	AfxMessageBox(_T("MainFrame 소멸자 호출!"));
-	//delete m_transmission;
+	TRACE(_T("CMainFrame Destructor"));
+	delete m_transmission;
 }
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -53,12 +52,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	{
 		TRACE0("뷰 창을 만들지 못했습니다.\n");
 		return -1;
-	}	
-	AfxMessageBox(_T("MainFrame OnCreate"));
-
-	m_transmission = new Transmission(this);
-
-
+	}
 
 	//m_transmission->SendMsg(CString(_T("Hello My New World!")));
 	//m_transmission->SendMsg(CString(_T("안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!")));
@@ -119,11 +113,8 @@ BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO*
 void CMainFrame::OnClose()
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-	AfxMessageBox(_T("MainFrame OnClose!"));
-
-	delete m_transmission;
-	m_transmission = nullptr;
-
+	TRACE(_T("CMainFrame OnClose"));
+	
 	CFrameWnd::OnClose();
 }
 
