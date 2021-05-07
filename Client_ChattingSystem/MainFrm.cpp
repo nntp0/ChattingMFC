@@ -112,7 +112,7 @@ void CMainFrame::Tick() {
 	AfxMessageBox(_T("Tick"));
 }
 void CMainFrame::ControlMessage(CString str) {
-	AfxMessageBox(_T("ControlMessage"));
+	TRACE(_T("ControlMessage"));
 
 	m_wndView.UpdateMessageList(str);
 }

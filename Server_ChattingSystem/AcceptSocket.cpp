@@ -46,7 +46,7 @@ void CAcceptSocket::RecvMsg() {
 	while (1) {
 		int nbytes = this->Receive(&msgBuffer, sizeof MessageForm);
 		//#ifdef _DEBUG
-		//		TCHAR buf[SIZE_OF_BUFFER];
+		//		TCHAR buf[10];
 		//		wsprintf(buf, _T("%d\n"), nbytes);
 		//		AfxMessageBox(buf);
 		//#endif

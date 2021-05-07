@@ -34,7 +34,7 @@ void SocketTransmission::Send(CString msg) {
 	this->clientSocket->SendMsg(msg1);
 }
 void SocketTransmission::Receive(CString msg) {
-	AfxMessageBox(_T("SocketTransmission Receive"));
+	TRACE(_T("SocketTransmission Receive"));
 
 	CString msg1 = this->MessageDecoding(msg);
 	this->mainFrame->ControlMessage(msg1);

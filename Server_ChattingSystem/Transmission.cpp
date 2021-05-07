@@ -14,6 +14,7 @@ SocketTransmission::~SocketTransmission() {
     delete this->listenSocket;
     delete this->acceptSocket;
 }
+
 void SocketTransmission::Accept() {
 	TRACE(_T("Transmission.cpp Accept"));
 
@@ -34,7 +35,7 @@ void SocketTransmission::Accept() {
     this->acceptSocket->GetPeerName(PeerAddress, PeerPort);
     this->acceptSocket->SetSocketID(PeerPort);
 
-    TCHAR buf[SIZE_OF_BUFFER];
+    TCHAR buf[30];
 #ifdef _DEBUG
     wsprintf(buf, _T("Login from %s/%d\n"), (LPCTSTR)PeerAddress, PeerPort);
     AfxMessageBox(buf);
@@ -45,23 +46,28 @@ void SocketTransmission::Accept() {
     StringCchCopy(msgBuffer.message, SIZE_OF_BUFFER, buf);
     this->acceptSocket->Send(&msgBuffer, sizeof MessageForm);
 }
-
 void SocketTransmission::Close(UINT portNum) {
     TRACE(_T("AcceptSocket Close"));
     
-    TCHAR buf[SIZE_OF_BUFFER];
+    TCHAR buf[30];
     wsprintf(buf, _T("Close PortNum: %d\n"), portNum);
     AfxMessageBox(buf);
 
     acceptSocket->Close();
     acceptSocket = nullptr;
 }
+
 void SocketTransmission::Receive(CString msg) {
-    AfxMessageBox(_T("Transmission Receive"));
+    TRACE(_T("Transmission Receive"));
 	
     CString msg1 = this->MessageDecoding(msg);
-    //this->mainFrame->ControlMessage(msg1);
+
+    // Message 그냥 Return 합니다.
+    this->Send(msg1);
+
+#ifdef _DEBUG
     AfxMessageBox(msg1);
+#endif
 }
 void SocketTransmission::Send(CString msg) {
     TRACE(_T("Transmission Send"));

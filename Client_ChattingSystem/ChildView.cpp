@@ -141,7 +141,6 @@ void CChildView::OnSetFocus(CWnd* pOldWnd)
 	CreateSolidCaret(5, 20);
 	ShowCaret();
 }
-
 void CChildView::OnKillFocus(CWnd* pNewWnd)
 {
 	HideCaret();
@@ -156,7 +155,6 @@ int CChildView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	return 0;
 }
-
 void CChildView::OnDestroy()
 {
 	::DestroyCaret();
