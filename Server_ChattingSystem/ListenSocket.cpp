@@ -5,8 +5,16 @@
 
 #include <Strsafe.h>
 
+/*
+* CListenSocket Constructor
+*   
+*   Transmission uses a listen socket, which is responsible to
+*   make TCP connection between the server and the client.
+* 
+*   Input: SocketTransmission*, a Controller of this socket
+*/
 CListenSocket::CListenSocket(SocketTransmission *transmission) {
-    AfxMessageBox(_T("ListenSocket Created with Transmission"));
+    TRACE(_T("ListenSocket Created with Transmission"));
     
     this->SetTransmission(transmission);
 
@@ -20,7 +28,7 @@ CListenSocket::~CListenSocket() {
     this->Close();
 }
 void CListenSocket::SetTransmission(SocketTransmission* transmission) {
-    AfxMessageBox(_T("ListenSocket SetTransmission"));
+    TRACE(_T("ListenSocket SetTransmission"));
     this->transmission = transmission;
 }
 void CListenSocket::OnAccept(int nErrorCode) {

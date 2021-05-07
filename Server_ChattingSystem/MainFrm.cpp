@@ -1,5 +1,4 @@
-﻿
-// MainFrm.cpp: CMainFrame 클래스의 구현
+﻿// MainFrm.cpp: CMainFrame 클래스의 구현
 //
 
 #include "pch.h"
@@ -17,7 +16,6 @@
 // CMainFrame
 
 IMPLEMENT_DYNAMIC(CMainFrame, CFrameWnd)
-
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
 	ON_WM_SETFOCUS()
@@ -30,7 +28,6 @@ CMainFrame::CMainFrame() noexcept
 {
 	// TODO: 여기에 멤버 초기화 코드를 추가합니다.
 }
-
 CMainFrame::~CMainFrame()
 {
 }
@@ -47,11 +44,14 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("뷰 창을 만들지 못했습니다.\n");
 		return -1;
 	}
-
+	
+	// View 를 생성한 이후, Module 을 구현합니다.
+	// Transmission Module
+	this->transmission = std::shared_ptr<SocketTransmission>(new SocketTransmission);
+	
 	/*this->transmission = std::shared_ptr<Transmission>(new Transmission, [](Transmission *t) 
 		{ AfxMessageBox(_T("Hello Lambda")); delete t; }
 	);*/
-	this->transmission = std::shared_ptr<SocketTransmission>(new SocketTransmission);
 
 	return 0;
 }
@@ -68,7 +68,6 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 
 	cs.dwExStyle &= ~WS_EX_CLIENTEDGE;
 	cs.lpszClass = AfxRegisterWndClass(0);
-
 
 	return TRUE;
 }
@@ -87,15 +86,13 @@ void CMainFrame::Dump(CDumpContext& dc) const
 }
 #endif //_DEBUG
 
-
-// CMainFrame 메시지 처리기
+// Window Message Procedures
 
 void CMainFrame::OnSetFocus(CWnd* /*pOldWnd*/)
 {
 	// 뷰 창으로 포커스를 이동합니다.
 	m_wndView.SetFocus();
 }
-
 BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo)
 {
 	// 뷰에서 첫째 크랙이 해당 명령에 나타나도록 합니다.
@@ -105,13 +102,9 @@ BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO*
 	// 그렇지 않으면 기본 처리합니다.
 	return CFrameWnd::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
 }
-
-
-
 void CMainFrame::OnClose()
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-	AfxMessageBox(_T("CMainFrame OnClose"));
-
+	TRACE(_T("CMainFrame OnClose"));
 	CFrameWnd::OnClose();
 }

@@ -11,17 +11,11 @@ SocketTransmission::SocketTransmission() : acceptSocket() {
 SocketTransmission::~SocketTransmission() {
 	TRACE("Transmission Destructor");
 
-    this->listenSocket->Close();
     delete this->listenSocket;
-
-    if (this->acceptSocket != nullptr) {
-        this->acceptSocket->Close();
-        delete this->acceptSocket;
-    }
+    delete this->acceptSocket;
 }
 void SocketTransmission::Accept() {
-
-	AfxMessageBox(_T("Transmission.cpp Accept"));
+	TRACE(_T("Transmission.cpp Accept"));
 
 	/*auto acceptSocket = std::make_shared<CAcceptSocket>();
 	if (!this->listenSocket.Accept(*acceptSocket)) {
@@ -38,22 +32,22 @@ void SocketTransmission::Accept() {
     CString PeerAddress;
     UINT PeerPort;
     this->acceptSocket->GetPeerName(PeerAddress, PeerPort);
-
     this->acceptSocket->SetSocketID(PeerPort);
-#ifdef _DEBUG
+
     TCHAR buf[SIZE_OF_BUFFER];
+#ifdef _DEBUG
     wsprintf(buf, _T("Login from %s/%d\n"), (LPCTSTR)PeerAddress, PeerPort);
     AfxMessageBox(buf);
 #endif
-
     MessageForm msgBuffer;
     
-    StringCchCopy(msgBuffer.message, SIZE_OF_BUFFER, _T("Hello World"));
+    wsprintf(buf, _T("Hello %d\n"), PeerPort);
+    StringCchCopy(msgBuffer.message, SIZE_OF_BUFFER, buf);
     this->acceptSocket->Send(&msgBuffer, sizeof MessageForm);
 }
 
 void SocketTransmission::Close(UINT portNum) {
-    AfxMessageBox(_T("AcceptSocket Close"));
+    TRACE(_T("AcceptSocket Close"));
     
     TCHAR buf[SIZE_OF_BUFFER];
     wsprintf(buf, _T("Close PortNum: %d\n"), portNum);

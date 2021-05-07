@@ -23,11 +23,11 @@ void CAcceptSocket::SetSocketID(UINT id) {
 	this->id = id;
 }
 void CAcceptSocket::OnClose(int nErrorCode) {
-	AfxMessageBox(_T("AcceptSocket OnClose"));
+	TRACE(_T("AcceptSocket OnClose"));
 	this->transmission->Close(this->id);
 }
 void CAcceptSocket::OnReceive(int nErrorCode) {
-	AfxMessageBox(_T("AcceptSocket OnReceive"));
+	TRACE(_T("AcceptSocket OnReceive"));
 
 	this->RecvMsg();
 	this->transmission->Receive(this->m_msg.message);
