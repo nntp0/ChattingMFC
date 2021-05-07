@@ -8,28 +8,31 @@
 #include <memory>
 #endif
 
-class Transmission;
+class SocketTransmission;
 
 #include "ListenSocket.h"
 #include "AcceptSocket.h"
 
 #ifndef __Transmission_H_INCLUDED__
 #define __Transmission_H_INCLUDED__
-class Transmission : public iTransmission
+class SocketTransmission : public iTransmission
 {
 	// Constructor & Destructor
 public:
-	Transmission();
-	virtual ~Transmission();
+	SocketTransmission();
+	virtual ~SocketTransmission();
 
 	// Override Methods
 public:
 	virtual void Accept();
-	virtual void Close();
+	virtual void Close(UINT portNum);
 
 public:
-	void Receive();
+	void Send(CString);
+	void Receive(CString);
 
+	CString MessageEncoding(CString msg);
+	CString MessageDecoding(CString msg);
 	// Properties
 private:
 	CListenSocket* listenSocket;

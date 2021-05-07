@@ -10,7 +10,7 @@ class CAcceptSocket : public CSocket
 {
 	// Constructor, Destructor
 public:
-	CAcceptSocket(Transmission *transmission);
+	CAcceptSocket(SocketTransmission *transmission);
 	virtual ~CAcceptSocket();
 
 	// Method Override
@@ -18,14 +18,21 @@ public:
 	virtual void OnReceive(int nErrorCode);
 	virtual void OnClose(int nErrorCode);
 public:
-	void SetTransmission(Transmission* transmission);
+	void SetTransmission(SocketTransmission* transmission);
+	void SetSocketID(UINT id);
+
+	void RecvMsg();
+	void SendMsg(CString);
 private:
-	Transmission *transmission;
+	SocketTransmission *transmission;
 	MessageForm m_msg;
 
+	UINT id;
 	// Getter, Setter
 public:
 	void SetMsg(MessageForm msg);
 	MessageForm* GetMsg();
+
+	UINT GetSocketID();
 };
 #endif

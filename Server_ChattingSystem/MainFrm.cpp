@@ -51,7 +51,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	/*this->transmission = std::shared_ptr<Transmission>(new Transmission, [](Transmission *t) 
 		{ AfxMessageBox(_T("Hello Lambda")); delete t; }
 	);*/
-	this->transmission = std::shared_ptr<Transmission>(new Transmission);
+	this->transmission = std::shared_ptr<SocketTransmission>(new SocketTransmission);
 
 	return 0;
 }
@@ -111,11 +111,7 @@ BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO*
 void CMainFrame::OnClose()
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-
 	AfxMessageBox(_T("CMainFrame OnClose"));
-
-	this->transmission->Close();
-	TRACE("Hello World!");
 
 	CFrameWnd::OnClose();
 }

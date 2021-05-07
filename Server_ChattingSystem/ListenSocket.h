@@ -10,14 +10,14 @@ class CListenSocket : public CSocket
 {
 public:
 	//CListenSocket();
-	CListenSocket(Transmission *transmission);
+	CListenSocket(SocketTransmission *transmission);
 	virtual ~CListenSocket();
 public:
-	void SetTransmission(Transmission* transmission);
+	void SetTransmission(SocketTransmission* transmission);
 public:
 	virtual void OnAccept(int nErrorCode);
 private:
-	Transmission *transmission;
+	SocketTransmission *transmission;
 
 };
 #endif

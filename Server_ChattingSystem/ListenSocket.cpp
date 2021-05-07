@@ -5,7 +5,7 @@
 
 #include <Strsafe.h>
 
-CListenSocket::CListenSocket(Transmission *transmission) {
+CListenSocket::CListenSocket(SocketTransmission *transmission) {
     AfxMessageBox(_T("ListenSocket Created with Transmission"));
     
     this->SetTransmission(transmission);
@@ -19,7 +19,7 @@ CListenSocket::~CListenSocket() {
     TRACE("CListenSocket Destructor");
     this->Close();
 }
-void CListenSocket::SetTransmission(Transmission* transmission) {
+void CListenSocket::SetTransmission(SocketTransmission* transmission) {
     AfxMessageBox(_T("ListenSocket SetTransmission"));
     this->transmission = transmission;
 }

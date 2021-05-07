@@ -4,17 +4,22 @@
 
 #include <Strsafe.h>
 
-Transmission::Transmission() : acceptSocket() {
-    AfxMessageBox(_T("Transmission Constructor"));
+SocketTransmission::SocketTransmission() : acceptSocket() {
+    TRACE(_T("Transmission Constructor"));
     this->listenSocket = new CListenSocket(this);
 }
+SocketTransmission::~SocketTransmission() {
+	TRACE("Transmission Destructor");
 
-Transmission::~Transmission() {
-	TRACE("Hello Destructor!");
     this->listenSocket->Close();
     delete this->listenSocket;
+
+    if (this->acceptSocket != nullptr) {
+        this->acceptSocket->Close();
+        delete this->acceptSocket;
+    }
 }
-void Transmission::Accept() {
+void SocketTransmission::Accept() {
 
 	AfxMessageBox(_T("Transmission.cpp Accept"));
 
@@ -34,9 +39,12 @@ void Transmission::Accept() {
     UINT PeerPort;
     this->acceptSocket->GetPeerName(PeerAddress, PeerPort);
 
+    this->acceptSocket->SetSocketID(PeerPort);
+#ifdef _DEBUG
     TCHAR buf[SIZE_OF_BUFFER];
     wsprintf(buf, _T("Login from %s/%d\n"), (LPCTSTR)PeerAddress, PeerPort);
     AfxMessageBox(buf);
+#endif
 
     MessageForm msgBuffer;
     
@@ -44,50 +52,34 @@ void Transmission::Accept() {
     this->acceptSocket->Send(&msgBuffer, sizeof MessageForm);
 }
 
-void Transmission::Close() {
+void SocketTransmission::Close(UINT portNum) {
     AfxMessageBox(_T("AcceptSocket Close"));
+    
+    TCHAR buf[SIZE_OF_BUFFER];
+    wsprintf(buf, _T("Close PortNum: %d\n"), portNum);
+    AfxMessageBox(buf);
 
-    this->acceptSocket->Close();
-    delete this->acceptSocket;
+    acceptSocket->Close();
+    acceptSocket = nullptr;
 }
-
-void Transmission::Receive() {
+void SocketTransmission::Receive(CString msg) {
     AfxMessageBox(_T("Transmission Receive"));
-	TCHAR buf[SIZE_OF_BUFFER];
+	
+    CString msg1 = this->MessageDecoding(msg);
+    //this->mainFrame->ControlMessage(msg1);
+    AfxMessageBox(msg1);
+}
+void SocketTransmission::Send(CString msg) {
+    TRACE(_T("Transmission Send"));
 
-	TCHAR msgBuffer[sizeof MessageForm];
-	int nbytes;
-
-	MessageForm* pMsgBuffer = new MessageForm;
-
-	while (1) {
-		nbytes = this->acceptSocket->Receive(msgBuffer, sizeof MessageForm);
-		wsprintf(buf, _T("%d\n"), nbytes);
-
-		AfxMessageBox(buf);
-		if (nbytes == 0 || nbytes == SOCKET_ERROR) {
-			AfxMessageBox(_T("Error!"));
-			break;
-		}
-		else {
-			AfxMessageBox(_T("OK!"));
-
-			::CopyMemory(pMsgBuffer, msgBuffer, sizeof MessageForm);
-
-			wsprintf(buf, _T("%d\n"), pMsgBuffer->messageLen);
-			AfxMessageBox(buf);
-
-			this->acceptSocket->SetMsg(*pMsgBuffer);
-			AfxMessageBox(this->acceptSocket->GetMsg()->message);
-
-			wsprintf(buf, _T("%d\n"), this->acceptSocket->GetMsg()->messageLen);
-			AfxMessageBox(buf);
-
-			// 이 구문을 확인을 못하고 있었다!
-			// 이 구문으로 인해 데이터가 제대로 작동하지 않고 있었음
-			if (pMsgBuffer->messageLen != SIZE_OF_BUFFER) break;
-		}
-	}
-
-	delete pMsgBuffer;
+    CString msg1 = this->MessageEncoding(msg);
+    this->acceptSocket->SendMsg(msg1);
+}
+CString SocketTransmission::MessageEncoding(CString msg) {
+    TRACE(_T("SocketTransmssion MessageEncoding"));
+    return msg;
+}
+CString SocketTransmission::MessageDecoding(CString msg) {
+    TRACE(_T("SocketTransmssion MessageDecoding"));
+    return msg;
 }

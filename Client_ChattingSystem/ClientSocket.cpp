@@ -25,7 +25,6 @@ void CClientSocket::OnClose(int nErrorCode) {
 	TRACE(_T("CClientSocket OnClose"));
 	this->transmission->Close();
 }
-
 // The Objective of OnReceive?
 //	: When Socket Receives a Message, then Notify it to Transmission
 void CClientSocket::OnReceive(int nErrorCode) {
@@ -35,7 +34,6 @@ void CClientSocket::OnReceive(int nErrorCode) {
 }
 
 // Setter / Getter
-
 // 지금은 단순 대입하지만, 추후에 어떤 msg 들이 오고갔는지 로그를 남기는 함수로 변경할 예정
 void CClientSocket::SetMsg(MessageForm msg) {
 	this->m_msg = msg;
