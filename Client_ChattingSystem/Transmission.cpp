@@ -1,5 +1,3 @@
-#pragma once
-
 #include "pch.h"
 #include "framework.h"
 #include "Client_ChattingSystem.h"
@@ -20,7 +18,6 @@ SocketTransmission::SocketTransmission(iMainFrame* mainFrame) : buf() {
 
 	clientSocket = new CClientSocket(this);
 }
-
 SocketTransmission::~SocketTransmission() {
 	TRACE(_T("SocketTransmission Destructor"));
 
@@ -28,24 +25,30 @@ SocketTransmission::~SocketTransmission() {
 	delete clientSocket;
 }
 
-/* 
-* CString 에 담긴 Message 를 Client 에게 전송합니다.
-* IN:	CString
-* OUT:	void
-*/
+// Transmission 모듈 자체도 Packaging 을 해줘야합니다.
+// Encoding 과 Decoding 에서 해당 내용을 진행해주세요.
 void SocketTransmission::Send(CString msg) {
 	AfxMessageBox(_T("SocketTransmission Send"));
 	
 	CString msg1 = this->MessageEncoding(msg);
 	this->clientSocket->SendMsg(msg1);
 }
-
 void SocketTransmission::Receive() {
 	AfxMessageBox(_T("SocketTransmission Receive"));
-	AfxMessageBox(this->clientSocket->GetMsg()->message);
 
-	this->mainFrame->ControlMessage(this->clientSocket->GetMsg()->message);
+	CString msg = this->MessageDecoding(this->clientSocket->GetMsg()->message);
+	this->mainFrame->ControlMessage(msg);
 }
+CString SocketTransmission::MessageEncoding(CString msg) {
+	TRACE(_T("SocketTransmssion MessageEncoding"));
+	return msg;
+}
+CString SocketTransmission::MessageDecoding(CString msg) {
+	TRACE(_T("SocketTransmssion MessageDecoding"));
+	return msg;
+}
+
+
 
 void SocketTransmission::Close() {
 	AfxMessageBox(_T("Disconnected from Server!"));
@@ -54,14 +57,4 @@ void SocketTransmission::Close() {
 }
 void SocketTransmission::SetMainFrame(iMainFrame* mainFrame) {
 	this->mainFrame = mainFrame;
-}
-
-
-CString SocketTransmission::MessageEncoding(CString msg) {
-	TRACE(_T("SocketTransmssion MessageEncoding"));
-	return msg;
-}
-CString SocketTransmission::MessageDecoding(CString msg) {
-	TRACE(_T("SocketTransmssion MessageDecoding"));
-	return msg;
 }

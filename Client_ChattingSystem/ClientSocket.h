@@ -30,5 +30,4 @@ public:
 	void SetMsg(MessageForm msg);
 	MessageForm* GetMsg();
 };
-
 #endif
