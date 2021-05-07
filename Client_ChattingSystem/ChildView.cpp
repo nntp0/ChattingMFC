@@ -57,14 +57,18 @@ BOOL CChildView::PreCreateWindow(CREATESTRUCT& cs)
 
 void CChildView::OnPaint() 
 {
-	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
 	CRect rect;
 	GetClientRect(&rect);
 
 	CPaintDC dc(this);
 
-	DisplayChattingLog(dc, rect);
+	// Chatting 에 대한 영역과 Typing 영역을 그립니다.
 
+	DisplayChattingLog(dc, rect);
+	DisplayUserTyping(dc, rect);
+}
+
+void CChildView::DisplayUserTyping(CPaintDC& dc, CRect& rect) {
 	rect.top = rect.bottom - 200;
 	dc.DrawText(m_str.GetString(), m_str.GetLength(), &rect, DT_LEFT);
 
@@ -73,8 +77,6 @@ void CChildView::OnPaint()
 }
 
 void CChildView::DisplayChattingLog(CPaintDC& dc, CRect& rect) {
-
-
 	auto pos = this->messageList.GetHeadPosition();
 	while (pos != NULL) {
 		CString temp = this->messageList.GetNext(pos);
@@ -83,7 +85,6 @@ void CChildView::DisplayChattingLog(CPaintDC& dc, CRect& rect) {
 
 		dc.DrawText(temp.GetString(), temp.GetLength(), &rect, DT_LEFT);
 	}
-
 }
 
 
@@ -162,7 +163,6 @@ int CChildView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	// TODO:  여기에 특수화된 작성 코드를 추가합니다.
 	AfxMessageBox(_T("View OnCreate"));
-	
 
 	return 0;
 }

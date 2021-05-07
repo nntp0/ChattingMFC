@@ -46,9 +46,10 @@ public:
 public:
 	void InputBufferClear();
 	void DisplayChattingLog(CPaintDC& dc, CRect& rect);
+	void DisplayUserTyping(CPaintDC& dc, CRect& rect);
 
 // 재정의입니다.
-	protected:
+protected:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 
 // 구현입니다.

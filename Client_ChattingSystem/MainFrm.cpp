@@ -31,7 +31,8 @@ END_MESSAGE_MAP()
 
 CMainFrame::CMainFrame() noexcept
 {
-	AfxMessageBox(_T("MainFrame 생성자 호출!"));
+
+	TRACE(_T("CMainFrame Constructor"));
 	//m_transmission = new Transmission();
 }
 
