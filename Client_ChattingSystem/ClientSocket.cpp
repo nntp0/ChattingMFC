@@ -43,14 +43,13 @@ MessageForm* CClientSocket::GetMsg() {
 }
 
 void CClientSocket::RecvMsg() {
-	TCHAR buf[SIZE_OF_BUFFER];
-
 	MessageForm msgBuffer;
 
 	while (1) {
 		int nbytes = this->Receive(&msgBuffer, sizeof MessageForm);
 		
 #ifdef _DEBUG
+		TCHAR buf[SIZE_OF_BUFFER];
 		wsprintf(buf, _T("%d\n"), nbytes);
 		AfxMessageBox(buf);
 #endif
@@ -62,7 +61,6 @@ void CClientSocket::RecvMsg() {
 			TRACE(_T("OK!"));
 
 			this->SetMsg(msgBuffer);
-			AfxMessageBox(this->GetMsg()->message);
 
 			// 이 구문을 확인을 못하고 있었다!
 			// 이 구문으로 인해 데이터가 제대로 작동하지 않고 있었음
@@ -78,12 +76,7 @@ void CClientSocket::SendMsg(CString msg) {
 		if (msg.GetLength() < SIZE_OF_BUFFER) {
 			msgForm.messageLen = msg.GetLength();
 
-			TCHAR buf[SIZE_OF_BUFFER];
-			wsprintf(buf, _T("%d"), msgForm.messageLen);
-			AfxMessageBox(buf);
-
 			::StringCchPrintf(msgForm.message, SIZE_OF_BUFFER, _T("%s"), msg.GetString());
-			AfxMessageBox(msgForm.message);
 
 			this->Send(&msgForm, sizeof MessageForm);
 			break;
@@ -95,9 +88,6 @@ void CClientSocket::SendMsg(CString msg) {
 			::StringCchPrintf(msgForm.message, SIZE_OF_BUFFER, _T("%s"), msg.GetString());
 			int temp = msg.Delete(0, SIZE_OF_BUFFER - 1);
 
-			TCHAR buf[20];
-			wsprintf(buf, _T("%d"), temp);
-			AfxMessageBox(buf);
 			this->Send(&msgForm, sizeof MessageForm);
 		}
 	}
