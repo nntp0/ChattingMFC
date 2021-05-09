@@ -13,37 +13,44 @@ public:
     void UpdateMessageList(std::string msg);
     void ShowMessageList();
     void ShowMessageListStr();
+
+    void Test();
 };
 
 int main()
 {
     MessageControlModule controlModule;
+    
+    controlModule.Test();
+}
 
-    controlModule.ShowMessageListStr();
+void MessageControlModule::Test() {
+    ShowMessageListStr();
 
-    controlModule.UpdateMessageList(std::string("안녕하세요??"));
+    UpdateMessageList(std::string("안녕하세요??"));
 
-    controlModule.ShowMessageListStr();
+    ShowMessageListStr();
 
     std::string temp("만나서 반갑습니다!!");
 
-    controlModule.UpdateMessageList(temp);   
+    UpdateMessageList(temp);
 
-    controlModule.ShowMessageListStr();
+    ShowMessageListStr();
 
     std::cout << "=======" << std::endl;
 
-    controlModule.ShowMessageList();
+    ShowMessageList();
 
-    controlModule.UpdateMessageList(CString("안녕하세요??"));
+    UpdateMessageList(CString("안녕하세요??"));
 
-    controlModule.ShowMessageList();
+    ShowMessageList();
 
     CString temp2("만나서 반갑습니다!!");
 
-    controlModule.UpdateMessageList(temp2);
+    UpdateMessageList(temp2);
 
-    controlModule.ShowMessageList();
+    ShowMessageList();
+
 }
 
 void MessageControlModule::UpdateMessageList(CString msg) {
