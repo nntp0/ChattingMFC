@@ -1,8 +1,8 @@
 #include <iostream>
-#include <list>
 #include <string>
+#include <list>
 
-#include <atlstr.h>
+#include <afx.h>
 
 #include "MessageControl.h"
 
