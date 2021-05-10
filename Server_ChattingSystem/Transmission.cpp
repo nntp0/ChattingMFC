@@ -4,7 +4,11 @@
 
 #include <Strsafe.h>
 
-SocketTransmission::SocketTransmission() : acceptSocket() {
+//SocketTransmission::SocketTransmission() : acceptSocket() {
+//    TRACE(_T("Transmission Constructor"));
+//    this->listenSocket = new CListenSocket(this);
+//}
+SocketTransmission::SocketTransmission() {
     TRACE(_T("Transmission Constructor"));
     this->listenSocket = new CListenSocket(this);
 }
@@ -12,28 +16,33 @@ SocketTransmission::~SocketTransmission() {
 	TRACE("Transmission Destructor");
 
     delete this->listenSocket;
-    delete this->acceptSocket;
 }
 
 void SocketTransmission::Accept() {
 	TRACE(_T("Transmission.cpp Accept"));
 
-	/*auto acceptSocket = std::make_shared<CAcceptSocket>();
-	if (!this->listenSocket.Accept(*acceptSocket)) {
-		AfxMessageBox(_T("Accept Error!"));
-		return;
-	}*/
+    // shared_ptr created
+    auto temp = std::shared_ptr<CAcceptSocket>(new CAcceptSocket(this),
+        [](CAcceptSocket* socket) {
+            TCHAR buf[30];
+            wsprintf(buf, _T("Close PortNum: %d\n"), socket->GetSocketID());
+            AfxMessageBox(buf);
 
-    this->acceptSocket = new CAcceptSocket(this);
-    if (!this->listenSocket->Accept(*this->acceptSocket)) {
+            delete socket;
+        }
+    );
+
+    if (!this->listenSocket->Accept(*temp)) {
         AfxMessageBox(_T("Accept Error!"));
         return;
     }
-
+    
     CString PeerAddress;
     UINT PeerPort;
-    this->acceptSocket->GetPeerName(PeerAddress, PeerPort);
-    this->acceptSocket->SetSocketID(PeerPort);
+    temp->GetPeerName(PeerAddress, PeerPort);
+    temp->SetSocketID(PeerPort);
+
+    this->acceptSocketList.push_back(temp);
 
     TCHAR buf[30];
 #ifdef _DEBUG
@@ -44,17 +53,17 @@ void SocketTransmission::Accept() {
     
     wsprintf(buf, _T("Hello %d\n"), PeerPort);
     StringCchCopy(msgBuffer.message, SIZE_OF_BUFFER, buf);
-    this->acceptSocket->Send(&msgBuffer, sizeof MessageForm);
+    temp->Send(&msgBuffer, sizeof MessageForm);
 }
 void SocketTransmission::Close(UINT portNum) {
     TRACE(_T("AcceptSocket Close"));
-    
-    TCHAR buf[30];
-    wsprintf(buf, _T("Close PortNum: %d\n"), portNum);
-    AfxMessageBox(buf);
 
-    acceptSocket->Close();
-    acceptSocket = nullptr;
+    for (auto it = this->acceptSocketList.begin(); it != this->acceptSocketList.end(); it++) {
+        if ((*it)->GetSocketID() == portNum) {
+            acceptSocketList.erase(it);
+            break;
+        }
+    }
 }
 
 void SocketTransmission::Receive(CString msg) {
@@ -73,7 +82,11 @@ void SocketTransmission::Send(CString msg) {
     TRACE(_T("Transmission Send"));
 
     CString msg1 = this->MessageEncoding(msg);
-    this->acceptSocket->SendMsg(msg1);
+
+    for (auto it = this->acceptSocketList.begin(); it != this->acceptSocketList.end(); it++)
+    {
+        (*it)->SendMsg(msg1);
+    }
 }
 CString SocketTransmission::MessageEncoding(CString msg) {
     TRACE(_T("SocketTransmssion MessageEncoding"));

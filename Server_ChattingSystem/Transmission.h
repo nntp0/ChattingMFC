@@ -7,6 +7,7 @@
 #define __MEMORY_H_INCLUDED__
 #include <memory>
 #endif
+#include <vector>
 
 class SocketTransmission;
 
@@ -36,7 +37,7 @@ public:
 	// Properties
 private:
 	CListenSocket* listenSocket;
-	CAcceptSocket* acceptSocket;
-	//CList<std::shared_ptr<CAcceptSocket>, std::shared_ptr<CAcceptSocket>> *acceptSocketList;
+	
+	std::vector<std::shared_ptr<CAcceptSocket>> acceptSocketList;
 };
 #endif
