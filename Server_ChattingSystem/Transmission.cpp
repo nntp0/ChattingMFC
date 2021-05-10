@@ -4,10 +4,6 @@
 
 #include <Strsafe.h>
 
-//SocketTransmission::SocketTransmission() : acceptSocket() {
-//    TRACE(_T("Transmission Constructor"));
-//    this->listenSocket = new CListenSocket(this);
-//}
 SocketTransmission::SocketTransmission() {
     TRACE(_T("Transmission Constructor"));
     this->listenSocket = new CListenSocket(this);
@@ -66,28 +62,28 @@ void SocketTransmission::Close(UINT portNum) {
     }
 }
 
-void SocketTransmission::Receive(CString msg) {
-    TRACE(_T("Transmission Receive"));
-	
-    CString msg1 = this->MessageDecoding(msg);
-
-    // Message 그냥 Return 합니다.
-    this->Send(msg1);
-
-#ifdef _DEBUG
-    AfxMessageBox(msg1);
-#endif
-}
-void SocketTransmission::Send(CString msg) {
-    TRACE(_T("Transmission Send"));
-
-    CString msg1 = this->MessageEncoding(msg);
-
-    for (auto it = this->acceptSocketList.begin(); it != this->acceptSocketList.end(); it++)
-    {
-        (*it)->SendMsg(msg1);
-    }
-}
+//void SocketTransmission::Receive(CString msg) {
+//    TRACE(_T("Transmission Receive"));
+//	
+//    CString msg1 = this->MessageDecoding(msg);
+//
+//    // Message 그냥 Return 합니다.
+//    this->Send(msg1);
+//
+//#ifdef _DEBUG
+//    AfxMessageBox(msg1);
+//#endif
+//}
+//void SocketTransmission::Send(CString msg) {
+//    TRACE(_T("Transmission Send"));
+//
+//    CString msg1 = this->MessageEncoding(msg);
+//
+//    for (auto it = this->acceptSocketList.begin(); it != this->acceptSocketList.end(); it++)
+//    {
+//        (*it)->SendMsg(msg1);
+//    }
+//}
 CString SocketTransmission::MessageEncoding(CString msg) {
     TRACE(_T("SocketTransmssion MessageEncoding"));
     return msg;
@@ -95,4 +91,34 @@ CString SocketTransmission::MessageEncoding(CString msg) {
 CString SocketTransmission::MessageDecoding(CString msg) {
     TRACE(_T("SocketTransmssion MessageDecoding"));
     return msg;
+}
+
+void SocketTransmission::SendTo(UINT id, CString msg) {
+    TRACE(_T("Transmission Send"));
+
+    CString msg1 = this->MessageEncoding(msg);
+
+    for (auto it = this->acceptSocketList.begin(); it != this->acceptSocketList.end(); it++)
+    {
+        if ((*it)->GetSocketID() == id) {
+            (*it)->SendMsg(msg1);
+            break;
+        }
+    }
+}
+void SocketTransmission::RecvFrom(UINT id, CString msg) {
+    TRACE(_T("Transmission Receive"));
+
+    CString msg1 = this->MessageDecoding(msg);
+
+    // Message 그냥 Return 합니다.
+    for (auto it = this->acceptSocketList.begin(); it != this->acceptSocketList.end(); it++) {
+        UINT socketID = (*it)->GetSocketID();
+        if (socketID == id) continue;
+        this->SendTo(socketID, msg1);
+    }
+
+#ifdef _DEBUG
+    AfxMessageBox(msg1);
+#endif
 }

@@ -3,10 +3,7 @@
 #include "iTransmission.h"
 #include "ProtocolSettings.h"
 
-#ifndef __MEMORY_H_INCLUDED__
-#define __MEMORY_H_INCLUDED__
 #include <memory>
-#endif
 #include <vector>
 
 class SocketTransmission;
@@ -28,9 +25,12 @@ public:
 	virtual void Accept();
 	virtual void Close(UINT portNum);
 
+	virtual void SendTo(UINT id, CString);
+	virtual void RecvFrom(UINT id, CString);
+
 public:
-	void Send(CString);
-	void Receive(CString);
+	//void Send(CString);
+	//void Receive(CString);
 
 	CString MessageEncoding(CString msg);
 	CString MessageDecoding(CString msg);

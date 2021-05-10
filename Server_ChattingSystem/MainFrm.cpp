@@ -48,10 +48,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// View 를 생성한 이후, Module 을 구현합니다.
 	// Transmission Module
 	this->transmission = std::shared_ptr<SocketTransmission>(new SocketTransmission);
-	
-	/*this->transmission = std::shared_ptr<Transmission>(new Transmission, [](Transmission *t) 
-		{ AfxMessageBox(_T("Hello Lambda")); delete t; }
-	);*/
 
 	return 0;
 }

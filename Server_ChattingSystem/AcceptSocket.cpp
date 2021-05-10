@@ -30,9 +30,8 @@ void CAcceptSocket::OnReceive(int nErrorCode) {
 	TRACE(_T("AcceptSocket OnReceive"));
 
 	this->RecvMsg();
-	this->transmission->Receive(this->m_msg.message);
+	this->transmission->RecvFrom(this->id, this->m_msg.message);
 }
-
 void CAcceptSocket::SetMsg(MessageForm msg) {
     this->m_msg = msg;
 }
