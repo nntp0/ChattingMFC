@@ -1,8 +1,6 @@
 #pragma once
-#ifndef __afxsock_H_INCLUDED__
-#define __afxsock_H_INCLUDED__
+
 #include <afxsock.h>
-#endif
 
 #ifndef __AcceptSocket_H_INCLUDED__
 #define __AcceptSocket_H_INCLUDED__
@@ -28,6 +26,7 @@ private:
 	MessageForm m_msg;
 
 	UINT id;
+
 	// Getter, Setter
 public:
 	void SetMsg(MessageForm msg);

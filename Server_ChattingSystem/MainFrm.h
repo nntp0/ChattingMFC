@@ -13,9 +13,10 @@
 
 class CMainFrame : public CFrameWnd
 {
-	
+	// Constructor / Destructor
 public:
 	CMainFrame() noexcept;
+	virtual ~CMainFrame();
 protected: 
 	DECLARE_DYNAMIC(CMainFrame)
 
@@ -31,13 +32,11 @@ public:
 	virtual BOOL OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo);
 
 // 구현입니다.
-public:
-	virtual ~CMainFrame();
+public:	
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
 #endif
-
 	CChildView    m_wndView;
 
 // 생성된 메시지 맵 함수
@@ -49,6 +48,12 @@ protected:
 	// properties
 private:
 	std::shared_ptr<iTransmission> transmission;
+
+	// methods
+public:
+	CString MessageEncoding(CString msg);
+	CString MessageDecoding(CString msg);
+
 public:
 	afx_msg void OnClose();
 };

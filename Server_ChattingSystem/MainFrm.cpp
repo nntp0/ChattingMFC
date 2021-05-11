@@ -104,3 +104,14 @@ void CMainFrame::OnClose()
 	TRACE(_T("CMainFrame OnClose"));
 	CFrameWnd::OnClose();
 }
+
+// Transmission Methods
+CString CMainFrame::MessageEncoding(CString msg) {
+	TRACE(_T("SocketTransmssion MessageEncoding"));
+	return msg;
+}
+CString CMainFrame::MessageDecoding(CString msg) {
+	TRACE(_T("SocketTransmssion MessageDecoding"));
+	return msg;
+}
+

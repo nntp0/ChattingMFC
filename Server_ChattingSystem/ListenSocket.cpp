@@ -9,7 +9,7 @@
 * CListenSocket Constructor
 *   
 *   Transmission uses a listen socket, which is responsible to
-*   make TCP connection between the server and the client.
+*   wait for a connection creation request.
 * 
 *   Input: SocketTransmission*, a Controller of this socket
 */
