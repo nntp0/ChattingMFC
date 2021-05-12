@@ -16,22 +16,10 @@ struct Info_EventB {
 	std::string msg;
 };
 struct Info_EventC {
-public:
-	Info_EventC(int id, std::string msg) {
-		this->id = id;
-		this->msg = msg;
-	}
-
 	int id;
 	std::string msg;
 };
 struct Info_EventD {
-public:
-
-	Info_EventD(int id, double num) {
-		this->id = id; this->num = num;
-	}
-
 	int id;
 	double num;
 };
