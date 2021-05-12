@@ -5,13 +5,11 @@
 #pragma once
 #include "ChildView.h"
 #include "iTransmission.h"
+#include "iCoreModule.h"
 
-#ifndef __MEMORY_H_INCLUDED__
-#define __MEMORY_H_INCLUDED__
 #include <memory>
-#endif
 
-class CMainFrame : public CFrameWnd
+class CMainFrame : public CFrameWnd, public iCoreModule
 {
 	// Constructor / Destructor
 public:
@@ -48,11 +46,16 @@ protected:
 	// properties
 private:
 	std::shared_ptr<iTransmission> transmission;
+	//std::vector<EventList> eventQueue;
 
 	// methods
 public:
 	CString MessageEncoding(CString msg);
 	CString MessageDecoding(CString msg);
+
+	// method override
+public:
+	virtual void EventController(EventList, void*);
 
 public:
 	afx_msg void OnClose();

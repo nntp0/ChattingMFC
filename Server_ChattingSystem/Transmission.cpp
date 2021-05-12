@@ -4,9 +4,14 @@
 
 #include <Strsafe.h>
 
-SocketTransmission::SocketTransmission() {
+//SocketTransmission::SocketTransmission() {
+//    TRACE(_T("Transmission Constructor"));
+//    this->listenSocket = new CListenSocket(this);
+//}
+SocketTransmission::SocketTransmission(iCoreModule* pCoreModule) {
     TRACE(_T("Transmission Constructor"));
     this->listenSocket = new CListenSocket(this);
+    this->pCoreModule = pCoreModule;
 }
 SocketTransmission::~SocketTransmission() {
 	TRACE("Transmission Destructor");
@@ -49,6 +54,14 @@ void SocketTransmission::Accept() {
     wsprintf(buf, _T("Hello %d\n"), PeerPort);
     StringCchCopy(msgBuffer.message, SIZE_OF_BUFFER, buf);
     temp->Send(&msgBuffer, sizeof MessageForm);
+
+    std::shared_ptr<Info_ClientConnection> eventData{ new Info_ClientConnection {PeerPort},
+        [](Info_ClientConnection* eventData) {
+            AfxMessageBox(_T("Discarded"));
+            delete eventData;
+        }
+    };
+    this->pCoreModule->EventController(EventList::ClientConnection, &eventData);
 }
 void SocketTransmission::Close(UINT portNum) {
     TRACE(_T("AcceptSocket Close"));

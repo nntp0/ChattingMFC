@@ -1,7 +1,7 @@
 #pragma once
 
 #include "iTransmission.h"
-#include "ProtocolSettings.h"
+#include "iCoreModule.h"
 
 #include <memory>
 #include <vector>
@@ -17,7 +17,8 @@ class SocketTransmission : public iTransmission
 {
 	// Constructor & Destructor
 public:
-	SocketTransmission();
+	//SocketTransmission();
+	SocketTransmission(iCoreModule*);
 	virtual ~SocketTransmission();
 
 	// Override Methods
@@ -32,6 +33,8 @@ public:
 private:
 	CListenSocket* listenSocket;
 	std::vector<std::shared_ptr<CAcceptSocket>> acceptSocketList;
+
+	iCoreModule* pCoreModule;
 
 	// deprecated
 public:

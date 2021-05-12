@@ -3,6 +3,8 @@
 
 #include <afxsock.h>
 
+#include "ProtocolSettings.h"
+
 __interface iTransmission
 {
 public:

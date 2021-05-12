@@ -6,8 +6,8 @@
 #include "Server_ChattingSystem.h"
 
 #include "MainFrm.h"
-
 #include "Transmission.h"
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -47,7 +47,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	
 	// View 를 생성한 이후, Module 을 구현합니다.
 	// Transmission Module
-	this->transmission = std::shared_ptr<SocketTransmission>(new SocketTransmission);
+	this->transmission = std::shared_ptr<SocketTransmission>(new SocketTransmission(this));
 
 	return 0;
 }
@@ -115,3 +115,39 @@ CString CMainFrame::MessageDecoding(CString msg) {
 	return msg;
 }
 
+void CMainFrame::EventController(EventList eventID, void* argv) {
+
+	switch (eventID) {
+	case EventList::ClientConnection:
+	{
+		AfxMessageBox(_T("EventController ClientConnection"));
+		auto eventData = *static_cast<std::shared_ptr<Info_ClientConnection>*>(argv);
+
+		TCHAR buf[30];
+		wsprintf(buf, _T("ID: %d\n"), eventData->id);
+		AfxMessageBox(buf);
+
+		break;
+	}
+	case EventList::ClientDisconnection:
+	{
+		auto eventData = *static_cast<std::shared_ptr<Info_ClientDisconnection>*>(argv);
+		break;
+	}
+	case EventList::ReceiveMessage:
+	{
+		auto eventData = *static_cast<std::shared_ptr<Info_ReceiveMessage>*>(argv);
+		break;
+	}
+	case EventList::Notification:
+	{
+		auto eventData = *static_cast<std::shared_ptr<Info_Notification>*>(argv);
+		break;
+	}
+	default:
+	{
+		break;
+	}
+	}
+
+}
