@@ -3,8 +3,16 @@
 
 #include "Transmission.h"
 
-#include <Strsafe.h>
-
+/*
+* Behaviors
+*	This belongs to a socketTransmission Module
+*	An accept Socket is connected to one client, and Communicate with it
+* Reponsibilities
+*	Send Message To the connected client.
+*	Notify to socketTransmission Module about;
+		- Receive a message from the client
+		- Closed Connection
+*/
 // Constructor / Destructor
 CAcceptSocket::CAcceptSocket(SocketTransmission *transmission) : m_msg() {
 	TRACE(_T("CAcceptSocket Constructor"));
@@ -15,13 +23,7 @@ CAcceptSocket::~CAcceptSocket() {
 	this->Close();
 }
 
-void CAcceptSocket::SetTransmission(SocketTransmission* transmission) {
-	TRACE(_T("CAcceptSocket SetTransmission"));
-	this->transmission = transmission;
-}
-void CAcceptSocket::SetSocketID(UINT id) {
-	this->id = id;
-}
+// Methods
 void CAcceptSocket::OnClose(int nErrorCode) {
 	TRACE(_T("AcceptSocket OnClose"));
 	this->transmission->Close(this->id);
@@ -32,23 +34,12 @@ void CAcceptSocket::OnReceive(int nErrorCode) {
 	this->RecvMsg();
 	this->transmission->RecvFrom(this->id, this->m_msg.message);
 }
-void CAcceptSocket::SetMsg(MessageForm msg) {
-    this->m_msg = msg;
-}
-MessageForm* CAcceptSocket::GetMsg() {
-    return &(this->m_msg);
-}
-
 void CAcceptSocket::RecvMsg() {
 	MessageForm msgBuffer;
 
 	while (1) {
 		int nbytes = this->Receive(&msgBuffer, sizeof MessageForm);
-		//#ifdef _DEBUG
-		//		TCHAR buf[10];
-		//		wsprintf(buf, _T("%d\n"), nbytes);
-		//		AfxMessageBox(buf);
-		//#endif
+
 		if (nbytes == 0 || nbytes == SOCKET_ERROR) {
 			AfxMessageBox(_T("Error!"));
 			break;
@@ -87,6 +78,20 @@ void CAcceptSocket::SendMsg(CString msg) {
 	}
 }
 
+// Getter / Setter
+void CAcceptSocket::SetSocketID(UINT id) {
+	this->id = id;
+}
 UINT CAcceptSocket::GetSocketID() {
 	return this->id;
+}
+void CAcceptSocket::SetMsg(MessageForm msg) {
+	this->m_msg = msg;
+}
+MessageForm* CAcceptSocket::GetMsg() {
+	return &(this->m_msg);
+}
+void CAcceptSocket::SetTransmission(SocketTransmission* transmission) {
+	TRACE(_T("CAcceptSocket SetTransmission"));
+	this->transmission = transmission;
 }

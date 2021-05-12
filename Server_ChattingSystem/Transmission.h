@@ -17,7 +17,6 @@ class SocketTransmission : public iTransmission
 {
 	// Constructor & Destructor
 public:
-	//SocketTransmission();
 	SocketTransmission(iCoreModule*);
 	virtual ~SocketTransmission();
 
@@ -31,14 +30,16 @@ public:
 	
 	// Properties
 private:
+	iCoreModule* pCoreModule;
+
 	CListenSocket* listenSocket;
 	std::vector<std::shared_ptr<CAcceptSocket>> acceptSocketList;
 
-	iCoreModule* pCoreModule;
-
 	// deprecated
-public:
-	//void Send(CString);
-	//void Receive(CString);
+/*public:
+	SocketTransmission();
+	 
+	void Send(CString);
+	void Receive(CString);*/
 };
 #endif

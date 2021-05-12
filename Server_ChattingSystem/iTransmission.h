@@ -1,7 +1,4 @@
 #pragma once
-#include <combaseapi.h>
-
-#include <afxsock.h>
 
 #include "ProtocolSettings.h"
 

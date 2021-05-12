@@ -3,15 +3,13 @@
 
 #include "Transmission.h"
 
-#include <Strsafe.h>
-
 /*
-* CListenSocket Constructor
-*   
-*   Transmission uses a listen socket, which is responsible to
-*   wait for a connection creation request.
-* 
-*   Input: SocketTransmission*, a Controller of this socket
+* Behaviors
+*   This belongs to a socketTransmission Module
+*   a listen socket is globally opened.
+*   It works as a receptionist.
+* Reponsibilities
+*   a client connects to this Server, notify to server the information.
 */
 CListenSocket::CListenSocket(SocketTransmission *transmission) {
     TRACE(_T("ListenSocket Created with Transmission"));

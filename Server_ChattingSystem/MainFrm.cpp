@@ -51,7 +51,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	return 0;
 }
-
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
 	if( !CFrameWnd::PreCreateWindow(cs) )
@@ -116,7 +115,7 @@ CString CMainFrame::MessageDecoding(CString msg) {
 }
 
 void CMainFrame::EventController(EventList eventID, void* argv) {
-
+	
 	switch (eventID) {
 	case EventList::ClientConnection:
 	{
@@ -131,7 +130,13 @@ void CMainFrame::EventController(EventList eventID, void* argv) {
 	}
 	case EventList::ClientDisconnection:
 	{
+		AfxMessageBox(_T("EventController ClientDisconnection"));
 		auto eventData = *static_cast<std::shared_ptr<Info_ClientDisconnection>*>(argv);
+
+		TCHAR buf[30];
+		wsprintf(buf, _T("ID: %d\n"), eventData->id);
+		AfxMessageBox(buf);
+
 		break;
 	}
 	case EventList::ReceiveMessage:
@@ -149,5 +154,4 @@ void CMainFrame::EventController(EventList eventID, void* argv) {
 		break;
 	}
 	}
-
 }
