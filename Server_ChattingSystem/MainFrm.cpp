@@ -24,6 +24,18 @@ END_MESSAGE_MAP()
 
 // CMainFrame 생성/소멸
 
+/*
+* Behaviors
+*	MainFrame controls FrontEnd / BackEnd Works
+*	FrontEnds, there is a view, who will show a log, such as a client has connected with ID.
+*	BackEnds, As a core module, MainFrame manages transmission & logger
+* Reponsibilities
+*	A Commander of server
+*	There's a few roles for MainFrame
+*		CoreModule: Manage Modules, each module sends event to core module, then core module deal with that events
+*		DataManger: Manages Data, such as chatting room info, client infos
+*/
+
 CMainFrame::CMainFrame() noexcept
 {
 	// TODO: 여기에 멤버 초기화 코드를 추가합니다.
@@ -114,17 +126,13 @@ CString CMainFrame::MessageDecoding(CString msg) {
 	return msg;
 }
 
+
 void CMainFrame::EventController(EventList eventID, void* argv) {
 	
 	switch (eventID) {
 	case EventList::ClientConnection:
 	{
-		AfxMessageBox(_T("EventController ClientConnection"));
 		auto eventData = *static_cast<std::shared_ptr<Info_ClientConnection>*>(argv);
-
-		TCHAR buf[30];
-		wsprintf(buf, _T("ID: %d\n"), eventData->id);
-		AfxMessageBox(buf);
 
 		break;
 	}
