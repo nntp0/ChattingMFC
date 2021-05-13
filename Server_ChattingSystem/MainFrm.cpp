@@ -6,8 +6,6 @@
 #include "Server_ChattingSystem.h"
 
 #include "MainFrm.h"
-#include "Transmission.h"
-
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -56,10 +54,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("뷰 창을 만들지 못했습니다.\n");
 		return -1;
 	}
-	
-	// View 를 생성한 이후, Module 을 구현합니다.
-	// Transmission Module
-	this->transmission = std::shared_ptr<SocketTransmission>(new SocketTransmission(this));
 
 	return 0;
 }
@@ -114,52 +108,4 @@ void CMainFrame::OnClose()
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 	TRACE(_T("CMainFrame OnClose"));
 	CFrameWnd::OnClose();
-}
-
-// Transmission Methods
-CString CMainFrame::MessageEncoding(CString msg) {
-	TRACE(_T("SocketTransmssion MessageEncoding"));
-	return msg;
-}
-CString CMainFrame::MessageDecoding(CString msg) {
-	TRACE(_T("SocketTransmssion MessageDecoding"));
-	return msg;
-}
-
-
-void CMainFrame::EventController(EventList eventID, void* argv) {
-	
-	switch (eventID) {
-	case EventList::ClientConnection:
-	{
-		auto eventData = *static_cast<std::shared_ptr<Info_ClientConnection>*>(argv);
-
-		break;
-	}
-	case EventList::ClientDisconnection:
-	{
-		AfxMessageBox(_T("EventController ClientDisconnection"));
-		auto eventData = *static_cast<std::shared_ptr<Info_ClientDisconnection>*>(argv);
-
-		TCHAR buf[30];
-		wsprintf(buf, _T("ID: %d\n"), eventData->id);
-		AfxMessageBox(buf);
-
-		break;
-	}
-	case EventList::ReceiveMessage:
-	{
-		auto eventData = *static_cast<std::shared_ptr<Info_ReceiveMessage>*>(argv);
-		break;
-	}
-	case EventList::Notification:
-	{
-		auto eventData = *static_cast<std::shared_ptr<Info_Notification>*>(argv);
-		break;
-	}
-	default:
-	{
-		break;
-	}
-	}
 }

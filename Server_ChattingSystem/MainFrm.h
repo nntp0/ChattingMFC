@@ -9,7 +9,7 @@
 
 #include <memory>
 
-class CMainFrame : public CFrameWnd, public iCoreModule
+class CMainFrame : public CFrameWnd
 {
 	// Constructor / Destructor
 public:
@@ -45,17 +45,12 @@ protected:
 
 	// properties
 private:
-	std::shared_ptr<iTransmission> transmission;
-	//std::vector<EventList> eventQueue;
 
 	// methods
 public:
-	CString MessageEncoding(CString msg);
-	CString MessageDecoding(CString msg);
 
 	// method override
 public:
-	virtual void EventController(EventList, void*);
 
 public:
 	afx_msg void OnClose();
