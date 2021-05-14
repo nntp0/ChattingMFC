@@ -1,0 +1,23 @@
+﻿#include <iostream>
+#include <list>
+#include <string>
+#include <memory>
+#include <vector>
+
+#include <afx.h>
+
+#include "MessageControl.h"
+#include "SmartPointer.h"
+#include "pVoidTester.h"
+
+int main()
+{
+    /*MessageControlModule ex1;
+    ex1.Test();
+
+    SmartPointerPractice ex2;
+    ex2.Test();*/
+
+    pVoidTester ex3;
+    ex3.Test();
+}

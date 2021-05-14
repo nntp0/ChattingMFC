@@ -1,27 +1,42 @@
 #pragma once
 
-#ifndef __afxsock_H_INCLUDED__
-#define __afxsock_H_INCLUDED__
 #include <afxsock.h>
-#endif
-#ifndef __Transmission_H_INCLUDED__
-#define __Transmission_H_INCLUDED__
-#include "Transmission.h"
-#endif
 
-#define SIZE_OF_BUFFER 256
-struct MessageForm {
-	int messageLen;
-	TCHAR message[SIZE_OF_BUFFER];
-};
-
-class CAcceptSocket : public CSocket {
+#ifndef __AcceptSocket_H_INCLUDED__
+#define __AcceptSocket_H_INCLUDED__
+class CAcceptSocket : public CSocket
+{
+	// Constructor, Destructor
 public:
-	CAcceptSocket();
-	CAcceptSocket(Transmission *transmission);
+	CAcceptSocket(SocketTransmission*);
 	virtual ~CAcceptSocket();
+
+	// Method Override
 public:
-	void SetTransmission(Transmission* transmission);
+	virtual void OnReceive(int nErrorCode);
+	virtual void OnClose(int nErrorCode);
+
+	// Methods
+public:
+
+	void RecvMsg();
+	void SendMsg(CString);
+
+	// Properties
 private:
-	Transmission *transmission;
+	SocketTransmission *transmission;
+	
+	UINT id;
+	MessageForm m_msg;
+
+	// Getter / Setter
+public:
+	void SetSocketID(UINT id);
+	UINT GetSocketID();
+
+	void SetMsg(MessageForm);
+	MessageForm* GetMsg();
+
+	void SetTransmission(SocketTransmission*);
 };
+#endif

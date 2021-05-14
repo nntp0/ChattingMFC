@@ -1,5 +1,4 @@
-﻿#pragma once
-// ChildView.cpp: CChildView 클래스의 구현
+﻿// ChildView.cpp: CChildView 클래스의 구현
 //
 
 #include "pch.h"
@@ -13,8 +12,7 @@
 
 #include "MainFrm.h"
 
-
-// CChildView
+// CChildView Constructor / Destructor
 
 CChildView::CChildView()
 {
@@ -33,8 +31,6 @@ BEGIN_MESSAGE_MAP(CChildView, CWnd)
 	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
-
-
 // CChildView 메시지 처리기
 
 BOOL CChildView::PreCreateWindow(CREATESTRUCT& cs) 
@@ -47,32 +43,50 @@ BOOL CChildView::PreCreateWindow(CREATESTRUCT& cs)
 	cs.lpszClass = AfxRegisterWndClass(CS_HREDRAW|CS_VREDRAW|CS_DBLCLKS, 
 		::LoadCursor(nullptr, IDC_ARROW), reinterpret_cast<HBRUSH>(COLOR_WINDOW+1), nullptr);
 
+
+	// 여기 수정하세요
+	/*this->messageList.AddTail(CString("Hello World!"));
+	this->messageList.AddTail(CString("Bye World!"));*/
+
 	return TRUE;
 }
 
 void CChildView::OnPaint() 
 {
-	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
 	CRect rect;
 	GetClientRect(&rect);
 
 	CPaintDC dc(this);
 
+	// Chatting 에 대한 영역과 Typing 영역을 그립니다.
+
+	DisplayChattingLog(dc, rect);
+	DisplayUserTyping(dc, rect);
+}
+
+void CChildView::DisplayUserTyping(CPaintDC& dc, CRect& rect) {
 	rect.top = rect.bottom - 200;
 	dc.DrawText(m_str.GetString(), m_str.GetLength(), &rect, DT_LEFT);
 
 	CPoint poi(rect.left + m_caretInfo.offset.x, rect.top + m_caretInfo.offset.y);
 	SetCaretPos(poi);
 }
+void CChildView::DisplayChattingLog(CPaintDC& dc, CRect& rect) {
+	auto pos = this->messageList.GetHeadPosition();
+	while (pos != NULL) {
+		CString temp = this->messageList.GetNext(pos);
 
+		rect.top = rect.top + 20;
 
+		dc.DrawText(temp.GetString(), temp.GetLength(), &rect, DT_LEFT);
+	}
+}
 
 //void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 //{
 //	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 //	delete ((CMainFrame*)AfxGetMainWnd())->m_transmission;
 //}
-
 
 void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
@@ -90,7 +104,7 @@ void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 		m_str += (TCHAR)nChar;
 	}*/
 	if (nChar == VK_RETURN) {
-		((CMainFrame*)GetParentFrame())->m_transmission->SendMsg(this->m_str);
+		((CMainFrame*)GetParentFrame())->m_transmission->Send(this->m_str);
 
 		this->InputBufferClear();
 		Invalidate();
@@ -122,13 +136,11 @@ void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 	Invalidate();
 }
 
-
 void CChildView::OnSetFocus(CWnd* pOldWnd)
 {
 	CreateSolidCaret(5, 20);
 	ShowCaret();
 }
-
 void CChildView::OnKillFocus(CWnd* pNewWnd)
 {
 	HideCaret();
@@ -140,15 +152,11 @@ int CChildView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	// TODO:  여기에 특수화된 작성 코드를 추가합니다.
-	AfxMessageBox(_T("View OnCreate"));
-	
 
 	return 0;
 }
-
 void CChildView::OnDestroy()
 {
-	AfxMessageBox(_T("View OnDestroy"));
 	::DestroyCaret();
 
 	CWnd::OnDestroy();
@@ -158,4 +166,16 @@ void CChildView::InputBufferClear() {
 	this->m_str.Empty();
 	this->m_strSize.RemoveAll();
 	this->m_caretInfo.Clear();
+}
+
+void CChildView::UpdateMessageList(CString msg) {
+	TRACE(_T("CChildView UpdateMessageList"));
+	TRACE(msg);
+
+	this->messageList.AddTail(msg);
+
+	Invalidate();
+}
+CList<CString>* CChildView::GetMessageList() {
+	return NULL;
 }

@@ -5,7 +5,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "Server_ChattingSystem.h"
-#include "ListenSocket.h"
+
 #include "ChildView.h"
 
 #ifdef _DEBUG
@@ -15,7 +15,7 @@
 
 // CChildView
 
-CChildView::CChildView() : transmission()
+CChildView::CChildView()
 {
 }
 

@@ -45,9 +45,11 @@ public:
 // 작업입니다.
 public:
 	void InputBufferClear();
+	void DisplayChattingLog(CPaintDC& dc, CRect& rect);
+	void DisplayUserTyping(CPaintDC& dc, CRect& rect);
 
 // 재정의입니다.
-	protected:
+protected:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 
 // 구현입니다.
@@ -65,5 +67,13 @@ public:
 	afx_msg void OnKillFocus(CWnd* pNewWnd);
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnDestroy();
+
+	// properties
+private:
+	CList<CString> messageList;
+
+public:
+	void UpdateMessageList(CString msg);
+	CList<CString>* GetMessageList();
 };
 

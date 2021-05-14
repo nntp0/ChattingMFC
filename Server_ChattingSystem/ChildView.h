@@ -1,11 +1,6 @@
 ﻿// ChildView.h: CChildView 클래스의 인터페이스
 //
 
-#ifndef __Transmission_H_INCLUDED__
-#define __Transmission_H_INCLUDED__
-#include "Transmission.h"
-#endif
-
 // CChildView 창
 
 class CChildView : public CWnd
@@ -34,6 +29,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	Transmission transmission;
+	//Transmission *transmission;
 };
 

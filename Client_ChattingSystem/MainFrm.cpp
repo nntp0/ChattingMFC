@@ -11,7 +11,7 @@
 #include <afxsock.h>
 #include "locale.h"
 
-#include "Transmission.h"
+#include "iTransmission.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -27,18 +27,17 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
-// CMainFrame 생성/소멸
-
+// CMainFrame Constructor / Destructor
+// Dependency Injection About iTransmission
 CMainFrame::CMainFrame() noexcept
+	: m_transmission(new SocketTransmission(this))
 {
-	AfxMessageBox(_T("MainFrame 생성자 호출!"));
-	//m_transmission = new Transmission();
+	TRACE(_T("CMainFrame Constructor"));
 }
-
 CMainFrame::~CMainFrame()
 {
-	AfxMessageBox(_T("MainFrame 소멸자 호출!"));
-	//delete m_transmission;
+	TRACE(_T("CMainFrame Destructor"));
+	delete m_transmission;
 }
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -52,19 +51,11 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	{
 		TRACE0("뷰 창을 만들지 못했습니다.\n");
 		return -1;
-	}	
-	AfxMessageBox(_T("MainFrame OnCreate"));
-
-	m_transmission = new Transmission();
-
-
-
-	//m_transmission->SendMsg(CString(_T("Hello My New World!")));
-	//m_transmission->SendMsg(CString(_T("안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!안녕하세요!!")));
+	}
 
 	return 0;
 }
-
+// Window Style
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
 	if( !CFrameWnd::PreCreateWindow(cs) )
@@ -81,7 +72,6 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 }
 
 // CMainFrame 진단
-
 #ifdef _DEBUG
 void CMainFrame::AssertValid() const
 {
@@ -94,15 +84,12 @@ void CMainFrame::Dump(CDumpContext& dc) const
 }
 #endif //_DEBUG
 
-
 // CMainFrame 메시지 처리기
-
 void CMainFrame::OnSetFocus(CWnd* /*pOldWnd*/)
 {
 	// 뷰 창으로 포커스를 이동합니다.
 	m_wndView.SetFocus();
 }
-
 BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo)
 {
 	// 뷰에서 첫째 크랙이 해당 명령에 나타나도록 합니다.
@@ -112,16 +99,20 @@ BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO*
 	// 그렇지 않으면 기본 처리합니다.
 	return CFrameWnd::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
 }
-
-
-
 void CMainFrame::OnClose()
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-	AfxMessageBox(_T("MainFrame OnClose!"));
-
-	delete m_transmission;
-	m_transmission = nullptr;
-
+	TRACE(_T("CMainFrame OnClose"));
+	
 	CFrameWnd::OnClose();
+}
+
+// Custom Methods
+void CMainFrame::Tick() {
+	AfxMessageBox(_T("Tick"));
+}
+void CMainFrame::ControlMessage(CString str) {
+	TRACE(_T("ControlMessage"));
+
+	m_wndView.UpdateMessageList(str);
 }
