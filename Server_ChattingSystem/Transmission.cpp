@@ -49,11 +49,6 @@ void SocketTransmission::Accept() {
 
     this->acceptSocketList.push_back(temp);
 
-    // Greetings to Client
-    TCHAR buf[30];
-    wsprintf(buf, _T("Hello %d\n"), PeerPort);
-    this->SendTo(temp->GetSocketID(), buf);
-
     std::shared_ptr<Info_ClientConnection> eventData{ new Info_ClientConnection {PeerPort},
         [](Info_ClientConnection* eventData) {
             AfxMessageBox(_T("Discarded"));
@@ -95,12 +90,20 @@ void SocketTransmission::SendTo(UINT id, CString msg) {
 void SocketTransmission::RecvFrom(UINT id, CString msg) {
     TRACE(_T("Transmission Receive"));
 
+    std::shared_ptr<Info_ReceiveMessage> eventData{ new Info_ReceiveMessage {id, msg},
+        [](Info_ReceiveMessage* eventData) {
+            AfxMessageBox(_T("Discarded3"));
+            delete eventData;
+        }
+    };
+    this->pCoreModule->EventController(EventList::ReceiveMessage, &eventData);
+
     // Message 그냥 Return 합니다.
-    for (auto it = this->acceptSocketList.begin(); it != this->acceptSocketList.end(); it++) {
+    /*for (auto it = this->acceptSocketList.begin(); it != this->acceptSocketList.end(); it++) {
         UINT socketID = (*it)->GetSocketID();
         if (socketID == id) continue;
         this->SendTo(socketID, msg);
-    }
+    }*/
 #ifdef _DEBUG
     AfxMessageBox(msg1);
 #endif

@@ -13,21 +13,13 @@
 #endif
 
 
-// CChildView
-
-CChildView::CChildView()
-{
-}
-
-CChildView::~CChildView()
-{
-}
+// Constructor / Destructor
+CChildView::CChildView() {}
+CChildView::~CChildView() {}
 
 BEGIN_MESSAGE_MAP(CChildView, CWnd)
 	ON_WM_PAINT()
 END_MESSAGE_MAP()
-
-
 
 // CChildView 메시지 처리기
 
@@ -43,7 +35,6 @@ BOOL CChildView::PreCreateWindow(CREATESTRUCT& cs)
 
 	return TRUE;
 }
-
 void CChildView::OnPaint() 
 {
 	CPaintDC dc(this); // 그리기를 위한 디바이스 컨텍스트입니다.
@@ -54,6 +45,5 @@ void CChildView::OnPaint()
 }
 
 void CChildView::DisplayLog(CString msg) {
-
 	AfxMessageBox(msg);
 }

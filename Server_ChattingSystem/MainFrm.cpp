@@ -57,7 +57,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 	}
 
-	this->coreModule = std::shared_ptr<CoreModule>(new CoreModule);
+	this->coreModule = std::shared_ptr<CoreModule>(new CoreModule(&m_wndView));
 
 	return 0;
 }
