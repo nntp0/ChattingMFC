@@ -7,6 +7,8 @@
 
 #include "MainFrm.h"
 
+#include "CoreModule.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -54,6 +56,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("뷰 창을 만들지 못했습니다.\n");
 		return -1;
 	}
+
+	this->coreModule = std::shared_ptr<CoreModule>(new CoreModule);
 
 	return 0;
 }

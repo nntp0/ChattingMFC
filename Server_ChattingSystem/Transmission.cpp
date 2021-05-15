@@ -13,7 +13,6 @@
 *   Transmission Module owns a listenSocket and multiple acceptSockets, each socket is connected with a client.
 */
 SocketTransmission::SocketTransmission(iCoreModule* pCoreModule) {
-    TRACE(_T("Transmission Constructor"));
     this->pCoreModule = pCoreModule;
     
     this->listenSocket = new CListenSocket(this);
@@ -49,17 +48,6 @@ void SocketTransmission::Accept() {
     temp->SetSocketID(PeerPort);
 
     this->acceptSocketList.push_back(temp);
-
-    /*TCHAR buf[30];
-#ifdef _DEBUG
-    wsprintf(buf, _T("Login from %s/%d\n"), (LPCTSTR)PeerAddress, PeerPort);
-    AfxMessageBox(buf);
-#endif
-    MessageForm msgBuffer;
-    
-    wsprintf(buf, _T("Hello %d\n"), PeerPort);
-    StringCchCopy(msgBuffer.message, SIZE_OF_BUFFER, buf);
-    temp->Send(&msgBuffer, sizeof MessageForm);*/
 
     // Greetings to Client
     TCHAR buf[30];

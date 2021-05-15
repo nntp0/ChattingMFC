@@ -3,7 +3,9 @@
 
 // CChildView 창
 
-class CChildView : public CWnd
+#include "iDisplayModule.h"
+
+class CChildView : public CWnd, public iDisplayModule
 {
 // 생성입니다.
 public:
@@ -29,6 +31,9 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	//Transmission *transmission;
+	
+	// Method Override
+public:
+	virtual void DisplayLog(CString msg);
 };
 

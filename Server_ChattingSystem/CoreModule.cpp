@@ -5,7 +5,7 @@
 #include "Transmission.h"
 
 
-CoreModule::CoreModule() {}
+CoreModule::CoreModule() { DependencyInjection(); }
 CoreModule::~CoreModule() {}
 
 void CoreModule::DependencyInjection() {
@@ -18,17 +18,12 @@ void CoreModule::EventController(EventList eventID, void* argv) {
 	case EventList::ClientConnection:
 	{
 		auto eventData = *static_cast<std::shared_ptr<Info_ClientConnection>*>(argv);
-
+		
 		break;
 	}
 	case EventList::ClientDisconnection:
 	{
-		AfxMessageBox(_T("EventController ClientDisconnection"));
 		auto eventData = *static_cast<std::shared_ptr<Info_ClientDisconnection>*>(argv);
-
-		TCHAR buf[30];
-		wsprintf(buf, _T("ID: %d\n"), eventData->id);
-		AfxMessageBox(buf);
 
 		break;
 	}

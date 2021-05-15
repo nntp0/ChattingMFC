@@ -9,7 +9,6 @@
 
 #include "resource.h"       // 주 기호입니다.
 
-
 // CServerChattingSystemApp:
 // 이 클래스의 구현에 대해서는 Server_ChattingSystem.cpp을(를) 참조하세요.
 //
@@ -30,6 +29,7 @@ public:
 public:
 	afx_msg void OnAppAbout();
 	DECLARE_MESSAGE_MAP()
+
 };
 
 extern CServerChattingSystemApp theApp;
