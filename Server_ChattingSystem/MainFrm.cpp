@@ -30,10 +30,8 @@ END_MESSAGE_MAP()
 *	FrontEnds, there is a view, who will show a log, such as a client has connected with ID.
 *	BackEnds, As a core module, MainFrame manages transmission & logger
 * Reponsibilities
-*	A Commander of server
-*	There's a few roles for MainFrame
-*		CoreModule: Manage Modules, each module sends event to core module, then core module deal with that events
-*		DataManger: Manages Data, such as chatting room info, client infos
+*	CoreModule Holder
+*	CoreModule: Manage Modules, each module sends event to core module, then core module deal with that events
 */
 
 CMainFrame::CMainFrame() noexcept

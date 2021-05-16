@@ -1,11 +1,23 @@
 #pragma once
 
+#ifndef __Data_H_INCLUDED__
+#define __Data_H_INCLUDED__
+
 #include <intsafe.h>
 #include <afxstr.h>
+#include <vector>
 
 struct Client {
 	CString name;
 	UINT id;
+
+	//std::vector<UINT> joinedRoomList;
+	UINT joinedRoom;
+
+	Client() : name(), id() {
+		//joinedRoomList.push_back(0);
+		joinedRoom = -1;
+	}
 };
 
 struct Room {
@@ -14,4 +26,20 @@ struct Room {
 
 	UINT currentNum;
 	UINT maximumNum;
+
+	std::vector<UINT> clientList;
 };
+enum class MessageType {
+	RoomCreation,
+	RoomList,
+	RoomJoin,
+	RoomLeave,
+	Normal,
+	Argent,
+};
+struct CustomMessage {
+	MessageType type;
+	CString msg;
+};
+
+#endif

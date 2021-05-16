@@ -51,7 +51,7 @@ void SocketTransmission::Accept() {
 
     std::shared_ptr<Info_ClientConnection> eventData{ new Info_ClientConnection {PeerPort},
         [](Info_ClientConnection* eventData) {
-            AfxMessageBox(_T("Discarded"));
+            //AfxMessageBox(_T("Discarded"));
             delete eventData;
         }
     };
@@ -66,7 +66,7 @@ void SocketTransmission::Close(UINT socketID) {
 
             std::shared_ptr<Info_ClientDisconnection> eventData{ new Info_ClientDisconnection {socketID},
                 [](Info_ClientDisconnection* eventData) {
-                    AfxMessageBox(_T("Discarded2"));
+                    //AfxMessageBox(_T("Discarded2"));
                     delete eventData;
                 }
             };
@@ -92,18 +92,12 @@ void SocketTransmission::RecvFrom(UINT id, CString msg) {
 
     std::shared_ptr<Info_ReceiveMessage> eventData{ new Info_ReceiveMessage {id, msg},
         [](Info_ReceiveMessage* eventData) {
-            AfxMessageBox(_T("Discarded3"));
+            //AfxMessageBox(_T("Discarded3"));
             delete eventData;
         }
     };
     this->pCoreModule->EventController(EventList::ReceiveMessage, &eventData);
 
-    // Message 그냥 Return 합니다.
-    /*for (auto it = this->acceptSocketList.begin(); it != this->acceptSocketList.end(); it++) {
-        UINT socketID = (*it)->GetSocketID();
-        if (socketID == id) continue;
-        this->SendTo(socketID, msg);
-    }*/
 #ifdef _DEBUG
     AfxMessageBox(msg1);
 #endif

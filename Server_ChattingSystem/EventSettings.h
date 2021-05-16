@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef __Event_H_INCLUDED__
+#define __Event_H_INCLUDED__
+
 #include <intsafe.h>
 #include <afxstr.h>
 
@@ -9,8 +12,6 @@ enum class EventList
 	ClientDisconnection,
 	ReceiveMessage,
 	Notification,
-	RoomCreate,
-	RoomClose
 };
 
 struct Info_ClientConnection {
@@ -35,10 +36,4 @@ enum class ModuleList
 	iDisplayModule
 };
 
-struct Args_CreateRoom {
-	UINT id;
-	CString name;
-};
-struct Args_CreateClient {
-	UINT id;
-};
+#endif

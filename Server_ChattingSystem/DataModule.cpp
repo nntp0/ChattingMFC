@@ -5,6 +5,7 @@ DataModule::DataModule() {}
 DataModule::~DataModule() {}
 
 void DataModule::newRoom(Room newRoom) {
+	newRoom.id = this->roomList.size();
 	this->roomList.push_back(newRoom);
 }
 void DataModule::newClient(Client newClient) {
@@ -23,6 +24,30 @@ void DataModule::closeClient(Client closedClient) {
 	for (auto it = this->clientList.begin(); it != this->clientList.end(); it++) {
 		if (it->id == closedClient.id) {
 			this->clientList.erase(it);
+			break;
+		}
+	}
+}
+
+void DataModule::JoinRoom(Room room, Client client) {
+	for (auto it = roomList.begin(); it != roomList.end(); it++) {
+		if (it->id == room.id) {
+			it->clientList.push_back(client.id);
+			break;
+		}
+	}
+	for (auto it = clientList.begin(); it != clientList.end(); it++) {
+		if (it->id == client.id) {
+			it->joinedRoom = room.id;
+			break;
+		}
+	}
+}
+void DataModule::LeaveRoom(Room room, Client client) {
+
+	for (auto it = clientList.begin(); it != clientList.end(); it++) {
+		if (it->id == client.id) {
+			it->joinedRoom = -1;
 			break;
 		}
 	}

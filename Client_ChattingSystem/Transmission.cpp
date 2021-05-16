@@ -41,6 +41,10 @@ void SocketTransmission::Receive(CString msg) {
 }
 CString SocketTransmission::MessageEncoding(CString msg) {
 	TRACE(_T("SocketTransmssion MessageEncoding"));
+
+	/*CString temp = _T("nm");
+	return temp+msg;*/
+
 	return msg;
 }
 CString SocketTransmission::MessageDecoding(CString msg) {

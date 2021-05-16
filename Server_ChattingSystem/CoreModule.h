@@ -31,7 +31,7 @@ private:
 public:
 	void DependencyInjection(iDisplayModule*);
 
-	CString MessageEncoding(CString msg);
-	CString MessageDecoding(CString msg);
+	CString MessageEncoding(CustomMessage msg);
+	CustomMessage MessageDecoding(CString msg);
 };
 #endif
