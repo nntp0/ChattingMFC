@@ -2,7 +2,7 @@
 
 #include "ProtocolSettings.h"
 
-__interface iTransmission
+__interface iTransmissionModule
 {
 public:
 	virtual void Accept();

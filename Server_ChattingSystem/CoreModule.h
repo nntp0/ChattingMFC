@@ -1,7 +1,7 @@
 #pragma once
 
 #include "iCoreModule.h"
-#include "iTransmission.h"
+#include "iTransmissionModule.h"
 #include "iDisplayModule.h"
 #include "iDataModule.h"
 #include <memory>
@@ -21,7 +21,7 @@ public:
 
 	// Properties ( Modules )	
 private:
-	std::shared_ptr<iTransmission> transmission;
+	std::shared_ptr<iTransmissionModule> transmission;
 	iDisplayModule* displayModule;
 
 	std::shared_ptr<iDataModule> dataModule;

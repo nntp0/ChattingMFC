@@ -1,6 +1,6 @@
 #pragma once
 
-#include "iTransmission.h"
+#include "iTransmissionModule.h"
 #include "iCoreModule.h"
 
 #include <memory>
@@ -13,7 +13,7 @@ class SocketTransmission;
 
 #ifndef __Transmission_H_INCLUDED__
 #define __Transmission_H_INCLUDED__
-class SocketTransmission : public iTransmission
+class SocketTransmission : public iTransmissionModule
 {
 	// Constructor & Destructor
 public:
