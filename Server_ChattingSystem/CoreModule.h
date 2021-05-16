@@ -3,6 +3,7 @@
 #include "iCoreModule.h"
 #include "iTransmission.h"
 #include "iDisplayModule.h"
+#include "iDataModule.h"
 #include <memory>
 
 #ifndef __CoreModule_H_INCLUDED__
@@ -22,6 +23,9 @@ public:
 private:
 	std::shared_ptr<iTransmission> transmission;
 	iDisplayModule* displayModule;
+
+	std::shared_ptr<iDataModule> dataModule;
+	
 
 	// Method
 public:

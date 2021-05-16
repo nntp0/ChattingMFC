@@ -1,11 +1,16 @@
 #pragma once
 
+#include <intsafe.h>
+#include <afxstr.h>
+
 enum class EventList
 {
 	ClientConnection,
 	ClientDisconnection,
 	ReceiveMessage,
-	Notification
+	Notification,
+	RoomCreate,
+	RoomClose
 };
 
 struct Info_ClientConnection {
@@ -20,4 +25,20 @@ struct Info_ReceiveMessage {
 };
 struct Info_Notification {
 	CString msg;
+};
+
+enum class ModuleList
+{
+	iCoreModule,
+	iTransmission,
+	iDataModule,
+	iDisplayModule
+};
+
+struct Args_CreateRoom {
+	UINT id;
+	CString name;
+};
+struct Args_CreateClient {
+	UINT id;
 };
