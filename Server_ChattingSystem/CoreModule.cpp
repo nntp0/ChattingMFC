@@ -46,16 +46,6 @@ void CoreModule::EventController(EventList eventID, void* argv) {
 			newClient.name = _T("Closed Customer");
 			this->dataModule->closeClient(newClient);
 
-			/*auto temp = this->dataModule->getClientList();
-			TCHAR buf[30];
-
-			CString clientList = _T("");
-			for (auto it = temp.begin(); it != temp.end(); it++) {
-				wsprintf(buf, _T("%d, "), it->id);
-				clientList += buf;
-			}
-			AfxMessageBox(clientList);*/
-
 			break;
 		}
 		case EventList::ReceiveMessage:
@@ -101,6 +91,28 @@ void CoreModule::EventController(EventList eventID, void* argv) {
 				this->transmission->SendTo(eventData->id, _T("RoomJoined"));
 				break;
 			}
+			case MessageType::ClientList:
+			{
+				UINT roomID = -1;
+				auto clientList = this->dataModule->getClientList();
+				for (auto it = clientList.begin(); it != clientList.end(); it++) {
+					if (it->id == eventData->id) {
+						roomID = it->joinedRoom;
+					}
+				}
+
+				CString msg = _T("");
+				TCHAR buf[30];
+				for (auto it = clientList.begin(); it != clientList.end(); it++) {
+					if (it->joinedRoom == roomID) {
+						wsprintf(buf, _T("%d|"), it->id);
+						msg += buf;
+					}
+				}
+
+				this->transmission->SendTo(eventData->id, msg);
+			}
+
 			case MessageType::Normal:
 			{
 				auto temp = this->dataModule->getClientList();
@@ -164,6 +176,9 @@ CustomMessage CoreModule::MessageDecoding(CString msg) {
 	}
 	else if (code == _T("nm")) {
 		decodedMessage.type = MessageType::Normal;
+	}
+	else if (code == _T("cl")) {
+		decodedMessage.type = MessageType::ClientList;
 	}
 	else {
 		decodedMessage.type = MessageType::Normal;

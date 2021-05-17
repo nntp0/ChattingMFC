@@ -5,7 +5,6 @@
 *	
 *	메세지의 길이와 메시지를 담습니다.
 *	메세지의 최대 길이는 SIZE_OF_BUFFER 를 이용해 설정합니다.
-* 
 */
 
 #ifndef __PROTOCOL_H_INCLUDED__

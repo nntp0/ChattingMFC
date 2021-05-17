@@ -32,7 +32,7 @@ void DataModule::closeClient(Client closedClient) {
 void DataModule::JoinRoom(Room room, Client client) {
 	for (auto it = roomList.begin(); it != roomList.end(); it++) {
 		if (it->id == room.id) {
-			it->clientList.push_back(client.id);
+			it->clientList.insert(client.id);
 			break;
 		}
 	}
@@ -44,7 +44,11 @@ void DataModule::JoinRoom(Room room, Client client) {
 	}
 }
 void DataModule::LeaveRoom(Room room, Client client) {
-
+	for (auto it = roomList.begin(); it != roomList.end(); it++) {
+		if (it->id == room.id) {
+			it->clientList.erase(client.id);
+		}
+	}
 	for (auto it = clientList.begin(); it != clientList.end(); it++) {
 		if (it->id == client.id) {
 			it->joinedRoom = -1;

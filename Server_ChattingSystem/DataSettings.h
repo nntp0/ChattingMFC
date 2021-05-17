@@ -6,6 +6,7 @@
 #include <intsafe.h>
 #include <afxstr.h>
 #include <vector>
+#include <set>
 
 struct Client {
 	CString name;
@@ -27,13 +28,14 @@ struct Room {
 	UINT currentNum;
 	UINT maximumNum;
 
-	std::vector<UINT> clientList;
+	std::set<UINT> clientList;
 };
 enum class MessageType {
 	RoomCreation,
 	RoomList,
 	RoomJoin,
 	RoomLeave,
+	ClientList,
 	Normal,
 	Argent,
 };
