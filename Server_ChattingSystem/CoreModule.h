@@ -23,7 +23,6 @@ public:
 private:
 	std::shared_ptr<iTransmissionModule> transmission;
 	iDisplayModule* displayModule;
-
 	std::shared_ptr<iDataModule> dataModule;
 	
 

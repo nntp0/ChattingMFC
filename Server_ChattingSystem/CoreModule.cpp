@@ -23,17 +23,18 @@ void CoreModule::EventController(EventList eventID, void* argv) {
 			auto eventData = *static_cast<std::shared_ptr<Info_ClientConnection>*>(argv);
 		
 			TCHAR buf[30];
-			wsprintf(buf, _T("%d Connected"), eventData->id);
+			wsprintf(buf, _T("%d Connected"), eventData->socketID);
 			this->displayModule->DisplayLog(buf);
 
 			Client newClient;
-			newClient.id = eventData->id;
-			newClient.name = _T("New Customer");
+			newClient.clientID = eventData->socketID;
+			wsprintf(buf, _T("Client %d"), eventData->socketID);
+			newClient.name = buf;
 			this->dataModule->newClient(newClient);
 
 			// Greetings to Client
-			wsprintf(buf, _T("Hello %d\n"), eventData->id);
-			this->transmission->SendTo(eventData->id, buf);
+			wsprintf(buf, _T("Hello %d\n"), eventData->socketID);
+			this->transmission->SendTo(eventData->socketID, buf);
 
 			break;
 		}
@@ -41,10 +42,9 @@ void CoreModule::EventController(EventList eventID, void* argv) {
 		{
 			auto eventData = *static_cast<std::shared_ptr<Info_ClientDisconnection>*>(argv);
 
-			Client newClient;
-			newClient.id = eventData->id;
-			newClient.name = _T("Closed Customer");
-			this->dataModule->closeClient(newClient);
+			Client leftClient;
+			leftClient.clientID = eventData->socketID;
+			this->dataModule->closeClient(leftClient);
 
 			break;
 		}
@@ -60,12 +60,12 @@ void CoreModule::EventController(EventList eventID, void* argv) {
 				Room newRoom;
 				newRoom.name = decodedMessage.msg;
 				this->dataModule->newRoom(newRoom);
-				this->transmission->SendTo(eventData->id, _T("RoomCreated"));
+				this->transmission->SendTo(eventData->socketID, _T("RoomCreated"));
 				break;
 			}
 			case MessageType::RoomLeave:
 			{
-				this->transmission->SendTo(eventData->id, _T("RoomLeaved"));
+				this->transmission->SendTo(eventData->socketID, _T("RoomLeaved"));
 				break;
 			}
 			case MessageType::RoomList:
@@ -75,42 +75,44 @@ void CoreModule::EventController(EventList eventID, void* argv) {
 				TCHAR buf[30];
 				CString message = _T("");
 				for (auto it = roomList.begin(); it != roomList.end(); it++) {
-					wsprintf(buf, _T("%d: "), it->id);
+					wsprintf(buf, _T("%d: "), it->roomID);
 					message += buf + it->name + _T("\n");
 				}
-				this->transmission->SendTo(eventData->id, message);
+				this->transmission->SendTo(eventData->socketID, message);
 				break;
 			}
 			case MessageType::RoomJoin:
 			{
 				Room room;
-				room.id = _ttoi(decodedMessage.msg);
+				room.roomID = _ttoi(decodedMessage.msg);
 				Client client;
-				client.id = eventData->id;
+				client.clientID = eventData->socketID;
+
 				this->dataModule->JoinRoom(room, client);
-				this->transmission->SendTo(eventData->id, _T("RoomJoined"));
+
+				this->transmission->SendTo(eventData->socketID, _T("RoomJoined"));
 				break;
 			}
 			case MessageType::ClientList:
 			{
-				UINT roomID = -1;
+				UINT roomID = 0;
 				auto clientList = this->dataModule->getClientList();
 				for (auto it = clientList.begin(); it != clientList.end(); it++) {
-					if (it->id == eventData->id) {
-						roomID = it->joinedRoom;
+					if (it->clientID == eventData->socketID) {
+						roomID = it->joinedRoomID;
 					}
 				}
 
 				CString msg = _T("");
 				TCHAR buf[30];
 				for (auto it = clientList.begin(); it != clientList.end(); it++) {
-					if (it->joinedRoom == roomID) {
-						wsprintf(buf, _T("%d|"), it->id);
+					if (it->joinedRoomID == roomID) {
+						wsprintf(buf, _T("%d|"), it->clientID);
 						msg += buf;
 					}
 				}
 
-				this->transmission->SendTo(eventData->id, msg);
+				this->transmission->SendTo(eventData->socketID, msg);
 			}
 
 			case MessageType::Normal:
@@ -119,14 +121,14 @@ void CoreModule::EventController(EventList eventID, void* argv) {
 				UINT roomID = -1;
 
 				for (auto it = temp.begin(); it != temp.end(); it++) {
-					if (it->id == eventData->id) {
-						roomID = it->joinedRoom;
+					if (it->clientID == eventData->socketID) {
+						roomID = it->joinedRoomID;
 					}
 				}
 
 				for (auto it = temp.begin(); it != temp.end(); it++) {
-					if (it->joinedRoom == roomID) {
-						this->transmission->SendTo(it->id, decodedMessage.msg);
+					if (it->joinedRoomID == roomID) {
+						this->transmission->SendTo(it->clientID, decodedMessage.msg);
 					}
 				}
 				

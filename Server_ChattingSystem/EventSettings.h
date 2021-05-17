@@ -15,25 +15,17 @@ enum class EventList
 };
 
 struct Info_ClientConnection {
-	UINT id;
+	UINT socketID;
 };
 struct Info_ClientDisconnection {
-	UINT id;
+	UINT socketID;
 };
 struct Info_ReceiveMessage {
-	UINT id;
+	UINT socketID;
 	CString msg;
 };
 struct Info_Notification {
 	CString msg;
-};
-
-enum class ModuleList
-{
-	iCoreModule,
-	iTransmission,
-	iDataModule,
-	iDisplayModule
 };
 
 #endif

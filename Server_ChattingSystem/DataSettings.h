@@ -10,23 +10,19 @@
 
 struct Client {
 	CString name;
-	UINT id;
+	UINT clientID;
 
 	//std::vector<UINT> joinedRoomList;
-	UINT joinedRoom;
+	UINT joinedRoomID;
 
-	Client() : name(), id() {
+	Client() : name(), clientID() {
 		//joinedRoomList.push_back(0);
-		joinedRoom = -1;
+		joinedRoomID = 0;
 	}
 };
-
 struct Room {
 	CString name;
-	UINT id;
-
-	UINT currentNum;
-	UINT maximumNum;
+	UINT roomID=0;
 
 	std::set<UINT> clientList;
 };
@@ -40,7 +36,7 @@ enum class MessageType {
 	Argent,
 };
 struct CustomMessage {
-	MessageType type;
+	MessageType type = MessageType::Normal;
 	CString msg;
 };
 

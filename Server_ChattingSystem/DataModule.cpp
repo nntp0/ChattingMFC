@@ -1,11 +1,16 @@
 #include "pch.h"
 #include "DataModule.h"
 
-DataModule::DataModule() {}
+DataModule::DataModule() {
+	Room hall;
+	hall.roomID = 0;
+	hall.name = _T("MainHall");
+	roomList.push_back(hall);
+}
 DataModule::~DataModule() {}
 
 void DataModule::newRoom(Room newRoom) {
-	newRoom.id = this->roomList.size();
+	newRoom.roomID = this->roomList.size();
 	this->roomList.push_back(newRoom);
 }
 void DataModule::newClient(Client newClient) {
@@ -14,44 +19,65 @@ void DataModule::newClient(Client newClient) {
 
 void DataModule::closeRoom(Room closedRoom) {
 	for (auto it = this->roomList.begin(); it != this->roomList.end(); it++) {
-		if (it->id == closedRoom.id) {
+		if (it->roomID == closedRoom.roomID) {
 			this->roomList.erase(it);
 			break;
 		}
 	}
 }
 void DataModule::closeClient(Client closedClient) {
+	Room updatedRoom;
 	for (auto it = this->clientList.begin(); it != this->clientList.end(); it++) {
-		if (it->id == closedClient.id) {
+		if (it->clientID == closedClient.clientID) {
+			updatedRoom.roomID = it->joinedRoomID;
 			this->clientList.erase(it);
+			break;
+		}
+	}
+	for (auto roomIter = roomList.begin(); roomIter != roomList.end(); roomIter++) {
+		if (roomIter->roomID == updatedRoom.roomID) {
+			roomIter->clientList.erase(closedClient.clientID);
 			break;
 		}
 	}
 }
 
 void DataModule::JoinRoom(Room room, Client client) {
-	for (auto it = roomList.begin(); it != roomList.end(); it++) {
-		if (it->id == room.id) {
-			it->clientList.insert(client.id);
+	for (auto roomIter = roomList.begin(); roomIter != roomList.end(); roomIter++) {
+		if (roomIter->roomID == 0) {
+			roomIter->clientList.erase(client.clientID);
 			break;
 		}
 	}
-	for (auto it = clientList.begin(); it != clientList.end(); it++) {
-		if (it->id == client.id) {
-			it->joinedRoom = room.id;
+	for (auto roomIter = roomList.begin(); roomIter != roomList.end(); roomIter++) {
+		if (roomIter->roomID == room.roomID) {
+			roomIter->clientList.insert(client.clientID);
+			break;
+		}
+	}
+	for (auto clientIter = clientList.begin(); clientIter != clientList.end(); clientIter++) {
+		if (clientIter->clientID == client.clientID) {
+			clientIter->joinedRoomID = room.roomID;
 			break;
 		}
 	}
 }
 void DataModule::LeaveRoom(Room room, Client client) {
-	for (auto it = roomList.begin(); it != roomList.end(); it++) {
-		if (it->id == room.id) {
-			it->clientList.erase(client.id);
+	for (auto roomIter = roomList.begin(); roomIter != roomList.end(); roomIter++) {
+		if (roomIter->roomID == room.roomID) {
+			roomIter->clientList.erase(client.clientID);
+			break;
 		}
 	}
-	for (auto it = clientList.begin(); it != clientList.end(); it++) {
-		if (it->id == client.id) {
-			it->joinedRoom = -1;
+	for (auto roomIter = roomList.begin(); roomIter != roomList.end(); roomIter++) {
+		if (roomIter->roomID == 0) {
+			roomIter->clientList.insert(client.clientID);
+			break;
+		}
+	}
+	for (auto clientIter = clientList.begin(); clientIter != clientList.end(); clientIter++) {
+		if (clientIter->clientID == client.clientID) {
+			clientIter->joinedRoomID = 0;
 			break;
 		}
 	}
