@@ -23,11 +23,11 @@ public:
 	// properties
 private:
 	SocketTransmission *transmission;
-	MessageForm m_msg;
+	CString m_msg;
 
 	// Getter, Setter
 public:
-	void SetMsg(MessageForm msg);
-	MessageForm* GetMsg();
+	void SetMsg(CString msg);
+	CString* GetMsg();
 };
 #endif

@@ -16,12 +16,14 @@
 #define SIZE_OF_BUFFER 15
 
 struct MessageForm {
+	int messageLeftLength;
 	int messageLen;
 	TCHAR message[SIZE_OF_BUFFER];
 
 	MessageForm& operator=(const MessageForm& other) {
 		StringCchCopy(this->message, SIZE_OF_BUFFER, other.message);
 		this->messageLen = other.messageLen;
+		this->messageLeftLength = other.messageLeftLength;
 
 		return *this;
 	}

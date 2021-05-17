@@ -32,9 +32,10 @@ void CAcceptSocket::OnReceive(int nErrorCode) {
 	TRACE(_T("AcceptSocket OnReceive"));
 
 	this->RecvMsg();
-	this->transmission->RecvFrom(this->id, this->m_msg.message);
+	this->transmission->RecvFrom(this->id, this->m_msg);
 }
 void CAcceptSocket::RecvMsg() {
+	CString msg = _T("");
 	MessageForm msgBuffer;
 
 	while (1) {
@@ -45,11 +46,11 @@ void CAcceptSocket::RecvMsg() {
 			break;
 		}
 		else {
-			this->SetMsg(msgBuffer);
-
-			// 이 구문을 확인을 못하고 있었다!
-			// 이 구문으로 인해 데이터가 제대로 작동하지 않고 있었음
-			if (msgBuffer.messageLen != SIZE_OF_BUFFER) break;
+			msg += msgBuffer.message;
+			if (msgBuffer.messageLeftLength == 0) {
+				this->SetMsg(msg);
+				break;
+			}
 		}
 	}
 }
@@ -60,6 +61,7 @@ void CAcceptSocket::SendMsg(CString msg) {
 	while (1) {
 		if (msg.GetLength() < SIZE_OF_BUFFER) {
 			msgForm.messageLen = msg.GetLength();
+			msgForm.messageLeftLength = 0;
 
 			::StringCchPrintf(msgForm.message, SIZE_OF_BUFFER, _T("%s"), msg.GetString());
 
@@ -69,6 +71,7 @@ void CAcceptSocket::SendMsg(CString msg) {
 		else {
 			// SIZE_OF_BUFFER-1 은 마지막 문자는 '\0' 이기 때문에 제외했습니다.
 			msgForm.messageLen = SIZE_OF_BUFFER - 1;
+			msgForm.messageLeftLength = msg.GetLength() - SIZE_OF_BUFFER + 1;
 
 			::StringCchPrintf(msgForm.message, SIZE_OF_BUFFER, _T("%s"), msg.GetString());
 			int temp = msg.Delete(0, SIZE_OF_BUFFER - 1);
@@ -85,10 +88,10 @@ void CAcceptSocket::SetSocketID(UINT id) {
 UINT CAcceptSocket::GetSocketID() {
 	return this->id;
 }
-void CAcceptSocket::SetMsg(MessageForm msg) {
+void CAcceptSocket::SetMsg(CString msg) {
 	this->m_msg = msg;
 }
-MessageForm* CAcceptSocket::GetMsg() {
+CString* CAcceptSocket::GetMsg() {
 	return &(this->m_msg);
 }
 void CAcceptSocket::SetTransmission(SocketTransmission* transmission) {

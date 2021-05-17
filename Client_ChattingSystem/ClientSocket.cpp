@@ -30,38 +30,35 @@ void CClientSocket::OnClose(int nErrorCode) {
 void CClientSocket::OnReceive(int nErrorCode) {
 	TRACE(_T("CClientSocket OnReceive"));
 	this->RecvMsg();
-	this->transmission->Receive(this->m_msg.message);
+	this->transmission->Receive(this->m_msg);
 }
 
 // Setter / Getter
 // 지금은 단순 대입하지만, 추후에 어떤 msg 들이 오고갔는지 로그를 남기는 함수로 변경할 예정
-void CClientSocket::SetMsg(MessageForm msg) {
+void CClientSocket::SetMsg(CString msg) {
 	this->m_msg = msg;
 }
-MessageForm* CClientSocket::GetMsg() {
+CString* CClientSocket::GetMsg() {
 	return &(this->m_msg);
 }
 
 void CClientSocket::RecvMsg() {
+	CString msg = _T("");
 	MessageForm msgBuffer;
 
 	while (1) {
 		int nbytes = this->Receive(&msgBuffer, sizeof MessageForm);
-//#ifdef _DEBUG
-//		TCHAR buf[10];
-//		wsprintf(buf, _T("%d\n"), nbytes);
-//		AfxMessageBox(buf);
-//#endif
+
 		if (nbytes == 0 || nbytes == SOCKET_ERROR) {
 			AfxMessageBox(_T("Error!"));
 			break;
 		}
 		else {
-			this->SetMsg(msgBuffer);
-
-			// 이 구문을 확인을 못하고 있었다!
-			// 이 구문으로 인해 데이터가 제대로 작동하지 않고 있었음
-			if (msgBuffer.messageLen != SIZE_OF_BUFFER) break;
+			msg += msgBuffer.message;
+			if (msgBuffer.messageLeftLength == 0) {
+				this->SetMsg(msg);
+				break;
+			}
 		}
 	}
 }
@@ -72,6 +69,7 @@ void CClientSocket::SendMsg(CString msg) {
 	while (1) {
 		if (msg.GetLength() < SIZE_OF_BUFFER) {
 			msgForm.messageLen = msg.GetLength();
+			msgForm.messageLeftLength = 0;
 
 			::StringCchPrintf(msgForm.message, SIZE_OF_BUFFER, _T("%s"), msg.GetString());
 
@@ -81,6 +79,7 @@ void CClientSocket::SendMsg(CString msg) {
 		else {
 			// SIZE_OF_BUFFER-1 은 마지막 문자는 '\0' 이기 때문에 제외했습니다.
 			msgForm.messageLen = SIZE_OF_BUFFER - 1;
+			msgForm.messageLeftLength = msg.GetLength() - SIZE_OF_BUFFER + 1;
 
 			::StringCchPrintf(msgForm.message, SIZE_OF_BUFFER, _T("%s"), msg.GetString());
 			int temp = msg.Delete(0, SIZE_OF_BUFFER - 1);

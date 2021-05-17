@@ -27,15 +27,15 @@ private:
 	SocketTransmission *transmission;
 	
 	UINT id;
-	MessageForm m_msg;
+	CString m_msg;
 
 	// Getter / Setter
 public:
 	void SetSocketID(UINT id);
 	UINT GetSocketID();
 
-	void SetMsg(MessageForm);
-	MessageForm* GetMsg();
+	void SetMsg(CString msg);
+	CString* GetMsg();
 
 	void SetTransmission(SocketTransmission*);
 };
