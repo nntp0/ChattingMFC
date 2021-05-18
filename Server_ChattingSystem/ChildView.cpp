@@ -42,8 +42,21 @@ void CChildView::OnPaint()
 	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
 	
 	// 그리기 메시지에 대해서는 CWnd::OnPaint()를 호출하지 마십시오.
+
+	CRect rect;
+	GetClientRect(&rect);
+
+	auto pos = this->logList.GetHeadPosition();
+	while (pos != NULL) {
+		CString temp = this->logList.GetNext(pos);
+
+		rect.top = rect.top + 20;
+
+		dc.DrawText(temp.GetString(), temp.GetLength(), &rect, DT_LEFT);
+	}
 }
 
 void CChildView::DisplayLog(CString msg) {
-	AfxMessageBox(msg);
+	this->logList.AddTail(msg);
+	Invalidate();
 }

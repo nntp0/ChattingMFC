@@ -30,8 +30,10 @@ protected:
 	afx_msg void OnPaint();
 	DECLARE_MESSAGE_MAP()
 
+	// Properties
 private:
-	
+	CList<CString> logList;
+
 	// Method Override
 public:
 	virtual void DisplayLog(CString msg);
