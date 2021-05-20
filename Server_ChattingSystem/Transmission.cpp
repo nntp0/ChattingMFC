@@ -30,9 +30,9 @@ void SocketTransmission::Accept() {
     //  inefficiency: the custom deleter does nothing; useless.
     auto temp = std::shared_ptr<CAcceptSocket>(new CAcceptSocket(this),
         [](CAcceptSocket* socket) {
-            TCHAR buf[30];
+            /*TCHAR buf[30];
             wsprintf(buf, _T("Close PortNum: %d\n"), socket->GetSocketID());
-            AfxMessageBox(buf);
+            AfxMessageBox(buf);*/
 
             delete socket;
         }

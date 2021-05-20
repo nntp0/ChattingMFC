@@ -46,6 +46,10 @@ void CoreModule::EventController(EventList eventID, void* argv) {
 			leftClient.clientID = eventData->socketID;
 			this->dataModule->closeClient(leftClient);
 
+			TCHAR buf[30];
+			wsprintf(buf, _T("%d DisConnected"), eventData->socketID);
+			this->displayModule->DisplayLog(buf);
+
 			break;
 		}
 		case EventList::ReceiveMessage:
