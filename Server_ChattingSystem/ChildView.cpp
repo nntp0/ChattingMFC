@@ -47,6 +47,14 @@ void CChildView::OnPaint()
 	GetClientRect(&rect);
 
 	auto pos = this->logList.GetHeadPosition();
+	int count = this->logList.GetCount();
+	while (count-- > 5) {
+		this->logList.GetNext(pos);
+	}
+
+	
+
+	//auto pos = this->logList.GetHeadPosition();
 	while (pos != NULL) {
 		CString temp = this->logList.GetNext(pos);
 
