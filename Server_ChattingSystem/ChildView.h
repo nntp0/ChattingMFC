@@ -3,6 +3,8 @@
 
 // CChildView 창
 
+#define _MAXLOGLISTSIZE 5
+
 #include "iDisplayModule.h"
 
 class CChildView : public CWnd, public iDisplayModule
@@ -33,7 +35,7 @@ protected:
 	// Properties
 private:
 	CList<CString> logList;
-
+	int max_logListSize = _MAXLOGLISTSIZE;
 	// Method Override
 public:
 	virtual void DisplayLog(CString msg);
