@@ -1,5 +1,7 @@
 *.sln
 Debug
+Release
+include
 .vs/
 *.vcxproj
 *.vcxproj.*
@@ -13,3 +15,5 @@ x64/Release
 amqpcpp
 *.lib
 *.aps
+*tlog
+*.obj
