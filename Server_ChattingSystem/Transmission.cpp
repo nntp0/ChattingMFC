@@ -97,10 +97,6 @@ void SocketTransmission::RecvFrom(UINT id, CString msg) {
         }
     };
     this->pCoreModule->EventController(EventList::ReceiveMessage, &eventData);
-
-#ifdef _DEBUG
-    AfxMessageBox(msg1);
-#endif
 }
 
 // deprecated
