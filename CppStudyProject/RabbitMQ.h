@@ -11,6 +11,26 @@
 #define __ConnectionHandler_NOT_INCLUDED__
 class MyConnectionHandler : public AMQP::ConnectionHandler
 {
+private:
+    SOCKET ConnectSocket = INVALID_SOCKET;
+    WSADATA wsaData;
+
+public:
+    MyConnectionHandler() : wsaData() {
+
+        int iResult;
+        // Initialize Winsock
+        iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+        if (iResult != 0) {
+            printf("WSAStartup failed with error: %d\n", iResult);
+            return;
+        }
+    }
+    virtual ~MyConnectionHandler() {
+        closesocket(ConnectSocket);
+        WSACleanup();
+    }
+
     /**
      *  Method that is called by the AMQP library every time it has data
      *  available that should be sent to RabbitMQ.
@@ -26,27 +46,11 @@ class MyConnectionHandler : public AMQP::ConnectionHandler
         //  send all data at once, so you also need to take care of buffering
         //  the bytes that could not immediately be sent, and try to send
         //  them again when the socket becomes writable again
+        int iResult;
 
-#define DEFAULT_BUFLEN 512
-#define DEFAULT_PORT "5672"
-
-        WSADATA wsaData;
-        SOCKET ConnectSocket = INVALID_SOCKET;
         struct addrinfo* result = NULL,
             * ptr = NULL,
             hints;
-        //const char* sendbuf = "this is a test";
-        char recvbuf[DEFAULT_BUFLEN];
-        int iResult;
-        int recvbuflen = DEFAULT_BUFLEN;
-
-
-        // Initialize Winsock
-        iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-        if (iResult != 0) {
-            printf("WSAStartup failed with error: %d\n", iResult);
-            return;
-        }
 
         ZeroMemory(&hints, sizeof(hints));
         hints.ai_family = AF_UNSPEC;
@@ -54,7 +58,7 @@ class MyConnectionHandler : public AMQP::ConnectionHandler
         hints.ai_protocol = IPPROTO_TCP;
 
         // Resolve the server address and port
-        iResult = getaddrinfo("127.0.0.1", DEFAULT_PORT, &hints, &result);
+        iResult = getaddrinfo("127.0.0.1", "5672", &hints, &result);
         if (iResult != 0) {
             printf("getaddrinfo failed with error: %d\n", iResult);
             WSACleanup();
@@ -92,7 +96,7 @@ class MyConnectionHandler : public AMQP::ConnectionHandler
         }
 
         // Send an initial buffer
-        iResult = send(ConnectSocket, sendbuf, (int)strlen(sendbuf), 0);
+        iResult = send(ConnectSocket, sendbuf, size, 0);
         if (iResult == SOCKET_ERROR) {
             printf("send failed with error: %d\n", WSAGetLastError());
             closesocket(ConnectSocket);
@@ -102,35 +106,8 @@ class MyConnectionHandler : public AMQP::ConnectionHandler
 
         printf("Bytes Sent: %ld\n", iResult);
 
-        // shutdown the connection since no more data will be sent
-        iResult = shutdown(ConnectSocket, SD_SEND);
-        if (iResult == SOCKET_ERROR) {
-            printf("shutdown failed with error: %d\n", WSAGetLastError());
-            closesocket(ConnectSocket);
-            WSACleanup();
-            return;
-        }
-
-        // Receive until the peer closes the connection
-        do {
-
-            iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
-            if (iResult > 0)
-                printf("Bytes received: %d\n", iResult);
-            else if (iResult == 0)
-                printf("Connection closed\n");
-            else
-                printf("recv failed with error: %d\n", WSAGetLastError());
-
-        } while (iResult > 0);
-
-        // cleanup
-        closesocket(ConnectSocket);
-        WSACleanup();
-
         return;
     }
-
     /**
      *  Method that is called by the AMQP library when the login attempt
      *  succeeded. After this method has been called, the connection is ready
@@ -142,6 +119,8 @@ class MyConnectionHandler : public AMQP::ConnectionHandler
         // @todo
         //  add your own implementation, for example by creating a channel
         //  instance, and start publishing or consuming
+
+        printf("I m Ready");
     }
 
     /**
