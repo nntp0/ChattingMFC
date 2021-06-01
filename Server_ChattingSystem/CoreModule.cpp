@@ -10,7 +10,7 @@ CoreModule::CoreModule(iDisplayModule* displayModule) { DependencyInjection(disp
 CoreModule::~CoreModule() {}
 
 void CoreModule::DependencyInjection(iDisplayModule* displayModule) {
-	this->transmission = std::shared_ptr<SocketTransmission>(new SocketTransmission(this));
+	this->transmission = std::shared_ptr<AMQPTransmission>(new AMQPTransmission(this));
 	this->displayModule = displayModule;
 	this->dataModule = std::shared_ptr<DataModule>(new DataModule);
 }

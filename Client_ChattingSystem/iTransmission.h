@@ -1,5 +1,4 @@
 #pragma once
-#include <combaseapi.h>
 
 #ifndef __iTransmission_H_INCLUDED__
 #define __iTransmission_H_INCLUDED__
