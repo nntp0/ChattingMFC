@@ -1,31 +1,31 @@
 #pragma once
 
-#include "iMainFrame.h"
 #include "iTransmission.h"
+#include "iApplication.h"
 
-#ifndef __Transmission_H_INCLUDED__
-#define __Transmission_H_INCLUDED__
+#include "SimpleAmqpClient/SimpleAmqpClient.h"
+
 class AMQPTransmission : public iTransmission {
 
 public:
-
-public:
-	AMQPTransmission(iMainFrame* mainFrame);
+	AMQPTransmission();
 	~AMQPTransmission();
 
 	// Method Override
 public:
+	virtual void Connect();
 	virtual void Close();
-	virtual void SetMainFrame(iMainFrame* mainFrame);
-	virtual void Send(CString);
-	virtual void Receive(CString);
+	virtual void Send(std::string);
+	virtual void Receive(std::string);
 
-	// Methods
+
+	// Method
 public:
-	CString MessageEncoding(CString);
-	CString MessageDecoding(CString);
+	void SetApplication(iApplication* application);
+
 	// properties
 private:
-	iMainFrame* mainFrame;
+	iApplication* application;
+	AmqpClient::Channel::ptr_t channel;
+	std::string messageQueueName;
 };
-#endif

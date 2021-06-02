@@ -12,6 +12,7 @@
 #include "locale.h"
 
 #include "iTransmission.h"
+#include "AMQPTransmission.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -30,13 +31,11 @@ END_MESSAGE_MAP()
 // CMainFrame Constructor / Destructor
 // Dependency Injection About iTransmission
 CMainFrame::CMainFrame() noexcept
-	: m_transmission(new SocketTransmission(this))
+	: m_transmission(new AMQPTransmission())
 {
-	TRACE(_T("CMainFrame Constructor"));
 }
 CMainFrame::~CMainFrame()
 {
-	TRACE(_T("CMainFrame Destructor"));
 	delete m_transmission;
 }
 
@@ -111,8 +110,8 @@ void CMainFrame::OnClose()
 void CMainFrame::Tick() {
 	AfxMessageBox(_T("Tick"));
 }
-void CMainFrame::ControlMessage(CString str) {
+void CMainFrame::RecvMessage(std::string str) {
 	TRACE(_T("ControlMessage"));
 
-	m_wndView.UpdateMessageList(str);
+	m_wndView.UpdateMessageList(CString(CA2CT(str.c_str())));
 }

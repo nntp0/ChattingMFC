@@ -4,11 +4,11 @@
 
 #pragma once
 #include "ChildView.h"
-#include "Transmission.h"
 
-#include "iMainFrame.h"
+#include "iApplication.h"
+#include "iTransmission.h"
 
-class CMainFrame : public CFrameWnd, public iMainFrame
+class CMainFrame : public CFrameWnd, public iApplication
 {
 	// Constructor / Destructor
 public:
@@ -28,9 +28,9 @@ public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	virtual BOOL OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo);
 
-	// iMainFrame
+	// iApplication
 	virtual void Tick();
-	virtual void ControlMessage(CString str);
+	virtual void RecvMessage(std::string str);
 // 구현입니다.
 public:
 #ifdef _DEBUG

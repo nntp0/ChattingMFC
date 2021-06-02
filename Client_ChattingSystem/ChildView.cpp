@@ -104,7 +104,7 @@ void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 		m_str += (TCHAR)nChar;
 	}*/
 	if (nChar == VK_RETURN) {
-		((CMainFrame*)GetParentFrame())->m_transmission->Send(this->m_str);
+		//((CMainFrame*)GetParentFrame())->m_transmission->Send(this->m_str);
 
 		this->InputBufferClear();
 		Invalidate();
