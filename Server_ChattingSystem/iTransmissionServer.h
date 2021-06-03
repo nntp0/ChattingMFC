@@ -9,7 +9,6 @@ __interface iTransmissionServer
 public:
 	virtual void Close(UID id) = 0;
 	virtual void SendTo(UID id, std::string msg);
-	virtual void ReceiveFrom(UID id, std::string msg);
 
 	virtual void SetServer(iServer*);
 };

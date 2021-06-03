@@ -14,6 +14,7 @@ void CoreModule::DependencyInjection(iDisplayModule* displayModule) {
 	this->displayModule = displayModule;
 	this->dataModule = std::shared_ptr<DataModule>(new DataModule);
 
+	this->transmission->SetServer(this);
 }
 
 

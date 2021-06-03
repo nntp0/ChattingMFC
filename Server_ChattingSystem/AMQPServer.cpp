@@ -36,6 +36,8 @@ void AMQPServer::MessageDecoding(std::string buffer) {
 }
 void AMQPServer::SetServer(iServer* server) {
     this->server = server;
+
+    this->server->Tick();
 }
 
 AMQPServer::AMQPServer() : sequenceNum(0), clientList()
