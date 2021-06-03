@@ -2,7 +2,7 @@
 
 #include "CoreModule.h"
 
-#include "Transmission.h"
+#include "AMQPServer.h"
 #include "DataModule.h"
 
 
@@ -10,7 +10,7 @@ CoreModule::CoreModule(iDisplayModule* displayModule) { DependencyInjection(disp
 CoreModule::~CoreModule() {}
 
 void CoreModule::DependencyInjection(iDisplayModule* displayModule) {
-	this->transmission = std::shared_ptr<AMQPTransmission>(new AMQPTransmission(this));
+	this->transmission = std::shared_ptr<AMQPServer>(new AMQPServer);
 	this->displayModule = displayModule;
 	this->dataModule = std::shared_ptr<DataModule>(new DataModule);
 }
@@ -34,7 +34,7 @@ void CoreModule::EventController(EventList eventID, void* argv) {
 
 			// Greetings to Client
 			wsprintf(buf, _T("Hello %d\n"), eventData->socketID);
-			this->transmission->SendTo(eventData->socketID, buf);
+			this->transmission->SendTo(eventData->socketID, "Hello % d\n");
 
 			break;
 		}
@@ -64,12 +64,12 @@ void CoreModule::EventController(EventList eventID, void* argv) {
 				Room newRoom;
 				newRoom.name = decodedMessage.msg;
 				this->dataModule->newRoom(newRoom);
-				this->transmission->SendTo(eventData->socketID, _T("RoomCreated"));
+				this->transmission->SendTo(eventData->socketID, "RoomCreated");
 				break;
 			}
 			case MessageType::RoomLeave:
 			{
-				this->transmission->SendTo(eventData->socketID, _T("RoomLeaved"));
+				this->transmission->SendTo(eventData->socketID, "RoomLeaved");
 				break;
 			}
 			case MessageType::RoomList:
@@ -82,7 +82,7 @@ void CoreModule::EventController(EventList eventID, void* argv) {
 					wsprintf(buf, _T("%d: "), it->roomID);
 					message += buf + it->name + _T("\n");
 				}
-				this->transmission->SendTo(eventData->socketID, message);
+				this->transmission->SendTo(eventData->socketID, std::string(CT2CA(message.operator LPCWSTR())));
 				break;
 			}
 			case MessageType::RoomJoin:
@@ -94,7 +94,7 @@ void CoreModule::EventController(EventList eventID, void* argv) {
 
 				this->dataModule->JoinRoom(room, client);
 
-				this->transmission->SendTo(eventData->socketID, _T("RoomJoined"));
+				this->transmission->SendTo(eventData->socketID, "RoomJoined");
 				break;
 			}
 			case MessageType::ClientList:
@@ -116,7 +116,7 @@ void CoreModule::EventController(EventList eventID, void* argv) {
 					}
 				}
 
-				this->transmission->SendTo(eventData->socketID, msg);
+				this->transmission->SendTo(eventData->socketID, std::string(CT2CA(msg.operator LPCWSTR())));
 			}
 
 			case MessageType::Normal:
@@ -132,7 +132,7 @@ void CoreModule::EventController(EventList eventID, void* argv) {
 
 				for (auto it = temp.begin(); it != temp.end(); it++) {
 					if (it->joinedRoomID == roomID) {
-						this->transmission->SendTo(it->clientID, decodedMessage.msg);
+						this->transmission->SendTo(it->clientID, std::string(CT2CA(decodedMessage.msg.operator LPCWSTR())));
 					}
 				}
 				

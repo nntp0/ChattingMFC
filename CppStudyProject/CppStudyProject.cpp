@@ -1,7 +1,7 @@
-﻿#include "Threading.h"
+﻿#include "AMQPServer.h"
 
 int main() {
-	Threading::run();
+	AMQPServer server;
 }
 
 

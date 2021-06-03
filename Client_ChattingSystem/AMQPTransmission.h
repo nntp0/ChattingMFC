@@ -9,7 +9,7 @@ class AMQPTransmission : public iTransmission {
 
 public:
 	AMQPTransmission();
-	~AMQPTransmission();
+	virtual ~AMQPTransmission();
 
 	// Method Override
 public:

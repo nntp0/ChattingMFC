@@ -10,11 +10,13 @@ AMQPTransmission::AMQPTransmission() {
 	channel = AmqpClient::Channel::Open(ret);
 
 	this->messageQueueName = channel->DeclareQueue("", false, true, true, false);
+	Connect();
+}
+AMQPTransmission::~AMQPTransmission() {
 }
 
-
 void AMQPTransmission::Connect() {
-	channel->BasicPublish("server", "", AmqpClient::BasicMessage::Create(this->messageQueueName));
+	channel->BasicPublish("", "server", AmqpClient::BasicMessage::Create(std::string("conn") + this->messageQueueName));
 }
 void AMQPTransmission::Close() {}
 void AMQPTransmission::Send(std::string  msg) {}
