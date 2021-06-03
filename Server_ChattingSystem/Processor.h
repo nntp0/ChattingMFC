@@ -30,6 +30,6 @@ private:
 	// Modules
 private:
 	std::shared_ptr<iTransmissionServer> transmission;
-	iDisplayModule* displayModule;
+	iDisplayModule* displayModule = nullptr;
 	std::shared_ptr<iDataModule> dataModule;
 };
