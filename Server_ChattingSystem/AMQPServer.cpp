@@ -63,6 +63,7 @@ void AMQPServer::Accept(std::string messageQueueName) {
     ConnectionInfo client(++sequenceNum, messageQueueName);
     clientList.push_back(client);
 
+    SendTo(sequenceNum, "conn" + std::to_string(sequenceNum));
     SendTo(sequenceNum, "Hello?");
 }
 void AMQPServer::Close(UID socketID) {
@@ -81,6 +82,7 @@ void AMQPServer::SendTo(UID id, std::string message) {
     }
 
     if (targetQueue != "") {
+        AfxMessageBox(_T("send"));
         channel->BasicPublish("", targetQueue, AmqpClient::BasicMessage::Create(message));
     }
     else {

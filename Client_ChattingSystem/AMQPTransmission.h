@@ -5,8 +5,13 @@
 
 #include "SimpleAmqpClient/SimpleAmqpClient.h"
 
-class AMQPTransmission : public iTransmission {
+class AMQPTransmission : public iTransmission 
+{
+	// static memebers
+public:
+	static std::shared_ptr<bool> isRunning;
 
+	// Constructor & Destructor
 public:
 	AMQPTransmission();
 	virtual ~AMQPTransmission();
@@ -16,16 +21,20 @@ public:
 	virtual void Connect();
 	virtual void Close();
 	virtual void Send(std::string);
-	virtual void Receive(std::string);
 
+	virtual void SetApplication(iApplication* application);
 
 	// Method
 public:
-	void SetApplication(iApplication* application);
+	void RecvThread();
+	void MessageDecoding(std::string);
 
 	// properties
 private:
 	iApplication* application;
+
 	AmqpClient::Channel::ptr_t channel;
 	std::string messageQueueName;
+
+	UID uid;
 };

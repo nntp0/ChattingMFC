@@ -29,8 +29,8 @@ public:
 public:
 	void Accept(std::string);
 
-	void MessageDecoding(std::string);
 	void RecvThread();
+	void MessageDecoding(std::string);
 
 	// Properties
 private:

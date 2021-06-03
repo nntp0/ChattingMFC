@@ -33,6 +33,7 @@ END_MESSAGE_MAP()
 CMainFrame::CMainFrame() noexcept
 	: m_transmission(new AMQPTransmission())
 {
+	m_transmission->SetApplication(this);
 }
 CMainFrame::~CMainFrame()
 {
