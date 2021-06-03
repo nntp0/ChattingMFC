@@ -5,7 +5,7 @@
 
 #include "SimpleAmqpClient/SimpleAmqpClient.h"
 
-class AMQPTransmission : public iTransmission 
+class AMQPClient : public iTransmission 
 {
 	// static memebers
 public:
@@ -13,8 +13,8 @@ public:
 
 	// Constructor & Destructor
 public:
-	AMQPTransmission();
-	virtual ~AMQPTransmission();
+	AMQPClient();
+	virtual ~AMQPClient();
 
 	// Method Override
 public:

@@ -76,8 +76,8 @@ void AMQPServer::Accept(std::string messageQueueName) {
 void AMQPServer::Close(UID id) {
     for (auto iter = clientList.begin(); iter != clientList.end(); iter++) {
         if (iter->uid == id) {
-            iter->isOpened = false;
             this->server->Disconnect(iter->uid);
+            iter->isOpened = false;
         }
     }
 

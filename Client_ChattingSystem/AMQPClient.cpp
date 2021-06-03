@@ -1,12 +1,12 @@
 #include "pch.h"
 
-#include "AMQPTransmission.h"
+#include "AMQPClient.h"
 
 #include <thread>
 
-std::shared_ptr<bool> AMQPTransmission::isRunning = std::make_shared<bool>(true);
+std::shared_ptr<bool> AMQPClient::isRunning = std::make_shared<bool>(true);
 
-void AMQPTransmission::RecvThread() {
+void AMQPClient::RecvThread() {
     std::string consumer_tag = channel->BasicConsume(this->messageQueueName, "");
 
     while (*isRunning) {
@@ -22,8 +22,9 @@ void AMQPTransmission::RecvThread() {
         }
     }
     channel->BasicCancel(consumer_tag);
+    *isRunning = true;
 }
-void AMQPTransmission::MessageDecoding(std::string buffer) {
+void AMQPClient::MessageDecoding(std::string buffer) {
     std::string type = buffer.substr(0, 4);
 
     if (type == "conn") {
@@ -34,7 +35,7 @@ void AMQPTransmission::MessageDecoding(std::string buffer) {
     }
 }
 
-AMQPTransmission::AMQPTransmission() {
+AMQPClient::AMQPClient() {
 	AmqpClient::Channel::OpenOpts ret;
 	ret.host = std::string("localhost");
 	ret.auth = AmqpClient::Channel::OpenOpts::BasicAuth("guest", "guest");
@@ -44,24 +45,32 @@ AMQPTransmission::AMQPTransmission() {
 
 	Connect();
 }
-AMQPTransmission::~AMQPTransmission() {
+
+AMQPClient::~AMQPClient() {
     Close();
 }
 
-void AMQPTransmission::Connect() {
+void AMQPClient::Connect() {
 	channel->BasicPublish("", "server", AmqpClient::BasicMessage::Create(std::string("conn") + this->messageQueueName));
 
-    *AMQPTransmission::isRunning = true;
-    std::thread receiver(&AMQPTransmission::RecvThread, this);
+    *AMQPClient::isRunning = true;
+    std::thread receiver(&AMQPClient::RecvThread, this);
     receiver.detach();
 }
-void AMQPTransmission::Close() {
+void AMQPClient::Close() {
     channel->BasicPublish("", "server", AmqpClient::BasicMessage::Create(std::string("disc") + this->uid));
 
-    *AMQPTransmission::isRunning = false;
-}
-void AMQPTransmission::Send(std::string  msg) {}
+    *AMQPClient::isRunning = false;
 
-void AMQPTransmission::SetApplication(iApplication* application) {
+    while (true) {
+        if (isRunning) break;
+        else {
+            std::this_thread::sleep_for(std::chrono::seconds(2));
+        }
+    }
+}
+void AMQPClient::Send(std::string  msg) {}
+
+void AMQPClient::SetApplication(iApplication* application) {
 	this->application = application;
 }

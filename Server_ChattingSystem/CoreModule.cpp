@@ -19,34 +19,36 @@ void CoreModule::DependencyInjection(iDisplayModule* displayModule) {
 
 
 void CoreModule::Tick() { AfxMessageBox(_T("DI Succeed")); }
-void CoreModule::Connect(UID) {}
-void CoreModule::Disconnect(UID) {}
+void CoreModule::Connect(UID id) {
+	std::string buf = id + " Connected";
+	CString cstr = CString::CStringT(CA2CT(buf.c_str()));
+	
+	this->displayModule->DisplayLog(cstr);
+
+	Client newClient;
+	newClient.clientID = std::stoul(id);
+	buf = "Client " + id;
+	newClient.name = CString::CStringT(CA2CT(buf.c_str()));
+	this->dataModule->newClient(newClient);
+
+	this->transmission->SendTo(id, "Hello " + buf);
+}
+void CoreModule::Disconnect(UID id) {
+	std::string buf = id + " DisConnected";
+	CString cstr = CString::CStringT(CA2CT(buf.c_str()));
+
+	this->displayModule->DisplayLog(cstr);
+
+	Client leftClient;
+	leftClient.clientID = std::stoul(id);
+	this->dataModule->closeClient(leftClient);
+}
 void CoreModule::RecvMessage(std::string msg) {}
 
 
 void CoreModule::EventController(EventList eventID, void* argv) {
 
 	//switch (eventID) {
-	//	case EventList::ClientConnection:
-	//	{
-	//		auto eventData = *static_cast<std::shared_ptr<Info_ClientConnection>*>(argv);
-	//	
-	//		TCHAR buf[30];
-	//		wsprintf(buf, _T("%d Connected"), eventData->socketID);
-	//		this->displayModule->DisplayLog(buf);
-
-	//		Client newClient;
-	//		newClient.clientID = eventData->socketID;
-	//		wsprintf(buf, _T("Client %d"), eventData->socketID);
-	//		newClient.name = buf;
-	//		this->dataModule->newClient(newClient);
-
-	//		// Greetings to Client
-	//		wsprintf(buf, _T("Hello %d\n"), eventData->socketID);
-	//		this->transmission->SendTo(eventData->socketID, "Hello % d\n");
-
-	//		break;
-	//	}
 	//	case EventList::ClientDisconnection:
 	//	{
 	//		auto eventData = *static_cast<std::shared_ptr<Info_ClientDisconnection>*>(argv);
@@ -165,6 +167,7 @@ void CoreModule::EventController(EventList eventID, void* argv) {
 	//	}
 	//}
 }
+
 
 // Transmission Methods
 CString CoreModule::MessageEncoding(CustomMessage msg) {
