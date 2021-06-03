@@ -24,8 +24,6 @@ void CoreModule::Disconnect(UID) {}
 void CoreModule::RecvMessage(std::string msg) {}
 
 
-
-
 void CoreModule::EventController(EventList eventID, void* argv) {
 
 	switch (eventID) {

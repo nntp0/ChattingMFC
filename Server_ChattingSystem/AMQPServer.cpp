@@ -62,28 +62,29 @@ void AMQPServer::Accept(std::string messageQueueName) {
     //AfxMessageBox(CString::CStringT(CA2CT(messageQueueName.c_str())));
     ConnectionInfo client(++sequenceNum, messageQueueName);
     clientList.push_back(client);
+
+    SendTo(sequenceNum, "Hello?");
 }
 void AMQPServer::Close(UID socketID) {
     TRACE(_T("AcceptSocket Close"));
 }
 
-void AMQPServer::SendTo(UID id, std::string) {
-    //TRACE(_T("Transmission Send"));
+void AMQPServer::SendTo(UID id, std::string message) {
 
-    //AmqpClient::Channel::OpenOpts ret;
-    //ret.host = std::string("localhost");
-    //ret.auth = AmqpClient::Channel::OpenOpts::BasicAuth("guest", "guest");
+    std::string targetQueue = "";
+    for (auto iter = clientList.cbegin(); iter != clientList.cend(); iter++) {
+        if (iter->uid == id) {
+            if (iter->isOpened)
+                targetQueue = iter->messageQueueName;
+            break;
+        }
+    }
 
-    ////Create channel
-    //AmqpClient::Channel::ptr_t channel = AmqpClient::Channel::Open(ret);
-
-    ////Create a queue, the first parameter is the queue name.
-    //channel->DeclareQueue(queue_name, false, true, false, false);
-
-    //std::string message(CT2CA((LPCTSTR)msg));
-    ////The first is the exchange name, and the second parameter is routing_key (this can be understood as the queue to which the message will be sent).
-    //channel->BasicPublish("", queue_name, AmqpClient::BasicMessage::Create(message));
-
-    //AMQPServer::isRunning = false;
+    if (targetQueue != "") {
+        channel->BasicPublish("", targetQueue, AmqpClient::BasicMessage::Create(message));
+    }
+    else {
+        AfxMessageBox(_T("Doesn't Exist"));
+    }
 }
 
