@@ -43,11 +43,6 @@ BOOL CChildView::PreCreateWindow(CREATESTRUCT& cs)
 	cs.lpszClass = AfxRegisterWndClass(CS_HREDRAW|CS_VREDRAW|CS_DBLCLKS, 
 		::LoadCursor(nullptr, IDC_ARROW), reinterpret_cast<HBRUSH>(COLOR_WINDOW+1), nullptr);
 
-
-	// 여기 수정하세요
-	/*this->messageList.AddTail(CString("Hello World!"));
-	this->messageList.AddTail(CString("Bye World!"));*/
-
 	return TRUE;
 }
 
@@ -82,12 +77,6 @@ void CChildView::DisplayChattingLog(CPaintDC& dc, CRect& rect) {
 	}
 }
 
-//void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
-//{
-//	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-//	delete ((CMainFrame*)AfxGetMainWnd())->m_transmission;
-//}
-
 void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	CClientDC dc(this);
@@ -104,8 +93,7 @@ void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 		m_str += (TCHAR)nChar;
 	}*/
 	if (nChar == VK_RETURN) {
-		//((CMainFrame*)GetParentFrame())->m_transmission->Send(this->m_str);
-		//((CMainFrame*)GetParentFrame())->m_transmission->Connect();
+		((CMainFrame*)GetParentFrame())->m_transmission->Send(std::string(CT2CA(m_str.operator LPCWSTR())));
 		this->InputBufferClear();
 		Invalidate();
 	}
