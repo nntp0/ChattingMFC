@@ -33,7 +33,7 @@ void AMQPServer::MessageDecoding(std::string buffer) {
         Close(buffer.substr(4));
     }
     else {
-        AfxMessageBox(_T("message"));
+        this->server->RecvMessage(buffer);
     }
 }
 void AMQPServer::SetServer(iServer* server) {
@@ -60,7 +60,7 @@ void AMQPServer::Accept(std::string messageQueueName) {
     for (auto iter = clientList.begin(); iter != clientList.end(); iter++) {
         if (iter->messageQueueName == messageQueueName) {
             iter->isOpened = true;
-            SendTo(iter->uid, "Hello Again");
+            this->server->Connect(iter->uid);
             return;
         }
     }
@@ -70,16 +70,18 @@ void AMQPServer::Accept(std::string messageQueueName) {
     clientList.push_back(client);
 
     SendTo(client.uid, "conn" + client.uid);
-    SendTo(client.uid, "Hello?");
+
+    this->server->Connect(client.uid);
 }
 void AMQPServer::Close(UID id) {
     for (auto iter = clientList.begin(); iter != clientList.end(); iter++) {
         if (iter->uid == id) {
             iter->isOpened = false;
+            this->server->Disconnect(iter->uid);
         }
     }
-}
 
+}
 void AMQPServer::SendTo(UID id, std::string message) {
 
     std::string targetQueue = "";
@@ -98,4 +100,3 @@ void AMQPServer::SendTo(UID id, std::string message) {
         AfxMessageBox(_T("Doesn't Exist"));
     }
 }
-
