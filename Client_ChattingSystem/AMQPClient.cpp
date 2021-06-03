@@ -69,7 +69,9 @@ void AMQPClient::Close() {
         }
     }
 }
-void AMQPClient::Send(std::string  msg) {}
+void AMQPClient::Send(std::string  msg) {
+    channel->BasicPublish("", "server", AmqpClient::BasicMessage::Create(this->uid + msg));
+}
 
 void AMQPClient::SetApplication(iApplication* application) {
 	this->application = application;

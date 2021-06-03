@@ -1,14 +1,15 @@
 #pragma once
 
-#include "iCoreModule.h"
-#include "iTransmissionServer.h"
-#include "iDisplayModule.h"
-#include "iDataModule.h"
+
 #include <memory>
 
-#ifndef __CoreModule_H_INCLUDED__
-#define __CoreModule_H_INCLUDED__
-class CoreModule : public iCoreModule, public iServer {
+#include "Processor.h"
+
+#include "iDisplayModule.h"
+#include "iDataModule.h"
+#include "iTransmissionServer.h"
+
+class CoreModule : public iServer {
 
 	// Constructor / Destructor
 public:
@@ -17,9 +18,6 @@ public:
 
 	// Method Override
 public:
-	// iCore.h
-	virtual void CoreModule::EventController(EventList eventID, void* argv);
-
 
 	// iServer.h
 	virtual void Tick();
@@ -27,6 +25,9 @@ public:
 	virtual void Disconnect(UID);
 	virtual void RecvMessage(std::string msg);
 
+	// Method
+public:
+	std::shared_ptr<Processor> FindIdleProcessor();
 
 	// Properties ( Modules )	
 private:
@@ -34,12 +35,5 @@ private:
 	iDisplayModule* displayModule;
 	std::shared_ptr<iDataModule> dataModule;
 	
-
-	// Method
-public:
-	void DependencyInjection(iDisplayModule*);
-
-	CString MessageEncoding(CustomMessage msg);
-	CustomMessage MessageDecoding(CString msg);
+	std::shared_ptr<Processor> processor;
 };
-#endif

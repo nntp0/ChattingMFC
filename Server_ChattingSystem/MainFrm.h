@@ -4,7 +4,7 @@
 
 #pragma once
 #include "ChildView.h"
-#include "iCoreModule.h"
+#include "iServer.h"
 
 #include <memory>
 
@@ -44,7 +44,7 @@ protected:
 
 	// properties
 private:
-	std::shared_ptr<iCoreModule> coreModule;
+	std::shared_ptr<iServer> coreModule;
 	// methods
 public:
 

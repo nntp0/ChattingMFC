@@ -25,7 +25,7 @@ void AMQPServer::RecvThread() {
 }
 void AMQPServer::MessageDecoding(std::string buffer) {
     std::string type = buffer.substr(0, 4);
-    
+
     if (type == "conn") {
         Accept(buffer.substr(4));
     }

@@ -8,6 +8,8 @@
 #include <vector>
 #include <set>
 
+#include "AMQPSettings.h"
+
 struct Client {
 	CString name;
 	UINT clientID;
@@ -36,8 +38,9 @@ enum class MessageType {
 	Argent,
 };
 struct CustomMessage {
+	UID uid;
 	MessageType type = MessageType::Normal;
-	CString msg;
+	std::string body;
 };
 
 #endif

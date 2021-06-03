@@ -45,6 +45,8 @@ private:
 private:
 	UID createID() {
 		static int id = 0;
-		return std::to_string(id++);
+		char buf[10];
+		sprintf_s(buf, 10, "%04d", id++);
+		return std::string(buf);
 	}
 };
