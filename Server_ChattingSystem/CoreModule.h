@@ -8,7 +8,7 @@
 
 #ifndef __CoreModule_H_INCLUDED__
 #define __CoreModule_H_INCLUDED__
-class CoreModule : public iCoreModule {
+class CoreModule : public iCoreModule, public iServer {
 
 	// Constructor / Destructor
 public:
@@ -17,7 +17,16 @@ public:
 
 	// Method Override
 public:
+	// iCore.h
 	virtual void CoreModule::EventController(EventList eventID, void* argv);
+
+
+	// iServer.h
+	virtual void Tick();
+	virtual void Connect(UID);
+	virtual void Disconnect(UID);
+	virtual void RecvMessage(std::string msg);
+
 
 	// Properties ( Modules )	
 private:

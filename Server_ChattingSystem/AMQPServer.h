@@ -1,10 +1,11 @@
 #pragma once
 
 #include "iTransmissionServer.h"
-#include "iApplication.h"
+#include "iServer.h"
 #include "SimpleAmqpClient/SimpleAmqpClient.h"
 
 #include <string>
+#include <vector>
 
 class AMQPServer : public iTransmissionServer
 {
@@ -19,21 +20,25 @@ public:
 
 	// Method Override
 public:
-	virtual void Accept(std::string);
 	virtual void Close(UID id);
 	virtual void SendTo(UID id, std::string);
-	virtual void ReceiveFrom(UID id, std::string);
+
+	virtual void SetServer(iServer*);
 
 	// Methods
 public:
+	void Accept(std::string);
+
 	void MessageDecoding(std::string);
 	void RecvThread();
 
 	// Properties
 private:
-	iApplication* application;
+	iServer* server;
+
 	AmqpClient::Channel::ptr_t channel;
 	std::string messageQueueName;
 
 	UID sequenceNum;
+	std::vector<ConnectionInfo> clientList;
 };

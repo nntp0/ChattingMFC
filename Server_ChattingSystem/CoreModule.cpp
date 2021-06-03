@@ -13,7 +13,17 @@ void CoreModule::DependencyInjection(iDisplayModule* displayModule) {
 	this->transmission = std::shared_ptr<AMQPServer>(new AMQPServer);
 	this->displayModule = displayModule;
 	this->dataModule = std::shared_ptr<DataModule>(new DataModule);
+
 }
+
+
+void CoreModule::Tick() { AfxMessageBox(_T("DI Succeed")); }
+void CoreModule::Connect(UID) {}
+void CoreModule::Disconnect(UID) {}
+void CoreModule::RecvMessage(std::string msg) {}
+
+
+
 
 void CoreModule::EventController(EventList eventID, void* argv) {
 

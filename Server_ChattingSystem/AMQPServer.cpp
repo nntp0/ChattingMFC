@@ -7,13 +7,6 @@
 std::shared_ptr<bool> AMQPServer::isRunning = std::make_shared<bool>(true);
 
 void AMQPServer::RecvThread() {
-    //std::shared_ptr<bool> isRunning = mainThread->isRunning;
-
-    //AmqpClient::Channel::OpenOpts ret;
-    //ret.host = std::string("localhost");
-    //ret.auth = AmqpClient::Channel::OpenOpts::BasicAuth("guest", "guest");
-    //auto channel = AmqpClient::Channel::Open(ret);
-
     std::string consumer_tag = channel->BasicConsume("server", "");
 
     while (isRunning) {
@@ -30,7 +23,6 @@ void AMQPServer::RecvThread() {
     }
     channel->BasicCancel(consumer_tag);
 }
-
 void AMQPServer::MessageDecoding(std::string buffer) {
     std::string type = buffer.substr(0, 4);
     
@@ -42,8 +34,11 @@ void AMQPServer::MessageDecoding(std::string buffer) {
         AfxMessageBox(_T("message"));
     }
 }
+void AMQPServer::SetServer(iServer* server) {
+    this->server = server;
+}
 
-AMQPServer::AMQPServer() : sequenceNum(0)
+AMQPServer::AMQPServer() : sequenceNum(0), clientList()
 {
     AmqpClient::Channel::OpenOpts ret;
     ret.host = std::string("localhost");
@@ -59,10 +54,12 @@ AMQPServer::~AMQPServer() {
     AMQPServer::isRunning = false;
 }
 
-void AMQPServer::Accept(std::string msg) {
+void AMQPServer::Accept(std::string messageQueueName) {
     TRACE(_T("SocketTransmission.cpp Accept"));
 
-    AfxMessageBox(_T("Accept"));
+    //AfxMessageBox(CString::CStringT(CA2CT(messageQueueName.c_str())));
+    ConnectionInfo client(++sequenceNum, messageQueueName);
+    clientList.push_back(client);
 }
 void AMQPServer::Close(UID socketID) {
     TRACE(_T("AcceptSocket Close"));
@@ -86,10 +83,5 @@ void AMQPServer::SendTo(UID id, std::string) {
     //channel->BasicPublish("", queue_name, AmqpClient::BasicMessage::Create(message));
 
     //AMQPServer::isRunning = false;
-}
-void AMQPServer::ReceiveFrom(UID id, std::string) {
-    //TRACE(_T("Transmission Receive"));
-
-    //AfxMessageBox(msg);
 }
 
