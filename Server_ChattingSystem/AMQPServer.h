@@ -39,6 +39,12 @@ private:
 	AmqpClient::Channel::ptr_t channel;
 	std::string messageQueueName;
 
-	UID sequenceNum;
 	std::vector<ConnectionInfo> clientList;
+
+	// Helper Method
+private:
+	UID createID() {
+		static int id = 0;
+		return std::to_string(id++);
+	}
 };

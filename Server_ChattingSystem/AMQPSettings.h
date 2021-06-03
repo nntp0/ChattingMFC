@@ -2,7 +2,7 @@
 
 #include <string>
 
-#define UID unsigned int
+#define UID std::string
 struct ConnectionInfo {
 	UID uid;
 	std::string messageQueueName;

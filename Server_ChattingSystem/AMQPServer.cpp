@@ -27,8 +27,10 @@ void AMQPServer::MessageDecoding(std::string buffer) {
     std::string type = buffer.substr(0, 4);
     
     if (type == "conn") {
-        AfxMessageBox(_T("login"));
         Accept(buffer.substr(4));
+    }
+    else if (type == "disc") {
+        Close(buffer.substr(4));
     }
     else {
         AfxMessageBox(_T("message"));
@@ -36,11 +38,9 @@ void AMQPServer::MessageDecoding(std::string buffer) {
 }
 void AMQPServer::SetServer(iServer* server) {
     this->server = server;
-
-    this->server->Tick();
 }
 
-AMQPServer::AMQPServer() : sequenceNum(0), clientList()
+AMQPServer::AMQPServer() : clientList()
 {
     AmqpClient::Channel::OpenOpts ret;
     ret.host = std::string("localhost");
@@ -57,17 +57,27 @@ AMQPServer::~AMQPServer() {
 }
 
 void AMQPServer::Accept(std::string messageQueueName) {
-    TRACE(_T("SocketTransmission.cpp Accept"));
+    for (auto iter = clientList.begin(); iter != clientList.end(); iter++) {
+        if (iter->messageQueueName == messageQueueName) {
+            iter->isOpened = true;
+            SendTo(iter->uid, "Hello Again");
+            return;
+        }
+    }
 
     //AfxMessageBox(CString::CStringT(CA2CT(messageQueueName.c_str())));
-    ConnectionInfo client(++sequenceNum, messageQueueName);
+    ConnectionInfo client(createID(), messageQueueName);
     clientList.push_back(client);
 
-    SendTo(sequenceNum, "conn" + std::to_string(sequenceNum));
-    SendTo(sequenceNum, "Hello?");
+    SendTo(client.uid, "conn" + client.uid);
+    SendTo(client.uid, "Hello?");
 }
-void AMQPServer::Close(UID socketID) {
-    TRACE(_T("AcceptSocket Close"));
+void AMQPServer::Close(UID id) {
+    for (auto iter = clientList.begin(); iter != clientList.end(); iter++) {
+        if (iter->uid == id) {
+            iter->isOpened = false;
+        }
+    }
 }
 
 void AMQPServer::SendTo(UID id, std::string message) {
@@ -82,7 +92,6 @@ void AMQPServer::SendTo(UID id, std::string message) {
     }
 
     if (targetQueue != "") {
-        AfxMessageBox(_T("send"));
         channel->BasicPublish("", targetQueue, AmqpClient::BasicMessage::Create(message));
     }
     else {

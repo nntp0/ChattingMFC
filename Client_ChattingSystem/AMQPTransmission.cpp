@@ -9,14 +9,13 @@ std::shared_ptr<bool> AMQPTransmission::isRunning = std::make_shared<bool>(true)
 void AMQPTransmission::RecvThread() {
     std::string consumer_tag = channel->BasicConsume(this->messageQueueName, "");
 
-    while (isRunning) {
+    AfxMessageBox(_T("Created"));
+    while (*isRunning) {
         AmqpClient::Envelope::ptr_t envolope;
         bool check = channel->BasicConsumeMessage(consumer_tag, envolope, 0);
 
         if (check) {
             std::string buffer = envolope->Message()->Body();
-            
-            AfxMessageBox(_T("messagereceived"));
             this->MessageDecoding(buffer);
         }
         else {
@@ -24,19 +23,19 @@ void AMQPTransmission::RecvThread() {
         }
     }
     channel->BasicCancel(consumer_tag);
+
+    AfxMessageBox(_T("Close"));
 }
 void AMQPTransmission::MessageDecoding(std::string buffer) {
     std::string type = buffer.substr(0, 4);
 
     if (type == "conn") {
-        AfxMessageBox(_T("login"));
         this->uid = buffer.substr(4);
-
-        AfxMessageBox(CString::CStringT(CA2CT(this->uid.c_str())));
     }
     else {
-        AfxMessageBox(_T("message"));
         this->application->RecvMessage(buffer);
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+        Close();
     }
 }
 
@@ -48,20 +47,24 @@ AMQPTransmission::AMQPTransmission() {
 
 	this->messageQueueName = channel->DeclareQueue("", false, true, true, false);
 
-    std::thread receiver(&AMQPTransmission::RecvThread, this);
-    receiver.detach();
-
 	Connect();
 }
 AMQPTransmission::~AMQPTransmission() {
-    AMQPTransmission::isRunning = false;
+    Close();
 }
 
 void AMQPTransmission::Connect() {
 	channel->BasicPublish("", "server", AmqpClient::BasicMessage::Create(std::string("conn") + this->messageQueueName));
+
+    *AMQPTransmission::isRunning = true;
+
+    std::thread receiver(&AMQPTransmission::RecvThread, this);
+    receiver.detach();
 }
 void AMQPTransmission::Close() {
-    channel->BasicPublish("", "server", AmqpClient::BasicMessage::Create(std::string("disc") + this->messageQueueName));
+    channel->BasicPublish("", "server", AmqpClient::BasicMessage::Create(std::string("disc") + this->uid));
+
+    *AMQPTransmission::isRunning = false;
 }
 void AMQPTransmission::Send(std::string  msg) {}
 
