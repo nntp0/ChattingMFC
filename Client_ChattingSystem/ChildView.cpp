@@ -45,78 +45,46 @@ BOOL CChildView::PreCreateWindow(CREATESTRUCT& cs)
 
 	return TRUE;
 }
+int CChildView::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+	if (CWnd::OnCreate(lpCreateStruct) == -1)
+		return -1;
+
+	// TODO:  여기에 특수화된 작성 코드를 추가합니다.
+	return 0;
+}
+void CChildView::OnDestroy()
+{
+	::DestroyCaret();
+
+	CWnd::OnDestroy();
+}
+
 
 void CChildView::OnPaint() 
 {
-	CRect rect;
 	CPaintDC dc(this);
 	
-	if (this->page == Page::chattingRoom) DisplayChattingRoom(dc, rect);
-	else if (this->page == Page::RoomList) DisplayRoomList(dc, rect);
+	if (this->page == Page::chattingRoom) DisplayChattingRoom(dc);
+	else if (this->page == Page::RoomList) DisplayRoomList(dc);
 }
-
-void CChildView::DisplayChattingRoom(CPaintDC& dc, CRect& rect) {
-	DisplayUserTyping(dc, rect);
-	DisplayChattingSpace(dc, rect);
-	DisplayChattingLog(dc, rect);
-}
-
-void CChildView::DisplayRoomList(CPaintDC &dc, CRect& rect) {
+void CChildView::DisplayRoomList(CPaintDC &dc) {
 
 }
 
-void CChildView::DisplayUserTyping(CPaintDC& dc, CRect& rect) {
-	CFont font;
-	VERIFY(font.CreateFont(
-		20,                       // nHeight
-		0,                        // nWidth
-		0,                        // nEscapement
-		0,                        // nOrientation
-		FW_NORMAL,                // nWeight
-		FALSE,                    // bItalic
-		FALSE,                    // bUnderline
-		0,                        // cStrikeOut
-		ANSI_CHARSET,             // nCharSet
-		OUT_DEFAULT_PRECIS,       // nOutPrecision
-		CLIP_DEFAULT_PRECIS,      // nClipPrecision
-		DEFAULT_QUALITY,          // nQuality
-		DEFAULT_PITCH | FF_SWISS, // nPitchAndFamily
-		_T("맑은고딕")));            // lpszFacename
-	CFont* def_font = dc.SelectObject(&font);
-
-	rect.top = 520;
-	rect.left = 5;
-	rect.bottom = 600;
-	rect.right = 440;
-	dc.SetBkMode(TRANSPARENT);
-	dc.DrawText(m_str.GetString(), m_str.GetLength(), &rect, DT_LEFT);
-
-	CPoint poi(rect.left + m_caretInfo.offset.x, rect.top + m_caretInfo.offset.y);
-	SetCaretPos(poi);
-
-	dc.SelectObject(def_font);
-	font.DeleteObject();
+void CChildView::DisplayChattingRoom(CPaintDC& dc) {
+	DisplayRoomInfoSpace(dc, roomInfoSpaceSize);
+	DisplayLogSpace(dc, chattingLogSpaceSize);
+	DisplayTypingSpace(dc, typingSpaceSize);
 }
-void CChildView::DisplayChattingLog(CPaintDC& dc, CRect& rect) {
-	auto pos = this->messageList.GetHeadPosition();
-	while (pos != NULL) {
-		CString temp = this->messageList.GetNext(pos);
+void CChildView::DisplayRoomInfoSpace(CPaintDC& dc, const CRect& rect) {
 
-		rect.top = rect.top + 20;
-
-		dc.DrawText(temp.GetString(), temp.GetLength(), &rect, DT_LEFT);
-	}
-}
-void CChildView::DisplayChattingSpace(CPaintDC& dc, CRect& rect) {
-	rect.top = 0;
-	rect.left = 0;
-	rect.bottom = 80;
-	rect.right = 440;
 	dc.FillSolidRect(rect, RGB(169, 189, 206));
-	
+
 	CPen pen;
 	pen.CreatePen(PS_NULL, 3, RGB(255, 255, 255));
 	CPen* oldPen = dc.SelectObject(&pen);
+
 	CBrush brush;
 	brush.CreateSolidBrush(RGB(255, 255, 255));
 	CBrush* oldBrush = dc.SelectObject(&brush);
@@ -125,8 +93,8 @@ void CChildView::DisplayChattingSpace(CPaintDC& dc, CRect& rect) {
 
 	pen.DeleteObject();
 	brush.DeleteObject();
-	dc.SelectObject(oldPen);     // 시스템 펜 객체를 돌려줌
-	dc.SelectObject(oldBrush);    // 시스템 브러시 객체를 돌려줌
+	dc.SelectObject(oldPen);
+	dc.SelectObject(oldBrush);
 
 
 
@@ -148,18 +116,65 @@ void CChildView::DisplayChattingSpace(CPaintDC& dc, CRect& rect) {
 		_T("Ariel")));            // lpszFacename
 
 	CFont* def_font = dc.SelectObject(&font);
-	rect.top = 10;
-	rect.left = 415;
-	dc.DrawText(CString("x"), 1, &rect, DT_LEFT);
+
+	CRect closeButton(415, 10, 0, 0);
+	dc.DrawText(CString("x"), 1, &(rect + closeButton), DT_LEFT);
 	dc.SelectObject(def_font);
 	font.DeleteObject();
 
-	rect.top = 80;
-	rect.left = 0;
-	rect.bottom = 520;
-	rect.right = 440;
-	dc.FillSolidRect(rect, RGB(155, 187, 212));
+
 }
+void CChildView::DisplayLogSpace(CPaintDC& dc, const CRect& rect) {
+
+	int spaceSize = 20;
+	int spaceTime = 0;
+	CRect lineSpace(0, 0, 0, 0);
+
+	dc.FillSolidRect(rect, RGB(155, 187, 212));
+	auto pos = this->messageList.GetHeadPosition();
+	while (pos != NULL) {
+		CString temp = this->messageList.GetNext(pos);
+
+		spaceTime++;
+		lineSpace.top = spaceSize * spaceTime;
+
+		dc.DrawText(temp.GetString(), temp.GetLength(), &(rect+ lineSpace), DT_LEFT);
+	}
+}
+void CChildView::DisplayTypingSpace(CPaintDC& dc, const CRect& rect) {
+
+	int margin = 5;
+	CRect marginSpace(margin, margin, 0, 0);
+
+	CFont font;
+	VERIFY(font.CreateFont(
+		20,                       // nHeight
+		0,                        // nWidth
+		0,                        // nEscapement
+		0,                        // nOrientation
+		FW_NORMAL,                // nWeight
+		FALSE,                    // bItalic
+		FALSE,                    // bUnderline
+		0,                        // cStrikeOut
+		ANSI_CHARSET,             // nCharSet
+		OUT_DEFAULT_PRECIS,       // nOutPrecision
+		CLIP_DEFAULT_PRECIS,      // nClipPrecision
+		DEFAULT_QUALITY,          // nQuality
+		DEFAULT_PITCH | FF_SWISS, // nPitchAndFamily
+		_T("맑은고딕")));            // lpszFacename
+	CFont* def_font = dc.SelectObject(&font);
+
+	dc.SetBkMode(TRANSPARENT);
+	dc.DrawText(m_str.GetString(), m_str.GetLength(), &(rect - marginSpace), DT_LEFT);
+
+	dc.SelectObject(def_font);
+	font.DeleteObject();
+
+	CPoint poi(margin + typingSpaceSize.left + m_caretInfo.offset.x,
+		margin + typingSpaceSize.top + m_caretInfo.offset.y);
+	SetCaretPos(poi);
+}
+
 
 
 void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -236,30 +251,24 @@ void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 void CChildView::OnSetFocus(CWnd* pOldWnd)
 {
-	CreateSolidCaret(5, 20);
-	CPoint poi(5 + m_caretInfo.offset.x, 520 + m_caretInfo.offset.y);
-	SetCaretPos(poi);
-	ShowCaret();
+	if (page == Page::chattingRoom) {
+		int margin = 5;
+		CreateSolidCaret(4, 20);
+		CPoint poi(margin + typingSpaceSize.left + m_caretInfo.offset.x,
+			margin + typingSpaceSize.top + m_caretInfo.offset.y);
+		SetCaretPos(poi);
+		ShowCaret();
+	}
+	else if (page == Page::RoomList) {
+
+	}
 }
 void CChildView::OnKillFocus(CWnd* pNewWnd)
 {
 	HideCaret();
 }
 
-int CChildView::OnCreate(LPCREATESTRUCT lpCreateStruct)
-{
-	if (CWnd::OnCreate(lpCreateStruct) == -1)
-		return -1;
 
-	// TODO:  여기에 특수화된 작성 코드를 추가합니다.
-	return 0;
-}
-void CChildView::OnDestroy()
-{
-	::DestroyCaret();
-
-	CWnd::OnDestroy();
-}
 
 void CChildView::InputBufferClear() {
 	this->m_str.Empty();
@@ -268,11 +277,7 @@ void CChildView::InputBufferClear() {
 }
 
 void CChildView::UpdateMessageList(CString msg) {
-	TRACE(_T("CChildView UpdateMessageList"));
-	TRACE(msg);
-
 	this->messageList.AddTail(msg);
-
 	Invalidate();
 }
 CList<CString>* CChildView::GetMessageList() {

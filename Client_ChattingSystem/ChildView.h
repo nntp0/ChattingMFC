@@ -36,6 +36,29 @@ public:
 	CChildView();
 	virtual ~CChildView();
 
+	// 재정의입니다.
+protected:
+	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+
+	// 구현입니다.
+public:
+
+
+	// 생성된 메시지 맵 함수
+protected:
+	afx_msg void OnPaint();
+	DECLARE_MESSAGE_MAP()
+public:
+	//	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void OnSetFocus(CWnd* pOldWnd);
+	afx_msg void OnKillFocus(CWnd* pNewWnd);
+	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg void OnDestroy();
+
+
+
+
 // 특성입니다.
 public:
 	CString m_str;
@@ -46,32 +69,12 @@ public:
 public:
 	void InputBufferClear();
 
-	void DisplayChattingRoom(CPaintDC& dc, CRect& rect);
-	void DisplayRoomList(CPaintDC& dc, CRect& rect);
+	void DisplayChattingRoom(CPaintDC& dc);
+	void DisplayRoomList(CPaintDC& dc);
 
-	void DisplayChattingLog(CPaintDC& dc, CRect& rect);
-	void DisplayUserTyping(CPaintDC& dc, CRect& rect);
-	void DisplayChattingSpace(CPaintDC& dc, CRect& rect);
-
-// 재정의입니다.
-protected:
-	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-
-// 구현입니다.
-public:
-	
-
-	// 생성된 메시지 맵 함수
-protected:
-	afx_msg void OnPaint();
-	DECLARE_MESSAGE_MAP()
-public:
-//	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-	afx_msg void OnSetFocus(CWnd* pOldWnd);
-	afx_msg void OnKillFocus(CWnd* pNewWnd);
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg void OnDestroy();
+	void DisplayLogSpace(CPaintDC& dc, const CRect& rect);
+	void DisplayTypingSpace(CPaintDC& dc, const CRect& rect);
+	void DisplayRoomInfoSpace(CPaintDC& dc, const CRect& rect);
 
 	// properties
 private:
@@ -89,8 +92,8 @@ private:
 	};
 
 	Page page = Page::chattingRoom;
-
-
-
+	const CRect roomInfoSpaceSize = CRect(0, 0, 440, 80);
+	const CRect chattingLogSpaceSize = CRect(0, 80, 440, 520);
+	const CRect typingSpaceSize = CRect(0, 520, 440, 600);
 };
 
