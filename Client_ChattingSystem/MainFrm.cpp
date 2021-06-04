@@ -62,10 +62,18 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	// TODO: CREATESTRUCT cs를 수정하여 여기에서
 	//  Window 클래스 또는 스타일을 수정합니다.
 
-	cs.style = WS_OVERLAPPED | WS_CAPTION | FWS_ADDTOTITLE
-		;
+	cs.style = WS_POPUP;
+	if (cs.hMenu != NULL) {
+		::DestroyMenu(cs.hMenu);
+		cs.hMenu = NULL;
+	}
 
-	cs.dwExStyle &= ~WS_EX_CLIENTEDGE;
+	cs.x = 100;
+	cs.y = 100;
+	cs.cy = 600;
+	cs.cx = 440;
+
+	cs.dwExStyle &= ~(WS_EX_CLIENTEDGE | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE);
 	cs.lpszClass = AfxRegisterWndClass(0);
 	return TRUE;
 }

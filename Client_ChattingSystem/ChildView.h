@@ -47,6 +47,7 @@ public:
 	void InputBufferClear();
 	void DisplayChattingLog(CPaintDC& dc, CRect& rect);
 	void DisplayUserTyping(CPaintDC& dc, CRect& rect);
+	void DisplayChattingSpace(CPaintDC& dc, CRect& rect);
 
 // 재정의입니다.
 protected:

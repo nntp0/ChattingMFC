@@ -38,7 +38,7 @@ BOOL CChildView::PreCreateWindow(CREATESTRUCT& cs)
 	if (!CWnd::PreCreateWindow(cs))
 		return FALSE;
 
-	cs.dwExStyle |= WS_EX_CLIENTEDGE;
+	cs.dwExStyle &= ~WS_EX_CLIENTEDGE;
 	cs.style &= ~WS_BORDER;
 	cs.lpszClass = AfxRegisterWndClass(CS_HREDRAW|CS_VREDRAW|CS_DBLCLKS, 
 		::LoadCursor(nullptr, IDC_ARROW), reinterpret_cast<HBRUSH>(COLOR_WINDOW+1), nullptr);
@@ -49,22 +49,52 @@ BOOL CChildView::PreCreateWindow(CREATESTRUCT& cs)
 void CChildView::OnPaint() 
 {
 	CRect rect;
-	GetClientRect(&rect);
 
+	
 	CPaintDC dc(this);
+	DisplayUserTyping(dc, rect);
+	DisplayChattingSpace(dc, rect);
 
+	GetClientRect(&rect);
 	// Chatting 에 대한 영역과 Typing 영역을 그립니다.
 
 	DisplayChattingLog(dc, rect);
-	DisplayUserTyping(dc, rect);
+	
+	
 }
 
 void CChildView::DisplayUserTyping(CPaintDC& dc, CRect& rect) {
-	rect.top = rect.bottom - 200;
+	CFont font;
+	VERIFY(font.CreateFont(
+		20,                       // nHeight
+		0,                        // nWidth
+		0,                        // nEscapement
+		0,                        // nOrientation
+		FW_NORMAL,                // nWeight
+		FALSE,                    // bItalic
+		FALSE,                    // bUnderline
+		0,                        // cStrikeOut
+		ANSI_CHARSET,             // nCharSet
+		OUT_DEFAULT_PRECIS,       // nOutPrecision
+		CLIP_DEFAULT_PRECIS,      // nClipPrecision
+		DEFAULT_QUALITY,          // nQuality
+		DEFAULT_PITCH | FF_SWISS, // nPitchAndFamily
+		_T("맑은고딕")));            // lpszFacename
+
+	CFont* def_font = dc.SelectObject(&font);
+
+	rect.top = 520;
+	rect.left = 5;
+	rect.bottom = 600;
+	rect.right = 440;
+	dc.SetBkMode(TRANSPARENT);
 	dc.DrawText(m_str.GetString(), m_str.GetLength(), &rect, DT_LEFT);
 
 	CPoint poi(rect.left + m_caretInfo.offset.x, rect.top + m_caretInfo.offset.y);
 	SetCaretPos(poi);
+
+	dc.SelectObject(def_font);
+	font.DeleteObject();
 }
 void CChildView::DisplayChattingLog(CPaintDC& dc, CRect& rect) {
 	auto pos = this->messageList.GetHeadPosition();
@@ -77,25 +107,103 @@ void CChildView::DisplayChattingLog(CPaintDC& dc, CRect& rect) {
 	}
 }
 
+void CChildView::DisplayChattingSpace(CPaintDC& dc, CRect& rect) {
+	rect.top = 0;
+	rect.left = 0;
+	rect.bottom = 80;
+	rect.right = 440;
+	dc.FillSolidRect(rect, RGB(169, 189, 206));
+	
+	CPen pen;
+	pen.CreatePen(PS_NULL, 3, RGB(255, 255, 255));
+	CPen* oldPen = dc.SelectObject(&pen);
+	CBrush brush;
+	brush.CreateSolidBrush(RGB(255, 255, 255));
+	CBrush* oldBrush = dc.SelectObject(&brush);
+
+	dc.Ellipse(15, 15, 65, 65);
+
+	pen.DeleteObject();
+	brush.DeleteObject();
+	dc.SelectObject(oldPen);     // 시스템 펜 객체를 돌려줌
+	dc.SelectObject(oldBrush);    // 시스템 브러시 객체를 돌려줌
+
+
+
+	CFont font;
+	VERIFY(font.CreateFont(
+		20,                       // nHeight
+		0,                        // nWidth
+		0,                        // nEscapement
+		0,                        // nOrientation
+		FW_NORMAL,                // nWeight
+		FALSE,                    // bItalic
+		FALSE,                    // bUnderline
+		0,                        // cStrikeOut
+		ANSI_CHARSET,             // nCharSet
+		OUT_DEFAULT_PRECIS,       // nOutPrecision
+		CLIP_DEFAULT_PRECIS,      // nClipPrecision
+		DEFAULT_QUALITY,          // nQuality
+		DEFAULT_PITCH | FF_SWISS, // nPitchAndFamily
+		_T("Ariel")));            // lpszFacename
+
+	CFont* def_font = dc.SelectObject(&font);
+	rect.top = 10;
+	rect.left = 415;
+	dc.DrawText(CString("x"), 1, &rect, DT_LEFT);
+	dc.SelectObject(def_font);
+	font.DeleteObject();
+
+	rect.top = 80;
+	rect.left = 0;
+	rect.bottom = 520;
+	rect.right = 440;
+	dc.FillSolidRect(rect, RGB(155, 187, 212));
+}
+
+
 void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	CClientDC dc(this);
+
+	CFont font;
+	VERIFY(font.CreateFont(
+		20,                       // nHeight
+		0,                        // nWidth
+		0,                        // nEscapement
+		0,                        // nOrientation
+		FW_NORMAL,                // nWeight
+		FALSE,                    // bItalic
+		FALSE,                    // bUnderline
+		0,                        // cStrikeOut
+		ANSI_CHARSET,             // nCharSet
+		OUT_DEFAULT_PRECIS,       // nOutPrecision
+		CLIP_DEFAULT_PRECIS,      // nClipPrecision
+		DEFAULT_QUALITY,          // nQuality
+		DEFAULT_PITCH | FF_SWISS, // nPitchAndFamily
+		_T("맑은고딕")));            // lpszFacename
+
+	CFont* def_font = dc.SelectObject(&font);
+
+	
 	CSize fontSize = dc.GetTextExtent((LPCTSTR)&nChar, 1);
 
-	/*if (nChar == VK_RETURN) {
-
-		m_caretInfo.offset.y += fontSize.cy;
-		m_strSize.Add(BackSpaceInfo(false, fontSize.cy));
-
-		m_caretInfo.lineInfo.Add(m_caretInfo.offset.x);
-		m_caretInfo.offset.x = 0;
-
-		m_str += (TCHAR)nChar;
-	}*/
 	if (nChar == VK_RETURN) {
-		((CMainFrame*)GetParentFrame())->m_transmission->Send(std::string(CT2CA(m_str.operator LPCWSTR())));
-		this->InputBufferClear();
-		Invalidate();
+		if (GetKeyState(VK_SHIFT) & 0x80) {
+			m_caretInfo.offset.y += fontSize.cy;
+			m_strSize.Add(BackSpaceInfo(false, fontSize.cy));
+
+			m_caretInfo.lineInfo.Add(m_caretInfo.offset.x);
+			m_caretInfo.offset.x = 0;
+
+			m_str += (TCHAR)nChar;
+		}
+		else {
+			((CMainFrame*)GetParentFrame())->m_transmission->Send(std::string(CT2CA(m_str.operator LPCWSTR())));
+			this->InputBufferClear();
+			Invalidate();
+		}
+		
 	}
 	else if (nChar == _T('\b')) {
 
@@ -121,12 +229,16 @@ void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 		m_strSize.Add(BackSpaceInfo(true, fontSize.cx));
 	}
 
+	dc.SelectObject(def_font);
+	font.DeleteObject();
 	Invalidate();
 }
 
 void CChildView::OnSetFocus(CWnd* pOldWnd)
 {
 	CreateSolidCaret(5, 20);
+	CPoint poi(5 + m_caretInfo.offset.x, 520 + m_caretInfo.offset.y);
+	SetCaretPos(poi);
 	ShowCaret();
 }
 void CChildView::OnKillFocus(CWnd* pNewWnd)
@@ -140,7 +252,6 @@ int CChildView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	// TODO:  여기에 특수화된 작성 코드를 추가합니다.
-
 	return 0;
 }
 void CChildView::OnDestroy()
