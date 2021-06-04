@@ -31,20 +31,24 @@ struct BackSpaceInfo {
 
 class CChildView : public CWnd
 {
-// 생성입니다.
+	// Constructor / Destructor
 public:
 	CChildView();
+	virtual ~CChildView();
 
 // 특성입니다.
 public:
 	CString m_str;
 	CArray<BackSpaceInfo, BackSpaceInfo> m_strSize;
 	CaretInfo m_caretInfo;
-	CButton* m_pSendButton = nullptr;
 
 // 작업입니다.
 public:
 	void InputBufferClear();
+
+	void DisplayChattingRoom(CPaintDC& dc, CRect& rect);
+	void DisplayRoomList(CPaintDC& dc, CRect& rect);
+
 	void DisplayChattingLog(CPaintDC& dc, CRect& rect);
 	void DisplayUserTyping(CPaintDC& dc, CRect& rect);
 	void DisplayChattingSpace(CPaintDC& dc, CRect& rect);
@@ -55,7 +59,7 @@ protected:
 
 // 구현입니다.
 public:
-	virtual ~CChildView();
+	
 
 	// 생성된 메시지 맵 함수
 protected:
@@ -76,5 +80,17 @@ private:
 public:
 	void UpdateMessageList(CString msg);
 	CList<CString>* GetMessageList();
+
+	// Page
+private:
+	enum class Page {
+		chattingRoom,
+		RoomList
+	};
+
+	Page page = Page::chattingRoom;
+
+
+
 };
 

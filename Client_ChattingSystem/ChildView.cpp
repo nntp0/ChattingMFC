@@ -49,18 +49,20 @@ BOOL CChildView::PreCreateWindow(CREATESTRUCT& cs)
 void CChildView::OnPaint() 
 {
 	CRect rect;
-
-	
 	CPaintDC dc(this);
+	
+	if (this->page == Page::chattingRoom) DisplayChattingRoom(dc, rect);
+	else if (this->page == Page::RoomList) DisplayRoomList(dc, rect);
+}
+
+void CChildView::DisplayChattingRoom(CPaintDC& dc, CRect& rect) {
 	DisplayUserTyping(dc, rect);
 	DisplayChattingSpace(dc, rect);
-
-	GetClientRect(&rect);
-	// Chatting 에 대한 영역과 Typing 영역을 그립니다.
-
 	DisplayChattingLog(dc, rect);
-	
-	
+}
+
+void CChildView::DisplayRoomList(CPaintDC &dc, CRect& rect) {
+
 }
 
 void CChildView::DisplayUserTyping(CPaintDC& dc, CRect& rect) {
@@ -80,7 +82,6 @@ void CChildView::DisplayUserTyping(CPaintDC& dc, CRect& rect) {
 		DEFAULT_QUALITY,          // nQuality
 		DEFAULT_PITCH | FF_SWISS, // nPitchAndFamily
 		_T("맑은고딕")));            // lpszFacename
-
 	CFont* def_font = dc.SelectObject(&font);
 
 	rect.top = 520;
@@ -106,7 +107,6 @@ void CChildView::DisplayChattingLog(CPaintDC& dc, CRect& rect) {
 		dc.DrawText(temp.GetString(), temp.GetLength(), &rect, DT_LEFT);
 	}
 }
-
 void CChildView::DisplayChattingSpace(CPaintDC& dc, CRect& rect) {
 	rect.top = 0;
 	rect.left = 0;
