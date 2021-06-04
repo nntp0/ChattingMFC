@@ -1,12 +1,13 @@
 #pragma once
 
 #include "iTransmissionServer.h"
-#include "iServer.h"
+
 #include "SimpleAmqpClient/SimpleAmqpClient.h"
 
-#include <string>
 #include <vector>
 
+#ifndef __AMQPServer_H_INCLUDED__
+#define __AMQPServer_H_INCLUDED__
 class AMQPServer : public iTransmissionServer
 {
 	// static memebers
@@ -50,3 +51,4 @@ private:
 		return std::string(buf);
 	}
 };
+#endif

@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <memory>
 
 #include "Processor.h"
@@ -13,7 +12,7 @@ class CoreModule : public iServer {
 
 	// Constructor / Destructor
 public:
-	CoreModule(iDisplayModule*);
+	CoreModule();
 	virtual ~CoreModule();
 
 	// Method Override
@@ -25,14 +24,19 @@ public:
 	virtual void Disconnect(UID);
 	virtual void RecvMessage(std::string msg);
 
+	virtual void SetTransmission(std::shared_ptr<iTransmissionServer>);
+	virtual void Run();
+
 	// Method
 public:
 	std::shared_ptr<Processor> FindIdleProcessor();
 
+	void SetModules(std::shared_ptr<iTransmissionServer>, iDisplayModule*);
+
 	// Properties ( Modules )	
 private:
 	std::shared_ptr<iTransmissionServer> transmission;
-	iDisplayModule* displayModule;
+	iDisplayModule* displayModule = nullptr;
 	std::shared_ptr<iDataModule> dataModule;
 	
 	std::shared_ptr<Processor> processor;

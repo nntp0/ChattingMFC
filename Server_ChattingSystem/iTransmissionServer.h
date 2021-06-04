@@ -1,9 +1,11 @@
 #pragma once
 
 #include <string>
-#include "AMQPSettings.h"
+
 #include "iServer.h"
 
+#ifndef __iTransmissionServer_H_INCLUDED__
+#define __iTransmissionServer_H_INCLUDED__
 __interface iTransmissionServer
 {
 public:
@@ -12,3 +14,4 @@ public:
 
 	virtual void SetServer(iServer*);
 };
+#endif

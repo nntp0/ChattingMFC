@@ -158,7 +158,7 @@ CustomMessage Processor::MessageDecoding(std::string message) {
 	CustomMessage decodedMessage;
 	decodedMessage.uid = message.substr(0, 4);
 
-	auto code = message.substr(4, 8);
+	auto code = message.substr(4, 4);
 
 	if (code == "rmcr") {
 		decodedMessage.type = MessageType::RoomCreation;

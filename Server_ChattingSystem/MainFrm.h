@@ -4,11 +4,14 @@
 
 #pragma once
 #include "ChildView.h"
+
 #include "iServer.h"
+
+#include "Processor.h"
 
 #include <memory>
 
-class CMainFrame : public CFrameWnd
+class CMainFrame : public CFrameWnd, public iServer
 {
 	// Constructor / Destructor
 public:
@@ -42,17 +45,34 @@ protected:
 	afx_msg void OnSetFocus(CWnd *pOldWnd);
 	DECLARE_MESSAGE_MAP()
 
-	// properties
-private:
-	std::shared_ptr<iServer> coreModule;
+public:
+	afx_msg void OnClose();
+
+
+// iServer
+	
 	// methods
 public:
+	std::shared_ptr<Processor> FindIdleProcessor();
 
 	// method override
 public:
+	// iServer.h
+	virtual void Tick();
+	virtual void Connect(UID);
+	virtual void Disconnect(UID);
+	virtual void RecvMessage(std::string msg);
 
-public:
-	afx_msg void OnClose();
+	virtual void Run();
+
+	// properties
+private:
+	std::shared_ptr<iTransmissionServer> transmission;
+
+	iDisplayModule* displayModule = nullptr;
+	std::shared_ptr<iDataModule> dataModule;
+
+	std::shared_ptr<Processor> processor;
 };
 
 

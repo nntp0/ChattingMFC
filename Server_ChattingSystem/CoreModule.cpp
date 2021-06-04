@@ -2,21 +2,12 @@
 
 #include "CoreModule.h"
 
-#include "AMQPServer.h"
 #include "DataModule.h"
 #include "Processor.h"
 
 #include "EventSettings.h"
 
-CoreModule::CoreModule(iDisplayModule* displayModule) {
-	this->transmission = std::shared_ptr<AMQPServer>(new AMQPServer);
-	this->displayModule = displayModule;
-	this->dataModule = std::shared_ptr<DataModule>(new DataModule);
-	this->processor = std::shared_ptr<Processor>(new Processor);
-
-	this->transmission->SetServer(this);
-	this->processor->SetModules(this->transmission, displayModule, this->dataModule);
-}
+CoreModule::CoreModule() {}
 CoreModule::~CoreModule() {}
 
 
@@ -34,6 +25,18 @@ void CoreModule::RecvMessage(std::string msg) {
 	idleProcessor->ProcessEvent(EventList::ReceiveMessage, msg);
 }
 
+void CoreModule::SetTransmission(std::shared_ptr<iTransmissionServer>  transmission) {
+	this->transmission = transmission;
+}
+void CoreModule::Run() {
+	this->dataModule = std::shared_ptr<DataModule>(new DataModule);
+	this->displayModule = display;
+
+	this->transmission->SetServer(this);
+
+	this->processor = std::shared_ptr<Processor>(new Processor);
+	this->processor->SetModules(this->transmission, displayModule, this->dataModule);
+}
 
 std::shared_ptr<Processor> CoreModule::FindIdleProcessor() {
 	return processor;

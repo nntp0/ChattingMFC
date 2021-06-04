@@ -3,6 +3,8 @@
 #include "DataSettings.h"
 #include <vector>
 
+#ifndef __iDataModule_H_INCLUDED__
+#define __iDataModule_H_INCLUDED__
 __interface iDataModule {
 
 public:
@@ -18,3 +20,4 @@ public:
 	virtual const std::vector<Room> getRoomList();
 	virtual const std::vector<Client> getClientList();
 };
+#endif

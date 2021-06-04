@@ -2,6 +2,8 @@
 
 #include "iDataModule.h"
 
+#ifndef __DataModule_H_INCLUDED__
+#define __DataModule_H_INCLUDED__
 class DataModule : public iDataModule {
 
 public:
@@ -25,3 +27,4 @@ private:
 	std::vector<Client> clientList;
 	std::vector<Room> roomList;
 };
+#endif

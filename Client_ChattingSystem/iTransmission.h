@@ -4,6 +4,8 @@
 #include "ProtocolSettings.h"
 #include <string>
 
+#ifndef __iTransmission_H_INCLUDED__
+#define __iTransmission_H_INCLUDED__
 __interface iTransmission
 {
 public:
@@ -14,3 +16,4 @@ public:
 
 	virtual void SetApplication(iApplication*);
 };
+#endif

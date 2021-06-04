@@ -8,6 +8,9 @@
 #include "iDataModule.h"
 #include "iTransmissionServer.h"
 
+
+#ifndef __Processor_H_INCLUDED__
+#define __Processor_H_INCLUDED__
 class Processor {
 
 	// Constructor / Destructor
@@ -33,3 +36,4 @@ private:
 	iDisplayModule* displayModule = nullptr;
 	std::shared_ptr<iDataModule> dataModule;
 };
+#endif

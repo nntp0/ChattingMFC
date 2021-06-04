@@ -7,7 +7,12 @@
 
 #include "MainFrm.h"
 
-#include "CoreModule.h"
+#include "AMQPServer.h"
+#include "DataModule.h"
+
+#include "EventSettings.h"
+
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -55,7 +60,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 	}
 
-	this->coreModule = std::shared_ptr<CoreModule>(new CoreModule(&m_wndView));
+	this->transmission = std::shared_ptr<AMQPServer>(new AMQPServer);
+	this->Run();
 
 	return 0;
 }
@@ -108,6 +114,38 @@ BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO*
 void CMainFrame::OnClose()
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-	TRACE(_T("CMainFrame OnClose"));
 	CFrameWnd::OnClose();
+}
+
+
+
+
+#include "Processor.h"
+
+std::shared_ptr<Processor> CMainFrame::FindIdleProcessor() {
+	return processor;
+}
+
+void CMainFrame::Tick() { AfxMessageBox(_T("Hello. I am Server")); }
+void CMainFrame::Connect(UID id) {
+	auto idleProcessor = FindIdleProcessor();
+	idleProcessor->ProcessEvent(EventList::ClientConnection, id);
+}
+void CMainFrame::Disconnect(UID id) {
+	auto idleProcessor = FindIdleProcessor();
+	idleProcessor->ProcessEvent(EventList::ClientDisconnection, id);
+}
+void CMainFrame::RecvMessage(std::string msg) {
+	auto idleProcessor = FindIdleProcessor();
+	idleProcessor->ProcessEvent(EventList::ReceiveMessage, msg);
+}
+
+void CMainFrame::Run() {
+	this->transmission->SetServer(this);
+
+	this->dataModule = std::shared_ptr<DataModule>(new DataModule);
+	this->displayModule = &m_wndView;
+
+	this->processor = std::shared_ptr<Processor>(new Processor);
+	this->processor->SetModules(this->transmission, displayModule, this->dataModule);
 }
