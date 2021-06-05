@@ -1,7 +1,18 @@
 ﻿#include "AMQPServer.h"
 
+#include <iostream>
 int main() {
-	AMQPServer server;
+	//AMQPServer server;
+
+	std::string str = "02";
+
+	char buf[5];
+	sprintf_s(buf, 5, "%02d", str.length());
+
+	std::string res(buf);
+
+	std::cout << buf;
+	
 }
 
 
