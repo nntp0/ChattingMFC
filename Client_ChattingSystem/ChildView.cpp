@@ -23,12 +23,12 @@ CChildView::~CChildView()
 
 BEGIN_MESSAGE_MAP(CChildView, CWnd)
 	ON_WM_PAINT()
-//	ON_WM_LBUTTONDOWN()
 	ON_WM_CHAR()
 	ON_WM_SETFOCUS()
 	ON_WM_KILLFOCUS()
 	ON_WM_CREATE()
 	ON_WM_DESTROY()
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 // CChildView 메시지 처리기
@@ -69,7 +69,18 @@ void CChildView::OnPaint()
 	else if (this->page == Page::RoomList) DisplayRoomList(dc);
 }
 void CChildView::DisplayRoomList(CPaintDC &dc) {
-
+	DisplayClientInfoSpace(dc);
+	DisplayToolsSpace(dc);
+	DisplayRoomListSpace(dc);
+}
+void CChildView::DisplayClientInfoSpace(CPaintDC& dc) {
+	dc.FillSolidRect(clientInfoSpaceSize, RGB(236, 236, 237));
+}
+void CChildView::DisplayToolsSpace(CPaintDC& dc) {
+	dc.FillSolidRect(toolsSpaceSize, RGB(100, 236, 237));
+}
+void CChildView::DisplayRoomListSpace(CPaintDC& dc) {
+	//dc.FillSolidRect(roomListSpaceSize, RGB(255, 255, 255));
 }
 
 void CChildView::DisplayChattingRoom(CPaintDC& dc) {
@@ -78,7 +89,6 @@ void CChildView::DisplayChattingRoom(CPaintDC& dc) {
 	DisplayTypingSpace(dc, typingSpaceSize);
 }
 void CChildView::DisplayRoomInfoSpace(CPaintDC& dc, const CRect& rect) {
-
 	dc.FillSolidRect(rect, RGB(169, 189, 206));
 
 	CPen pen;
@@ -95,7 +105,6 @@ void CChildView::DisplayRoomInfoSpace(CPaintDC& dc, const CRect& rect) {
 	brush.DeleteObject();
 	dc.SelectObject(oldPen);
 	dc.SelectObject(oldBrush);
-
 
 
 	CFont font;
@@ -117,8 +126,13 @@ void CChildView::DisplayRoomInfoSpace(CPaintDC& dc, const CRect& rect) {
 
 	CFont* def_font = dc.SelectObject(&font);
 
-	CRect closeButton(415, 10, 0, 0);
-	dc.DrawText(CString("x"), 1, &(rect + closeButton), DT_LEFT);
+	CPoint closeButtonLoc(415, 10);
+	CPoint closeButtonSize(10, 10);
+
+	CRect closeButton(rect.left + closeButtonLoc.x, rect.top + closeButtonSize.y,
+		rect.right + closeButtonLoc.x, rect.bottom + closeButtonSize.y);
+
+	dc.DrawText(CString("x"), 1, &closeButton, DT_LEFT);
 	dc.SelectObject(def_font);
 	font.DeleteObject();
 
@@ -251,8 +265,8 @@ void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 void CChildView::OnSetFocus(CWnd* pOldWnd)
 {
-	if (page == Page::chattingRoom) {
-		int margin = 5;
+	if (page == Page::chattingRoom)
+	{		
 		CreateSolidCaret(4, 20);
 		CPoint poi(margin + typingSpaceSize.left + m_caretInfo.offset.x,
 			margin + typingSpaceSize.top + m_caretInfo.offset.y);
@@ -268,8 +282,6 @@ void CChildView::OnKillFocus(CWnd* pNewWnd)
 	HideCaret();
 }
 
-
-
 void CChildView::InputBufferClear() {
 	this->m_str.Empty();
 	this->m_strSize.RemoveAll();
@@ -282,4 +294,20 @@ void CChildView::UpdateMessageList(CString msg) {
 }
 CList<CString>* CChildView::GetMessageList() {
 	return NULL;
+}
+
+void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	if (this->page == Page::chattingRoom) {
+
+		CRect closeButtonArea = CRect(closeButton.left - margin, closeButton.top-margin,
+			closeButton.right + margin, closeButton.bottom + margin);
+
+		if (closeButtonArea.PtInRect(point)) {
+			this->page = Page::RoomList;
+			HideCaret();
+			Invalidate();
+		}
+	}
+	CWnd::OnLButtonDown(nFlags, point);
 }

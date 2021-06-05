@@ -69,9 +69,12 @@ public:
 public:
 	void InputBufferClear();
 
-	void DisplayChattingRoom(CPaintDC& dc);
 	void DisplayRoomList(CPaintDC& dc);
-
+	void DisplayClientInfoSpace(CPaintDC& dc);
+	void DisplayToolsSpace(CPaintDC& dc);
+	void DisplayRoomListSpace(CPaintDC& dc);
+	
+	void DisplayChattingRoom(CPaintDC& dc);
 	void DisplayLogSpace(CPaintDC& dc, const CRect& rect);
 	void DisplayTypingSpace(CPaintDC& dc, const CRect& rect);
 	void DisplayRoomInfoSpace(CPaintDC& dc, const CRect& rect);
@@ -91,9 +94,31 @@ private:
 		RoomList
 	};
 
+	int margin = 5;
+
 	Page page = Page::chattingRoom;
 	const CRect roomInfoSpaceSize = CRect(0, 0, 440, 80);
 	const CRect chattingLogSpaceSize = CRect(0, 80, 440, 520);
 	const CRect typingSpaceSize = CRect(0, 520, 440, 600);
+
+
+	const CPoint closeButtonLoc = CPoint(415, 10);
+	const CPoint closeButtonSize = CPoint(10, 10);
+	
+	const CRect closeButton = CRect(
+		roomInfoSpaceSize.left + closeButtonLoc.x, 
+		roomInfoSpaceSize.top + closeButtonLoc.y,
+		roomInfoSpaceSize.left + closeButtonLoc.x + closeButtonSize.x, 
+		roomInfoSpaceSize.top + closeButtonLoc.y + closeButtonSize.y
+	);
+
+
+	const CRect clientInfoSpaceSize = CRect(0, 0, 70, 600);
+	const CRect toolsSpaceSize = CRect(70, 0, 440, 80);
+	const CRect roomListSpaceSize = CRect(70, 80, 440, 600);
+
+
+public:
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 };
 
