@@ -163,6 +163,7 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 				ResponseInfo resInfo;
 				resInfo.roomName = this->dataModule->GetRoomName(roomID);
 				resInfo.userName = this->dataModule->GetClientName(std::stoi(decodedMessage.uid));
+				resInfo.extra = decodedMessage.body;
 				std::string encodedMsg = MessageEncoding(ResponseList::Normal, resInfo);
 
 				for (auto it = temp.begin(); it != temp.end(); it++) {

@@ -173,7 +173,7 @@ void CChildView::DisplayLogSpace(CPaintDC& dc, const CRect& rect) {
 		spaceTime++;
 		lineSpace.top = spaceSize * spaceTime;
 
-		dc.DrawText(temp.GetString(), temp.GetLength(), &(rect+ lineSpace), DT_LEFT);
+		dc.DrawText(temp.GetString(), temp.GetLength(), &(rect - lineSpace), DT_LEFT);
 	}
 }
 void CChildView::DisplayTypingSpace(CPaintDC& dc, const CRect& rect) {
