@@ -27,7 +27,7 @@ public:
 	// Helper Methods
 private:
 
-	std::string MessageEncoding(CustomMessage);
+	std::string MessageEncoding(ResponseList, ResponseInfo);
 	CustomMessage MessageDecoding(std::string);
 
 	// Modules

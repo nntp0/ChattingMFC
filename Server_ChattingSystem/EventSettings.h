@@ -5,6 +5,7 @@
 
 #include <intsafe.h>
 #include <afxstr.h>
+#include <string>
 
 enum class EventList
 {
@@ -14,18 +15,22 @@ enum class EventList
 	Notification,
 };
 
-struct Info_ClientConnection {
-	UINT socketID;
+enum class ResponseList
+{
+	ClientConnected,
+	ClientList,
+
+	RoomCreated,
+	RoomLeaved,
+	RoomJoined,
+	RoomList,
+
+	Normal,
 };
-struct Info_ClientDisconnection {
-	UINT socketID;
-};
-struct Info_ReceiveMessage {
-	UINT socketID;
-	CString msg;
-};
-struct Info_Notification {
-	CString msg;
+struct ResponseInfo {
+	std::string userName;
+	std::string roomName;
+	std::string extra;
 };
 
 #endif

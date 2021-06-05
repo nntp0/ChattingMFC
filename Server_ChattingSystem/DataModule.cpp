@@ -4,7 +4,7 @@
 DataModule::DataModule() {
 	Room hall;
 	hall.roomID = 0;
-	hall.name = _T("MainHall");
+	hall.name = "MainHall";
 	roomList.push_back(hall);
 }
 DataModule::~DataModule() {}
@@ -82,6 +82,24 @@ void DataModule::LeaveRoom(Room room, Client client) {
 		}
 	}
 }
+
+std::string DataModule::GetClientName(UINT clientID) {
+	for (auto clientIter = clientList.begin(); clientIter != clientList.end(); clientIter++) {
+		if (clientIter->clientID == clientID) {
+			return clientIter->name;
+		}
+	}
+	return "";
+}
+std::string DataModule::GetRoomName(UINT roomID) {
+	for (auto iter = roomList.begin(); iter != roomList.end(); iter++) {
+		if (iter->roomID == roomID) {
+			return iter->name;
+		}
+	}
+	return "";
+}
+
 
 const std::vector<Room> DataModule::getRoomList() {
 	return this->roomList;

@@ -27,10 +27,16 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 			Client newClient;
 			newClient.clientID = std::stoul(args);
 			buf = "Client " + args;
-			newClient.name = CString::CStringT(CA2CT(buf.c_str()));
+			newClient.name = buf;
 			this->dataModule->newClient(newClient);
 
-			this->transmission->SendTo(args, "Hello " + buf);
+			
+			ResponseInfo resInfo;
+			resInfo.roomName = "MainHall";
+			resInfo.userName = newClient.name;
+			std::string encodedMsg = MessageEncoding(ResponseList::ClientConnected, resInfo);
+
+			this->transmission->SendTo(args, encodedMsg);
 
 			break;
 		}
@@ -55,27 +61,46 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 			case MessageType::RoomCreation:
 			{
 				Room newRoom;
-				newRoom.name = CString::CStringT(CA2CT(decodedMessage.body.c_str()));
+				newRoom.name = decodedMessage.body;
 				this->dataModule->newRoom(newRoom);
-				this->transmission->SendTo(decodedMessage.uid, "RoomCreated");
+
+				ResponseInfo resInfo;
+				resInfo.roomName = decodedMessage.body;
+				resInfo.userName = decodedMessage.uid;
+				std::string encodedMsg = MessageEncoding(ResponseList::RoomCreated, resInfo);
+				this->transmission->SendTo(decodedMessage.uid, encodedMsg);
+
 				break;
 			}
 			case MessageType::RoomLeave:
 			{
-				this->transmission->SendTo(decodedMessage.uid, "RoomLeaved");
+				ResponseInfo resInfo;
+				resInfo.userName = decodedMessage.uid;
+				std::string encodedMsg = MessageEncoding(ResponseList::RoomLeaved, resInfo);
+				
+				this->transmission->SendTo(decodedMessage.uid, encodedMsg);
 				break;
 			}
 			case MessageType::RoomList:
 			{
 				auto roomList = this->dataModule->getRoomList();
 
-				TCHAR buf[30];
-				CString message = _T("");
+				char buf[5];
+				std::string message = "";
+
+				sprintf_s(buf, 5, "%04d", roomList.size());
+				message += buf;
 				for (auto it = roomList.begin(); it != roomList.end(); it++) {
-					wsprintf(buf, _T("%d: "), it->roomID);
-					message += buf + it->name + _T("\n");
+					sprintf_s(buf, 5, "%04d", it->roomID);
+					message += buf;
+					message += it->name;
 				}
-				this->transmission->SendTo(decodedMessage.uid, std::string(CT2CA(message.operator LPCWSTR())));
+
+				ResponseInfo resInfo;
+				resInfo.extra = message;
+				std::string encodedMsg = MessageEncoding(ResponseList::RoomList, resInfo);
+				this->transmission->SendTo(decodedMessage.uid, encodedMsg);
+
 				break;
 			}
 			case MessageType::RoomJoin:
@@ -87,7 +112,11 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 
 				this->dataModule->JoinRoom(room, client);
 
-				this->transmission->SendTo(decodedMessage.uid, "RoomJoined");
+				ResponseInfo resInfo;
+				resInfo.roomName = this->dataModule->GetRoomName(room.roomID);
+				resInfo.userName = this->dataModule->GetRoomName(client.clientID);
+				std::string encodedMsg = MessageEncoding(ResponseList::RoomJoined, resInfo);
+				this->transmission->SendTo(decodedMessage.uid, encodedMsg);
 				break;
 			}
 			case MessageType::ClientList:
@@ -99,17 +128,25 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 						roomID = it->joinedRoomID;
 					}
 				}
+				
+				char buf[5];
+				std::string message = "";
 
-				CString msg = _T("");
-				TCHAR buf[30];
+				sprintf_s(buf, 5, "%04d", clientList.size());
+				message += buf;
 				for (auto it = clientList.begin(); it != clientList.end(); it++) {
 					if (it->joinedRoomID == roomID) {
-						wsprintf(buf, _T("%d|"), it->clientID);
-						msg += buf;
+						sprintf_s(buf, 5, "%04d", it->clientID);
+						message += buf;
+						message += it->name;
 					}
 				}
 
-				this->transmission->SendTo(decodedMessage.uid, std::string(CT2CA(msg.operator LPCWSTR())));
+				ResponseInfo resInfo;
+				resInfo.extra = message;
+				std::string encodedMsg = MessageEncoding(ResponseList::ClientList, resInfo);
+				this->transmission->SendTo(decodedMessage.uid, encodedMsg);
+
 				break;
 			}
 			case MessageType::Normal:
@@ -123,11 +160,18 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 					}
 				}
 
+				ResponseInfo resInfo;
+				resInfo.roomName = this->dataModule->GetRoomName(roomID);
+				resInfo.userName = this->dataModule->GetClientName(std::stoi(decodedMessage.uid));
+				std::string encodedMsg = MessageEncoding(ResponseList::Normal, resInfo);
+
 				for (auto it = temp.begin(); it != temp.end(); it++) {
 					if (it->joinedRoomID == roomID) {
+						
 						char buf[10];
 						sprintf_s(buf, 10, "%04d", it->clientID);
-						this->transmission->SendTo(std::string(buf), decodedMessage.body);
+
+						this->transmission->SendTo(std::string(buf), encodedMsg);
 					}
 				}
 				break;
@@ -151,8 +195,81 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 
 
 // Transmission Methods
-std::string Processor::MessageEncoding(CustomMessage msg) {
-	return msg.body;
+std::string Processor::MessageEncoding(ResponseList type, ResponseInfo info) {
+	
+	std::string encodedMsg = "";
+	char buf[5];
+	switch (type) {
+		case ResponseList::ClientConnected:
+		{
+			encodedMsg += "clcr";
+
+			sprintf_s(buf, 5, "%02d", info.userName.length());
+			encodedMsg += buf;
+			encodedMsg += info.userName;
+
+			sprintf_s(buf, 5, "%02d", info.roomName.length());
+			encodedMsg += buf;
+			encodedMsg += info.roomName;
+
+			break;
+		}
+		case ResponseList::ClientList:
+		{
+			encodedMsg += "clls";
+			encodedMsg += info.extra;
+
+			break;
+		}
+		case ResponseList::RoomCreated:
+		{
+			encodedMsg += "rmcr";
+			break;
+		}
+		case ResponseList::RoomLeaved:
+		{
+			encodedMsg += "rmlv";
+			break;
+		}
+		case ResponseList::RoomJoined:
+		{
+			encodedMsg += "rmjn";
+			sprintf_s(buf, 5, "%02d", info.userName.length());
+			encodedMsg += buf;
+			encodedMsg += info.userName;
+
+			sprintf_s(buf, 5, "%02d", info.roomName.length());
+			encodedMsg += buf;
+			encodedMsg += info.roomName;
+			break;
+		}
+		case ResponseList::RoomList:
+		{
+			encodedMsg += "rmls";
+			encodedMsg += info.extra;
+			break;
+		}
+		case ResponseList::Normal:
+		{
+			encodedMsg += "norm";
+			sprintf_s(buf, 5, "%02d", info.userName.length());
+			encodedMsg += buf;
+			encodedMsg += info.userName;
+
+			sprintf_s(buf, 5, "%02d", info.roomName.length());
+			encodedMsg += buf;
+			encodedMsg += info.roomName;
+
+			encodedMsg += info.extra;
+			break;
+		}
+		default:
+		{
+			break;
+		}
+	}
+
+	return encodedMsg;
 }
 CustomMessage Processor::MessageDecoding(std::string message) {
 	CustomMessage decodedMessage;

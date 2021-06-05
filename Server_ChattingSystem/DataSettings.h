@@ -11,7 +11,7 @@
 #include "AMQPSettings.h"
 
 struct Client {
-	CString name;
+	std::string name;
 	UINT clientID;
 
 	//std::vector<UINT> joinedRoomList;
@@ -23,7 +23,7 @@ struct Client {
 	}
 };
 struct Room {
-	CString name;
+	std::string name;
 	UINT roomID=0;
 
 	std::set<UINT> clientList;
