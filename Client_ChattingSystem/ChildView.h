@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "DataSettings.h"
+
 struct CaretInfo {
 public:
 	CPoint offset;
@@ -49,7 +51,7 @@ protected:
 	afx_msg void OnPaint();
 	DECLARE_MESSAGE_MAP()
 public:
-	//	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnSetFocus(CWnd* pOldWnd);
 	afx_msg void OnKillFocus(CWnd* pNewWnd);
@@ -71,7 +73,7 @@ public:
 
 	void DisplayRoomList(CPaintDC& dc);
 	void DisplayClientInfoSpace(CPaintDC& dc);
-	void DisplayToolsSpace(CPaintDC& dc);
+	void DisplayToolsSpace(CPaintDC& dc, const CRect& rect);
 	void DisplayRoomListSpace(CPaintDC& dc);
 	
 	void DisplayChattingRoom(CPaintDC& dc);
@@ -82,10 +84,14 @@ public:
 	// properties
 private:
 	CList<CString> messageList;
+	CList<CString> RoomNameList;
+
+	CString currRoom;
+	CString myID;
 
 public:
+	void UpdateRoomNameList(CString);
 	void UpdateMessageList(CString msg);
-	CList<CString>* GetMessageList();
 
 	// Page
 private:
@@ -101,24 +107,17 @@ private:
 	const CRect chattingLogSpaceSize = CRect(0, 80, 440, 520);
 	const CRect typingSpaceSize = CRect(0, 520, 440, 600);
 
-
 	const CPoint closeButtonLoc = CPoint(415, 10);
-	const CPoint closeButtonSize = CPoint(10, 10);
-	
-	const CRect closeButton = CRect(
-		roomInfoSpaceSize.left + closeButtonLoc.x, 
-		roomInfoSpaceSize.top + closeButtonLoc.y,
-		roomInfoSpaceSize.left + closeButtonLoc.x + closeButtonSize.x, 
-		roomInfoSpaceSize.top + closeButtonLoc.y + closeButtonSize.y
+	const CPoint closeButtonSize = CPoint(10, 20);
+	CRect closeButton = CRect(
+		closeButtonLoc.x, 
+		closeButtonLoc.y,
+		closeButtonLoc.x + closeButtonSize.x, 
+		closeButtonLoc.y + closeButtonSize.y
 	);
-
 
 	const CRect clientInfoSpaceSize = CRect(0, 0, 70, 600);
 	const CRect toolsSpaceSize = CRect(70, 0, 440, 80);
 	const CRect roomListSpaceSize = CRect(70, 80, 440, 600);
-
-
-public:
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 };
 

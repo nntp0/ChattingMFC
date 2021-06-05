@@ -60,7 +60,6 @@ void CChildView::OnDestroy()
 	CWnd::OnDestroy();
 }
 
-
 void CChildView::OnPaint() 
 {
 	CPaintDC dc(this);
@@ -68,45 +67,20 @@ void CChildView::OnPaint()
 	if (this->page == Page::chattingRoom) DisplayChattingRoom(dc);
 	else if (this->page == Page::RoomList) DisplayRoomList(dc);
 }
+
+// RoomList View
 void CChildView::DisplayRoomList(CPaintDC &dc) {
 	DisplayClientInfoSpace(dc);
-	DisplayToolsSpace(dc);
+	DisplayToolsSpace(dc, toolsSpaceSize);
 	DisplayRoomListSpace(dc);
 }
 void CChildView::DisplayClientInfoSpace(CPaintDC& dc) {
 	dc.FillSolidRect(clientInfoSpaceSize, RGB(236, 236, 237));
 }
-void CChildView::DisplayToolsSpace(CPaintDC& dc) {
+void CChildView::DisplayToolsSpace(CPaintDC& dc, const CRect& rect) {
 	dc.FillSolidRect(toolsSpaceSize, RGB(100, 236, 237));
-}
-void CChildView::DisplayRoomListSpace(CPaintDC& dc) {
-	//dc.FillSolidRect(roomListSpaceSize, RGB(255, 255, 255));
-}
 
-void CChildView::DisplayChattingRoom(CPaintDC& dc) {
-	DisplayRoomInfoSpace(dc, roomInfoSpaceSize);
-	DisplayLogSpace(dc, chattingLogSpaceSize);
-	DisplayTypingSpace(dc, typingSpaceSize);
-}
-void CChildView::DisplayRoomInfoSpace(CPaintDC& dc, const CRect& rect) {
-	dc.FillSolidRect(rect, RGB(169, 189, 206));
-
-	CPen pen;
-	pen.CreatePen(PS_NULL, 3, RGB(255, 255, 255));
-	CPen* oldPen = dc.SelectObject(&pen);
-
-	CBrush brush;
-	brush.CreateSolidBrush(RGB(255, 255, 255));
-	CBrush* oldBrush = dc.SelectObject(&brush);
-
-	dc.Ellipse(15, 15, 65, 65);
-
-	pen.DeleteObject();
-	brush.DeleteObject();
-	dc.SelectObject(oldPen);
-	dc.SelectObject(oldBrush);
-
-
+// x Button
 	CFont font;
 	VERIFY(font.CreateFont(
 		20,                       // nHeight
@@ -126,11 +100,58 @@ void CChildView::DisplayRoomInfoSpace(CPaintDC& dc, const CRect& rect) {
 
 	CFont* def_font = dc.SelectObject(&font);
 
-	CPoint closeButtonLoc(415, 10);
-	CPoint closeButtonSize(10, 10);
+	dc.DrawText(CString("x"), 1, &closeButton, DT_LEFT);
+	dc.SelectObject(def_font);
+	font.DeleteObject();
+}
+void CChildView::DisplayRoomListSpace(CPaintDC& dc) {
+	//dc.FillSolidRect(roomListSpaceSize, RGB(255, 255, 255));
+}
 
-	CRect closeButton(rect.left + closeButtonLoc.x, rect.top + closeButtonSize.y,
-		rect.right + closeButtonLoc.x, rect.bottom + closeButtonSize.y);
+// ChattingRoom View
+void CChildView::DisplayChattingRoom(CPaintDC& dc) {
+	DisplayRoomInfoSpace(dc, roomInfoSpaceSize);
+	DisplayLogSpace(dc, chattingLogSpaceSize);
+	DisplayTypingSpace(dc, typingSpaceSize);
+}
+void CChildView::DisplayRoomInfoSpace(CPaintDC& dc, const CRect& rect) {
+	dc.FillSolidRect(rect, RGB(169, 189, 206));
+
+// Client Image
+	CPen pen;
+	pen.CreatePen(PS_NULL, 3, RGB(255, 255, 255));
+	CPen* oldPen = dc.SelectObject(&pen);
+
+	CBrush brush;
+	brush.CreateSolidBrush(RGB(255, 255, 255));
+	CBrush* oldBrush = dc.SelectObject(&brush);
+
+	dc.Ellipse(15, 15, 65, 65);
+
+	pen.DeleteObject();
+	brush.DeleteObject();
+	dc.SelectObject(oldPen);
+	dc.SelectObject(oldBrush);
+
+// X Button
+	CFont font;
+	VERIFY(font.CreateFont(
+		20,                       // nHeight
+		0,                        // nWidth
+		0,                        // nEscapement
+		0,                        // nOrientation
+		FW_NORMAL,                // nWeight
+		FALSE,                    // bItalic
+		FALSE,                    // bUnderline
+		0,                        // cStrikeOut
+		ANSI_CHARSET,             // nCharSet
+		OUT_DEFAULT_PRECIS,       // nOutPrecision
+		CLIP_DEFAULT_PRECIS,      // nClipPrecision
+		DEFAULT_QUALITY,          // nQuality
+		DEFAULT_PITCH | FF_SWISS, // nPitchAndFamily
+		_T("Ariel")));            // lpszFacename
+
+	CFont* def_font = dc.SelectObject(&font);
 
 	dc.DrawText(CString("x"), 1, &closeButton, DT_LEFT);
 	dc.SelectObject(def_font);
@@ -288,25 +309,34 @@ void CChildView::InputBufferClear() {
 	this->m_caretInfo.Clear();
 }
 
+void CChildView::UpdateRoomNameList(CString msg) {
+	this->RoomNameList.AddTail(msg);
+	if (this->page == Page::RoomList) Invalidate();
+}
 void CChildView::UpdateMessageList(CString msg) {
 	this->messageList.AddTail(msg);
-	Invalidate();
-}
-CList<CString>* CChildView::GetMessageList() {
-	return NULL;
+	if (this->page == Page::chattingRoom) Invalidate();
 }
 
 void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	if (this->page == Page::chattingRoom) {
 
-		CRect closeButtonArea = CRect(closeButton.left - margin, closeButton.top-margin,
+		CRect closeButtonArea = CRect(closeButton.left - margin, closeButton.top - margin,
 			closeButton.right + margin, closeButton.bottom + margin);
 
 		if (closeButtonArea.PtInRect(point)) {
 			this->page = Page::RoomList;
 			HideCaret();
 			Invalidate();
+		}
+	}
+	else if (this->page == Page::RoomList) {
+		CRect closeButtonArea = CRect(closeButton.left - margin, closeButton.top - margin,
+			closeButton.right + margin, closeButton.bottom + margin);
+
+		if (closeButtonArea.PtInRect(point)) {
+			((CMainFrame*)AfxGetMainWnd())->OnClose();
 		}
 	}
 	CWnd::OnLButtonDown(nFlags, point);
