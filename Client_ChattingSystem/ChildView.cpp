@@ -344,7 +344,9 @@ void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 }
 
 void CChildView::SendTypedMessage() {
-	parentFrame->m_transmission->Send(std::string(CT2CA(m_str.operator LPCWSTR())));
+	std::string msg("norm");
+	msg += std::string(CT2CA(m_str.operator LPCWSTR()));
+	parentFrame->m_transmission->Send(msg);
 	this->InputBufferClear();
 	Invalidate();
 }
