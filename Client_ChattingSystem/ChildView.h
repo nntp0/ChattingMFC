@@ -69,7 +69,7 @@ public:
 
 // 특성입니다.
 public:
-	CMainFrame* parentFrame;
+	CMainFrame* parentFrame = nullptr;
 
 	CString m_str;
 	CArray<BackSpaceInfo, BackSpaceInfo> m_strSize;
@@ -98,6 +98,8 @@ private:
 	CString currRoom;
 	CString myName;
 
+	int pointedRoom = -1;
+
 public:
 	void UpdateRoomList(Room);
 	void UpdateMessageList(Message);
@@ -106,6 +108,8 @@ public:
 	void SendTypedMessage();
 	void CreateRoom(CString);
 	void ClearRoomList();
+	void JoinRoom();
+	void LeaveRoom();
 
 	// Page
 private:
@@ -115,6 +119,7 @@ private:
 	};
 
 	int margin = 5;
+	const int DisplayRoomSize = 70;
 
 	Page page = Page::chattingRoom;
 	const CRect roomInfoSpaceSize = CRect(0, 0, 440, 80);
@@ -141,6 +146,8 @@ private:
 	const CRect clientInfoSpaceSize = CRect(0, 0, 70, 600);
 	const CRect toolsSpaceSize = CRect(70, 0, 440, 80);
 	const CRect roomListSpaceSize = CRect(70, 80, 440, 600);
+public:
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 };
 
 #endif

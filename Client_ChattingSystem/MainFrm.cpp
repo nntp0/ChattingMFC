@@ -147,14 +147,28 @@ void CMainFrame::RecvMessage(std::string str) {
 		std::string buf = "미구현";
 	}
 	else if (buf == "rmcr") {
-		AfxMessageBox(_T("RoomCreate"));
 		this->m_transmission->Send("rmls");
 	}
 	else if (buf == "rmlv") {
-
+		std::string buf = "미구현";
 	}
 	else if (buf == "rmjn") {
+		std::string buf = str.substr(0, 2);
+		str = str.substr(2);
+		int len = stoi(buf);
 
+		std::string uName = str.substr(0, len);
+		str = str.substr(len);
+
+		buf = str.substr(0, 2);
+		str = str.substr(2);
+		len = stoi(buf);
+
+		std::string rName = str.substr(0, len);
+		str = str.substr(len);
+
+		m_wndView.UpdateUserInfo(uName, rName);
+		m_wndView.JoinRoom();
 	}
 	else if (buf == "rmls") {
 

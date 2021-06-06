@@ -31,6 +31,7 @@ BEGIN_MESSAGE_MAP(CChildView, CWnd)
 	ON_WM_CREATE()
 	ON_WM_DESTROY()
 	ON_WM_LBUTTONDOWN()
+	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
 // CChildView 메시지 처리기
@@ -111,12 +112,21 @@ void CChildView::DisplayToolsSpace(CPaintDC& dc, const CRect& rect) {
 	font.DeleteObject();
 }
 void CChildView::DisplayRoomListSpace(CPaintDC& dc, const CRect& rect) {
+	
+	
 	int spaceSize = 70;
 	int spaceTime = 0;
 	CRect RoomSpace(rect);
+	RoomSpace.bottom = RoomSpace.top + spaceSize;
 
 	auto pos = this->RoomList.GetHeadPosition();
+
+	int index = 0;
 	while (pos != NULL) {
+		
+		if (index++ == pointedRoom) dc.FillSolidRect(CRect(RoomSpace.left, RoomSpace.top,
+			RoomSpace.right, RoomSpace.bottom), RGB(242, 242, 242));
+
 		Room temp = this->RoomList.GetNext(pos);
 
 		dc.Rectangle(CRect(RoomSpace.left + 10, RoomSpace.top + 10,
@@ -150,8 +160,8 @@ void CChildView::DisplayRoomListSpace(CPaintDC& dc, const CRect& rect) {
 		dc.SelectObject(def_font);
 		font.DeleteObject();
 
-		RoomSpace.top += 70;
-		RoomSpace.bottom += 70;
+		RoomSpace.top += DisplayRoomSize;
+		RoomSpace.bottom += DisplayRoomSize;
 
 	}
 }
@@ -264,8 +274,6 @@ void CChildView::DisplayTypingSpace(CPaintDC& dc, const CRect& rect) {
 	SetCaretPos(poi);
 }
 
-
-
 void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	CClientDC dc(this);
@@ -335,13 +343,23 @@ void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 	Invalidate();
 }
 
-
 void CChildView::SendTypedMessage() {
 	parentFrame->m_transmission->Send(std::string(CT2CA(m_str.operator LPCWSTR())));
 	this->InputBufferClear();
 	Invalidate();
 }
 void CChildView::CreateRoom(CString roomName) {
+}
+void CChildView::JoinRoom() {
+	this->page = Page::chattingRoom;
+	Invalidate();
+}
+void CChildView::LeaveRoom() {
+	this->page = Page::RoomList;
+	this->InputBufferClear();
+	this->messageList.RemoveAll();
+	HideCaret();
+	Invalidate();
 }
 
 void CChildView::OnSetFocus(CWnd* pOldWnd)
@@ -394,27 +412,71 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 			closeButton.right + margin, closeButton.bottom + margin);
 
 		if (closeButtonArea.PtInRect(point)) {
-			this->page = Page::RoomList;
-			HideCaret();
-			Invalidate();
+			LeaveRoom();
 		}
 	}
 	else if (this->page == Page::RoomList) {
-		CRect createButtonArea = CRect(createButton.left - margin, createButton.top - margin,
-			createButton.right + margin, createButton.bottom + margin);
-		CRect closeButtonArea = CRect(closeButton.left - margin, closeButton.top - margin,
-			closeButton.right + margin, closeButton.bottom + margin);
+		
+		if (toolsSpaceSize.PtInRect(point)) {
+			CRect createButtonArea = CRect(createButton.left - margin, createButton.top - margin,
+				createButton.right + margin, createButton.bottom + margin);
+			CRect closeButtonArea = CRect(closeButton.left - margin, closeButton.top - margin,
+				closeButton.right + margin, closeButton.bottom + margin);
 
-		if (createButtonArea.PtInRect(point)) {
-			CreateRoomDlg dlg;
-			dlg.DoModal();
+			if (createButtonArea.PtInRect(point)) {
+				CreateRoomDlg dlg;
+				dlg.DoModal();
+			}
+			else if (closeButtonArea.PtInRect(point)) {
+				((CMainFrame*)AfxGetMainWnd())->OnClose();
+			}
 		}
+		else if (roomListSpaceSize.PtInRect(point)) {
+			int yOffset = point.y - roomListSpaceSize.top;
+			int roomNum = yOffset / DisplayRoomSize;
 
-		if (closeButtonArea.PtInRect(point)) {
-			((CMainFrame*)AfxGetMainWnd())->OnClose();
+			Room room = RoomList.GetAt(RoomList.FindIndex(roomNum));
+
+			char buf[5];
+			sprintf_s(buf, 5, "%d", room.roomID);
+
+			std::string msg("rmjn");
+			msg += buf;
+
+			parentFrame->m_transmission->Send(msg);
 		}
 	}
 	CWnd::OnLButtonDown(nFlags, point);
 }
+void CChildView::OnMouseMove(UINT nFlags, CPoint point)
+{
+	if (this->page == Page::chattingRoom) {
+	}
+	else if (this->page == Page::RoomList) {
+		if (roomListSpaceSize.PtInRect(point)) {
+			int yOffset = point.y - roomListSpaceSize.top;
+			int roomNum = yOffset / DisplayRoomSize;
 
+			if (roomNum < RoomList.GetSize()) {
+				if (pointedRoom != roomNum) {
+					pointedRoom = roomNum;
+					Invalidate();
+				}
+			}
+			else {
+				if (pointedRoom != -1) {
+					pointedRoom = -1;
+					Invalidate();
+				}
+			}
+		}
+		else {
+			if (pointedRoom != -1) {
+				pointedRoom = -1;
+				Invalidate();
+			}
+		}
+	}
 
+	CWnd::OnMouseMove(nFlags, point);
+}
