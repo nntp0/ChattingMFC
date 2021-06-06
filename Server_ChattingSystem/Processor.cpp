@@ -114,7 +114,7 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 
 				ResponseInfo resInfo;
 				resInfo.roomName = this->dataModule->GetRoomName(room.roomID);
-				resInfo.userName = this->dataModule->GetRoomName(client.clientID);
+				resInfo.userName = this->dataModule->GetClientName(client.clientID);
 				std::string encodedMsg = MessageEncoding(ResponseList::RoomJoined, resInfo);
 				this->transmission->SendTo(decodedMessage.uid, encodedMsg);
 				break;

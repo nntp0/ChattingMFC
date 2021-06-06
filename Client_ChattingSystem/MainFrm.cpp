@@ -120,6 +120,51 @@ void CMainFrame::Tick() {
 }
 void CMainFrame::RecvMessage(std::string str) {
 	TRACE(_T("ControlMessage"));
+	
 
-	m_wndView.UpdateMessageList(CString(CA2CT(str.c_str())));
+	std::string buf = str.substr(0, 4);
+	str = str.substr(4);
+
+	Message recvMsg;
+	recvMsg.msg = CString(CA2CT(buf.c_str()));
+	m_wndView.UpdateMessageList(recvMsg);
+	if (buf == "clcr") {
+		std::string buf = str.substr(0, 2);
+		str = str.substr(2);
+		int len = stoi(buf);
+
+		std::string uName = str.substr(0, len);
+		str = str.substr(len);
+
+		buf = str.substr(0, 2);
+		str = str.substr(2);
+		len = stoi(buf);
+
+		std::string rName = str.substr(0, len);
+		str = str.substr(len);
+
+		m_wndView.UpdateUserInfo(uName, rName);
+	}
+	else if (buf == "clls") {
+		std::string buf = "미구현";
+	}
+	else if (buf == "rmcr") {
+
+	}
+	else if (buf == "rmlv") {
+
+	}
+	else if (buf == "rmjn") {
+
+	}
+	else if (buf == "rmls") {
+
+	}
+	else if (buf == "norm") {
+
+	}
+	else {
+
+	}
 }
+

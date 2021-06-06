@@ -8,8 +8,10 @@
 struct Room {
 	CString name;
 	UINT roomID = 0;
-
-	std::set<UINT> clientList;
+};
+struct Message {
+	CString userName;
+	CString msg;
 };
 
 #endif

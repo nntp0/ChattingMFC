@@ -6,6 +6,7 @@
 #pragma once
 
 #include "DataSettings.h"
+#include <string>
 
 struct CaretInfo {
 public:
@@ -83,15 +84,16 @@ public:
 
 	// properties
 private:
-	CList<CString> messageList;
-	CList<CString> RoomNameList;
+	CList<Message> messageList;
+	CList<Room> RoomNameList;
 
 	CString currRoom;
-	CString myID;
+	CString myName;
 
 public:
-	void UpdateRoomNameList(CString);
-	void UpdateMessageList(CString msg);
+	void UpdateRoomList(Room);
+	void UpdateMessageList(Message);
+	void UpdateUserInfo(std::string userName, std::string roomName);
 
 	// Page
 private:
@@ -107,13 +109,21 @@ private:
 	const CRect chattingLogSpaceSize = CRect(0, 80, 440, 520);
 	const CRect typingSpaceSize = CRect(0, 520, 440, 600);
 
+
+	const CPoint ButtonSize = CPoint(10, 20);
 	const CPoint closeButtonLoc = CPoint(415, 10);
-	const CPoint closeButtonSize = CPoint(10, 20);
 	CRect closeButton = CRect(
 		closeButtonLoc.x, 
 		closeButtonLoc.y,
-		closeButtonLoc.x + closeButtonSize.x, 
-		closeButtonLoc.y + closeButtonSize.y
+		closeButtonLoc.x + ButtonSize.x,
+		closeButtonLoc.y + ButtonSize.y
+	);
+	const CPoint createButtonLoc = CPoint(395, 10);
+	CRect createButton = CRect(
+		createButtonLoc.x,
+		createButtonLoc.y,
+		createButtonLoc.x + ButtonSize.x,
+		createButtonLoc.y + ButtonSize.y
 	);
 
 	const CRect clientInfoSpaceSize = CRect(0, 0, 70, 600);

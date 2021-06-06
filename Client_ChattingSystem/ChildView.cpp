@@ -100,6 +100,7 @@ void CChildView::DisplayToolsSpace(CPaintDC& dc, const CRect& rect) {
 
 	CFont* def_font = dc.SelectObject(&font);
 
+	dc.DrawText(CString("+"), 1, &createButton, DT_LEFT);
 	dc.DrawText(CString("x"), 1, &closeButton, DT_LEFT);
 	dc.SelectObject(def_font);
 	font.DeleteObject();
@@ -153,6 +154,9 @@ void CChildView::DisplayRoomInfoSpace(CPaintDC& dc, const CRect& rect) {
 
 	CFont* def_font = dc.SelectObject(&font);
 
+	
+
+	dc.DrawText(currRoom, currRoom.GetLength(), CRect(80, 20, 200, 40), DT_LEFT);
 	dc.DrawText(CString("x"), 1, &closeButton, DT_LEFT);
 	dc.SelectObject(def_font);
 	font.DeleteObject();
@@ -168,12 +172,15 @@ void CChildView::DisplayLogSpace(CPaintDC& dc, const CRect& rect) {
 	dc.FillSolidRect(rect, RGB(155, 187, 212));
 	auto pos = this->messageList.GetHeadPosition();
 	while (pos != NULL) {
-		CString temp = this->messageList.GetNext(pos);
+		Message temp = this->messageList.GetNext(pos);
+
+		CString user = temp.userName;
+		CString msg = temp.msg;
 
 		spaceTime++;
 		lineSpace.top = spaceSize * spaceTime;
 
-		dc.DrawText(temp.GetString(), temp.GetLength(), &(rect - lineSpace), DT_LEFT);
+		dc.DrawText(msg.GetString(), msg.GetLength(), &(rect - lineSpace), DT_LEFT);
 	}
 }
 void CChildView::DisplayTypingSpace(CPaintDC& dc, const CRect& rect) {
@@ -309,12 +316,17 @@ void CChildView::InputBufferClear() {
 	this->m_caretInfo.Clear();
 }
 
-void CChildView::UpdateRoomNameList(CString msg) {
+void CChildView::UpdateRoomList(Room msg) {
 	this->RoomNameList.AddTail(msg);
 	if (this->page == Page::RoomList) Invalidate();
 }
-void CChildView::UpdateMessageList(CString msg) {
+void CChildView::UpdateMessageList(Message msg) {
 	this->messageList.AddTail(msg);
+	if (this->page == Page::chattingRoom) Invalidate();
+}
+void CChildView::UpdateUserInfo(std::string userName, std::string roomName) {
+	this->myName = CString(CA2CT(userName.c_str()));
+	this->currRoom = CString(CA2CT(roomName.c_str()));
 	if (this->page == Page::chattingRoom) Invalidate();
 }
 
@@ -332,8 +344,14 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 	}
 	else if (this->page == Page::RoomList) {
+		CRect createButtonArea = CRect(createButton.left - margin, createButton.top - margin,
+			createButton.right + margin, createButton.bottom + margin);
 		CRect closeButtonArea = CRect(closeButton.left - margin, closeButton.top - margin,
 			closeButton.right + margin, closeButton.bottom + margin);
+
+		if (createButtonArea.PtInRect(point)) {
+			AfxMessageBox(_T("Create"));
+		}
 
 		if (closeButtonArea.PtInRect(point)) {
 			((CMainFrame*)AfxGetMainWnd())->OnClose();
