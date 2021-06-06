@@ -455,12 +455,6 @@ void CChildView::UpdateUserInfo(std::string userName, std::string roomName) {
 
 void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	/*CPoint pos;
-	GetCursorPos(&pos);
-	TCHAR buf[10];
-	wsprintf(buf, _T("%d %d"), pos.x, pos.y);
-	AfxMessageBox(buf);*/
-
 	if (this->page == Page::chattingRoom) {
 
 		
@@ -498,15 +492,17 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 			int yOffset = point.y - roomListSpaceSize.top;
 			int roomNum = yOffset / DisplayRoomSize;
 
-			Room room = RoomList.GetAt(RoomList.FindIndex(roomNum));
+			if (roomNum < RoomList.GetSize()) {
+				Room room = RoomList.GetAt(RoomList.FindIndex(roomNum));
 
-			char buf[5];
-			sprintf_s(buf, 5, "%d", room.roomID);
+				char buf[5];
+				sprintf_s(buf, 5, "%d", room.roomID);
 
-			std::string msg("rmjn");
-			msg += buf;
+				std::string msg("rmjn");
+				msg += buf;
 
-			parentFrame->m_transmission->Send(msg);
+				parentFrame->m_transmission->Send(msg);
+			}
 		}
 	}
 	CWnd::OnLButtonDown(nFlags, point);
