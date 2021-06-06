@@ -118,6 +118,9 @@ private:
 		RoomList
 	};
 
+	bool isDrag = false;
+	CPoint dragSPos;
+
 	int margin = 5;
 	const int DisplayRoomSize = 70;
 
@@ -148,6 +151,8 @@ private:
 	const CRect roomListSpaceSize = CRect(70, 80, 440, 600);
 public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+//	afx_msg void OnNcLButtonDown(UINT nHitTest, CPoint point);
 };
 
 #endif

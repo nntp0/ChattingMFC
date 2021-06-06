@@ -32,6 +32,7 @@ BEGIN_MESSAGE_MAP(CChildView, CWnd)
 	ON_WM_DESTROY()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_MOUSEMOVE()
+	ON_WM_LBUTTONUP()
 END_MESSAGE_MAP()
 
 // CChildView 메시지 처리기
@@ -222,47 +223,6 @@ void CChildView::DisplayRoomInfoSpace(CPaintDC& dc, const CRect& rect) {
 }
 void CChildView::DisplayLogSpace(CPaintDC& dc, const CRect& rect) {
 
-	//while (pos != NULL) {
-
-	//	Room temp = this->RoomList.GetNext(pos);
-
-	//	dc.Rectangle(CRect(RoomSpace.left + 10, RoomSpace.top + 10,
-	//		RoomSpace.left + 60, RoomSpace.top + 60));
-
-	//	UINT rid = temp.roomID;
-	//	CString name = temp.name;
-
-		//CFont font;
-		//VERIFY(font.CreateFont(
-		//	20,                       // nHeight
-		//	0,                        // nWidth
-		//	0,                        // nEscapement
-		//	0,                        // nOrientation
-		//	FW_NORMAL,                // nWeight
-		//	FALSE,                    // bItalic
-		//	FALSE,                    // bUnderline
-		//	0,                        // cStrikeOut
-		//	ANSI_CHARSET,             // nCharSet
-		//	OUT_DEFAULT_PRECIS,       // nOutPrecision
-		//	CLIP_DEFAULT_PRECIS,      // nClipPrecision
-		//	DEFAULT_QUALITY,          // nQuality
-		//	DEFAULT_PITCH | FF_SWISS, // nPitchAndFamily
-		//	_T("맑은고딕")));            // lpszFacename
-		//CFont* def_font = dc.SelectObject(&font);
-
-	//	dc.SetBkMode(TRANSPARENT);
-	//	dc.DrawText(name.GetString(), name.GetLength(), &(CRect(RoomSpace.left + 70, RoomSpace.top + 15,
-	//		RoomSpace.right, RoomSpace.top + 35)), DT_LEFT);
-
-		//dc.SelectObject(def_font);
-		//font.DeleteObject();
-
-	//	RoomSpace.top += DisplayRoomSize;
-	//	RoomSpace.bottom += DisplayRoomSize;
-
-	//}
-
-
 	int spaceSize = 60;
 	CRect CommentSpace(rect);
 	CommentSpace.top = CommentSpace.bottom - spaceSize;
@@ -277,7 +237,7 @@ void CChildView::DisplayLogSpace(CPaintDC& dc, const CRect& rect) {
 
 		CFont font;
 		VERIFY(font.CreateFont(
-			20,                       // nHeight
+			15,                       // nHeight
 			0,                        // nWidth
 			0,                        // nEscapement
 			0,                        // nOrientation
@@ -293,23 +253,31 @@ void CChildView::DisplayLogSpace(CPaintDC& dc, const CRect& rect) {
 			_T("맑은고딕")));            // lpszFacename
 		CFont* def_font = dc.SelectObject(&font);
 
+		CSize fontSize = dc.GetTextExtent(msg);
+		SetBkMode(dc, TRANSPARENT);
+
 		if (user == myName) {
 			dc.Rectangle(CRect(CommentSpace.right - 55, CommentSpace.top + 5,
 				CommentSpace.right - 5, CommentSpace.bottom - 5));
-			dc.DrawText(user.GetString(), user.GetLength(), &CRect(CommentSpace.left, CommentSpace.top + 10,
-				CommentSpace.right - 60, CommentSpace.bottom - 30), DT_RIGHT);
+			dc.RoundRect(CRect(CommentSpace.right - 70 - fontSize.cx - margin, CommentSpace.top + 25 - margin,
+				CommentSpace.right - 70 + margin, CommentSpace.bottom - 10 + margin), CPoint(17,17));
+
+			dc.DrawText(user.GetString(), user.GetLength(), &CRect(CommentSpace.left, CommentSpace.top,
+				CommentSpace.right - 60, CommentSpace.bottom - 20), DT_RIGHT);
 			dc.DrawText(msg.GetString(), msg.GetLength(), &CRect(CommentSpace.left, CommentSpace.top + 30,
-				CommentSpace.right - 60, CommentSpace.bottom - 10), DT_RIGHT);
+				CommentSpace.right - 70, CommentSpace.bottom - 10), DT_RIGHT);
 		}
 		else {
 			dc.Rectangle(CRect(CommentSpace.left + 5, CommentSpace.top + 5,
 				CommentSpace.left + 55, CommentSpace.bottom - 5));
-			dc.DrawText(user.GetString(), user.GetLength(), &CRect(CommentSpace.left + 60, CommentSpace.top + 10,
-				CommentSpace.right, CommentSpace.bottom - 30), DT_LEFT);
-			dc.DrawText(msg.GetString(), msg.GetLength(), &CRect(CommentSpace.left + 60, CommentSpace.top + 30,
+			dc.RoundRect(CRect(CommentSpace.left + 70 - margin, CommentSpace.top + 25 - margin,
+				CommentSpace.left + 70 + fontSize.cx + margin, CommentSpace.bottom - 10 + margin), CPoint(17, 17));
+
+			dc.DrawText(user.GetString(), user.GetLength(), &CRect(CommentSpace.left + 60, CommentSpace.top,
+				CommentSpace.right, CommentSpace.bottom - 20), DT_LEFT);
+			dc.DrawText(msg.GetString(), msg.GetLength(), &CRect(CommentSpace.left + 70, CommentSpace.top + 30,
 				CommentSpace.right, CommentSpace.bottom - 10), DT_LEFT);
 		}
-
 
 		dc.SelectObject(def_font);
 		font.DeleteObject();
@@ -475,7 +443,7 @@ void CChildView::UpdateRoomList(Room room) {
 	if (this->page == Page::RoomList) Invalidate();
 }
 void CChildView::UpdateMessageList(Message msg) {
-	this->messageList.AddTail(msg);
+	this->messageList.AddHead(msg);
 	if (this->page == Page::chattingRoom) Invalidate();
 }
 void CChildView::UpdateUserInfo(std::string userName, std::string roomName) {
@@ -486,13 +454,27 @@ void CChildView::UpdateUserInfo(std::string userName, std::string roomName) {
 
 void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 {
+	/*CPoint pos;
+	GetCursorPos(&pos);
+	TCHAR buf[10];
+	wsprintf(buf, _T("%d %d"), pos.x, pos.y);
+	AfxMessageBox(buf);*/
+
 	if (this->page == Page::chattingRoom) {
 
-		CRect closeButtonArea = CRect(closeButton.left - margin, closeButton.top - margin,
-			closeButton.right + margin, closeButton.bottom + margin);
+		
 
-		if (closeButtonArea.PtInRect(point)) {
-			LeaveRoom();
+		if (roomInfoSpaceSize.PtInRect(point)) {
+			CRect closeButtonArea = CRect(closeButton.left - margin, closeButton.top - margin,
+				closeButton.right + margin, closeButton.bottom + margin);
+			
+			if (closeButtonArea.PtInRect(point)) {
+				LeaveRoom();
+			}
+			else {
+				isDrag = true;
+				GetCursorPos(&dragSPos);
+			}
 		}
 	}
 	else if (this->page == Page::RoomList) {
@@ -530,17 +512,38 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 }
 void CChildView::OnMouseMove(UINT nFlags, CPoint point)
 {
-	if (this->page == Page::chattingRoom) {
+	if (isDrag) {
+		CPoint now;
+		GetCursorPos(&now);
+		CPoint dif = now - dragSPos;
+		CRect frameloc;
+		parentFrame->GetWindowRect(&frameloc);
+		frameloc.top += dif.y;
+		frameloc.bottom += dif.y;
+		frameloc.right += dif.x;
+		frameloc.left += dif.x;
+		parentFrame->MoveWindow(&frameloc, 1);
+		dragSPos = now;
 	}
-	else if (this->page == Page::RoomList) {
-		if (roomListSpaceSize.PtInRect(point)) {
-			int yOffset = point.y - roomListSpaceSize.top;
-			int roomNum = yOffset / DisplayRoomSize;
+	else {
+		if (this->page == Page::chattingRoom) {
+		}
+		else if (this->page == Page::RoomList) {
+			if (roomListSpaceSize.PtInRect(point)) {
+				int yOffset = point.y - roomListSpaceSize.top;
+				int roomNum = yOffset / DisplayRoomSize;
 
-			if (roomNum < RoomList.GetSize()) {
-				if (pointedRoom != roomNum) {
-					pointedRoom = roomNum;
-					Invalidate();
+				if (roomNum < RoomList.GetSize()) {
+					if (pointedRoom != roomNum) {
+						pointedRoom = roomNum;
+						Invalidate();
+					}
+				}
+				else {
+					if (pointedRoom != -1) {
+						pointedRoom = -1;
+						Invalidate();
+					}
 				}
 			}
 			else {
@@ -550,13 +553,17 @@ void CChildView::OnMouseMove(UINT nFlags, CPoint point)
 				}
 			}
 		}
-		else {
-			if (pointedRoom != -1) {
-				pointedRoom = -1;
-				Invalidate();
-			}
-		}
 	}
+	
 
 	CWnd::OnMouseMove(nFlags, point);
+}
+
+
+void CChildView::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	if (isDrag) isDrag = false;
+
+	CWnd::OnLButtonUp(nFlags, point);
 }

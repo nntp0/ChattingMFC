@@ -305,12 +305,6 @@ CustomMessage Processor::MessageDecoding(std::string message) {
 		this->displayModule->DisplayLog(CString::CStringT(CA2CT(message.c_str())));
 		return decodedMessage;
 	}
-	/*if (decodedMessage.type == MessageType::Normal) {
-		decodedMessage.body = message.substr(4);
-	}
-	else {
-		decodedMessage.body = message.substr(8);
-	}*/
 
 	decodedMessage.body = message.substr(8);
 
