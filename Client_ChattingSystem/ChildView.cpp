@@ -222,9 +222,50 @@ void CChildView::DisplayRoomInfoSpace(CPaintDC& dc, const CRect& rect) {
 }
 void CChildView::DisplayLogSpace(CPaintDC& dc, const CRect& rect) {
 
-	int spaceSize = 20;
-	int spaceTime = 0;
-	CRect lineSpace(0, 0, 0, 0);
+	//while (pos != NULL) {
+
+	//	Room temp = this->RoomList.GetNext(pos);
+
+	//	dc.Rectangle(CRect(RoomSpace.left + 10, RoomSpace.top + 10,
+	//		RoomSpace.left + 60, RoomSpace.top + 60));
+
+	//	UINT rid = temp.roomID;
+	//	CString name = temp.name;
+
+		//CFont font;
+		//VERIFY(font.CreateFont(
+		//	20,                       // nHeight
+		//	0,                        // nWidth
+		//	0,                        // nEscapement
+		//	0,                        // nOrientation
+		//	FW_NORMAL,                // nWeight
+		//	FALSE,                    // bItalic
+		//	FALSE,                    // bUnderline
+		//	0,                        // cStrikeOut
+		//	ANSI_CHARSET,             // nCharSet
+		//	OUT_DEFAULT_PRECIS,       // nOutPrecision
+		//	CLIP_DEFAULT_PRECIS,      // nClipPrecision
+		//	DEFAULT_QUALITY,          // nQuality
+		//	DEFAULT_PITCH | FF_SWISS, // nPitchAndFamily
+		//	_T("맑은고딕")));            // lpszFacename
+		//CFont* def_font = dc.SelectObject(&font);
+
+	//	dc.SetBkMode(TRANSPARENT);
+	//	dc.DrawText(name.GetString(), name.GetLength(), &(CRect(RoomSpace.left + 70, RoomSpace.top + 15,
+	//		RoomSpace.right, RoomSpace.top + 35)), DT_LEFT);
+
+		//dc.SelectObject(def_font);
+		//font.DeleteObject();
+
+	//	RoomSpace.top += DisplayRoomSize;
+	//	RoomSpace.bottom += DisplayRoomSize;
+
+	//}
+
+
+	int spaceSize = 60;
+	CRect CommentSpace(rect);
+	CommentSpace.top = CommentSpace.bottom - spaceSize;
 
 	dc.FillSolidRect(rect, RGB(155, 187, 212));
 	auto pos = this->messageList.GetHeadPosition();
@@ -234,10 +275,47 @@ void CChildView::DisplayLogSpace(CPaintDC& dc, const CRect& rect) {
 		CString user = temp.userName;
 		CString msg = temp.msg;
 
-		spaceTime++;
-		lineSpace.top = spaceSize * spaceTime;
+		CFont font;
+		VERIFY(font.CreateFont(
+			20,                       // nHeight
+			0,                        // nWidth
+			0,                        // nEscapement
+			0,                        // nOrientation
+			FW_NORMAL,                // nWeight
+			FALSE,                    // bItalic
+			FALSE,                    // bUnderline
+			0,                        // cStrikeOut
+			ANSI_CHARSET,             // nCharSet
+			OUT_DEFAULT_PRECIS,       // nOutPrecision
+			CLIP_DEFAULT_PRECIS,      // nClipPrecision
+			DEFAULT_QUALITY,          // nQuality
+			DEFAULT_PITCH | FF_SWISS, // nPitchAndFamily
+			_T("맑은고딕")));            // lpszFacename
+		CFont* def_font = dc.SelectObject(&font);
 
-		dc.DrawText(msg.GetString(), msg.GetLength(), &(rect - lineSpace), DT_LEFT);
+		if (user == myName) {
+			dc.Rectangle(CRect(CommentSpace.right - 55, CommentSpace.top + 5,
+				CommentSpace.right - 5, CommentSpace.bottom - 5));
+			dc.DrawText(user.GetString(), user.GetLength(), &CRect(CommentSpace.left, CommentSpace.top + 10,
+				CommentSpace.right - 60, CommentSpace.bottom - 30), DT_RIGHT);
+			dc.DrawText(msg.GetString(), msg.GetLength(), &CRect(CommentSpace.left, CommentSpace.top + 30,
+				CommentSpace.right - 60, CommentSpace.bottom - 10), DT_RIGHT);
+		}
+		else {
+			dc.Rectangle(CRect(CommentSpace.left + 5, CommentSpace.top + 5,
+				CommentSpace.left + 55, CommentSpace.bottom - 5));
+			dc.DrawText(user.GetString(), user.GetLength(), &CRect(CommentSpace.left + 60, CommentSpace.top + 10,
+				CommentSpace.right, CommentSpace.bottom - 30), DT_LEFT);
+			dc.DrawText(msg.GetString(), msg.GetLength(), &CRect(CommentSpace.left + 60, CommentSpace.top + 30,
+				CommentSpace.right, CommentSpace.bottom - 10), DT_LEFT);
+		}
+
+
+		dc.SelectObject(def_font);
+		font.DeleteObject();
+
+		CommentSpace.top -= spaceSize;
+		CommentSpace.bottom -= spaceSize;
 	}
 }
 void CChildView::DisplayTypingSpace(CPaintDC& dc, const CRect& rect) {

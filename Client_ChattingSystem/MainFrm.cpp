@@ -198,12 +198,29 @@ void CMainFrame::RecvMessage(std::string str) {
 		}
 	}
 	else if (buf == "norm") {
+		
+		std::string buf = str.substr(0, 2);
+		str = str.substr(2);
+		int len = stoi(buf);
+
+		std::string uName = str.substr(0, len);
+		str = str.substr(len);
+
+		buf = str.substr(0, 2);
+		str = str.substr(2);
+		len = stoi(buf);
+
+		std::string rName = str.substr(0, len);
+		str = str.substr(len);
+
 		Message recvMsg;
+		recvMsg.userName = CString(CA2CT(uName.c_str()));
 		recvMsg.msg = CString(CA2CT(str.c_str()));
+
 		m_wndView.UpdateMessageList(recvMsg);
 	}
 	else {
-
+		AfxMessageBox(_T("Protocol, Critical Error"));
 	}
 }
 
