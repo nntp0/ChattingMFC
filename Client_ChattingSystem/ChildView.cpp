@@ -406,6 +406,7 @@ void CChildView::LeaveRoom() {
 	this->page = Page::RoomList;
 	this->InputBufferClear();
 	this->messageList.RemoveAll();
+	parentFrame->m_transmission->Send("rmls");
 	HideCaret();
 	Invalidate();
 }
