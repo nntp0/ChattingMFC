@@ -8,6 +8,11 @@
 #include "DataSettings.h"
 #include <string>
 
+#ifndef __CChildView_H_INCLUDED__
+#define __CChildView_H_INCLUDED__
+
+class CMainFrame;
+
 struct CaretInfo {
 public:
 	CPoint offset;
@@ -64,6 +69,8 @@ public:
 
 // 특성입니다.
 public:
+	CMainFrame* parentFrame;
+
 	CString m_str;
 	CArray<BackSpaceInfo, BackSpaceInfo> m_strSize;
 	CaretInfo m_caretInfo;
@@ -75,7 +82,7 @@ public:
 	void DisplayRoomList(CPaintDC& dc);
 	void DisplayClientInfoSpace(CPaintDC& dc);
 	void DisplayToolsSpace(CPaintDC& dc, const CRect& rect);
-	void DisplayRoomListSpace(CPaintDC& dc);
+	void DisplayRoomListSpace(CPaintDC& dc, const CRect &rect);
 	
 	void DisplayChattingRoom(CPaintDC& dc);
 	void DisplayLogSpace(CPaintDC& dc, const CRect& rect);
@@ -84,8 +91,9 @@ public:
 
 	// properties
 private:
+
 	CList<Message> messageList;
-	CList<Room> RoomNameList;
+	CList<Room> RoomList;
 
 	CString currRoom;
 	CString myName;
@@ -94,6 +102,10 @@ public:
 	void UpdateRoomList(Room);
 	void UpdateMessageList(Message);
 	void UpdateUserInfo(std::string userName, std::string roomName);
+
+	void SendTypedMessage();
+	void CreateRoom(CString);
+	void ClearRoomList();
 
 	// Page
 private:
@@ -131,3 +143,4 @@ private:
 	const CRect roomListSpaceSize = CRect(70, 80, 440, 600);
 };
 
+#endif

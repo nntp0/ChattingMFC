@@ -93,6 +93,8 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 				for (auto it = roomList.begin(); it != roomList.end(); it++) {
 					sprintf_s(buf, 5, "%04d", it->roomID);
 					message += buf;
+					sprintf_s(buf, 5, "%02d", it->name.length());
+					message += buf;
 					message += it->name;
 				}
 

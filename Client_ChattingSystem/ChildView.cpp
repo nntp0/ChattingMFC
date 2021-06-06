@@ -4,13 +4,15 @@
 #include "pch.h"
 #include "framework.h"
 #include "Client_ChattingSystem.h"
+#include "MainFrm.h"
 #include "ChildView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-#include "MainFrm.h"
+
+#include "CreateRoomDlg.h"
 
 // CChildView Constructor / Destructor
 
@@ -51,6 +53,9 @@ int CChildView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	// TODO:  여기에 특수화된 작성 코드를 추가합니다.
+
+
+	parentFrame = ((CMainFrame*)GetParentFrame());
 	return 0;
 }
 void CChildView::OnDestroy()
@@ -72,7 +77,7 @@ void CChildView::OnPaint()
 void CChildView::DisplayRoomList(CPaintDC &dc) {
 	DisplayClientInfoSpace(dc);
 	DisplayToolsSpace(dc, toolsSpaceSize);
-	DisplayRoomListSpace(dc);
+	DisplayRoomListSpace(dc, roomListSpaceSize);
 }
 void CChildView::DisplayClientInfoSpace(CPaintDC& dc) {
 	dc.FillSolidRect(clientInfoSpaceSize, RGB(236, 236, 237));
@@ -105,8 +110,50 @@ void CChildView::DisplayToolsSpace(CPaintDC& dc, const CRect& rect) {
 	dc.SelectObject(def_font);
 	font.DeleteObject();
 }
-void CChildView::DisplayRoomListSpace(CPaintDC& dc) {
-	//dc.FillSolidRect(roomListSpaceSize, RGB(255, 255, 255));
+void CChildView::DisplayRoomListSpace(CPaintDC& dc, const CRect& rect) {
+	int spaceSize = 70;
+	int spaceTime = 0;
+	CRect RoomSpace(rect);
+
+	auto pos = this->RoomList.GetHeadPosition();
+	while (pos != NULL) {
+		Room temp = this->RoomList.GetNext(pos);
+
+		dc.Rectangle(CRect(RoomSpace.left + 10, RoomSpace.top + 10,
+			RoomSpace.left + 60, RoomSpace.top + 60));
+		
+		UINT rid = temp.roomID;
+		CString name = temp.name;
+
+		CFont font;
+		VERIFY(font.CreateFont(
+			20,                       // nHeight
+			0,                        // nWidth
+			0,                        // nEscapement
+			0,                        // nOrientation
+			FW_NORMAL,                // nWeight
+			FALSE,                    // bItalic
+			FALSE,                    // bUnderline
+			0,                        // cStrikeOut
+			ANSI_CHARSET,             // nCharSet
+			OUT_DEFAULT_PRECIS,       // nOutPrecision
+			CLIP_DEFAULT_PRECIS,      // nClipPrecision
+			DEFAULT_QUALITY,          // nQuality
+			DEFAULT_PITCH | FF_SWISS, // nPitchAndFamily
+			_T("맑은고딕")));            // lpszFacename
+		CFont* def_font = dc.SelectObject(&font);
+
+		dc.SetBkMode(TRANSPARENT);
+		dc.DrawText(name.GetString(), name.GetLength(), &(CRect(RoomSpace.left + 70, RoomSpace.top + 15,
+			RoomSpace.right, RoomSpace.top + 35)), DT_LEFT);
+
+		dc.SelectObject(def_font);
+		font.DeleteObject();
+
+		RoomSpace.top += 70;
+		RoomSpace.bottom += 70;
+
+	}
 }
 
 // ChattingRoom View
@@ -256,11 +303,8 @@ void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 			m_str += (TCHAR)nChar;
 		}
 		else {
-			((CMainFrame*)GetParentFrame())->m_transmission->Send(std::string(CT2CA(m_str.operator LPCWSTR())));
-			this->InputBufferClear();
-			Invalidate();
+			SendTypedMessage();
 		}
-		
 	}
 	else if (nChar == _T('\b')) {
 
@@ -291,6 +335,15 @@ void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 	Invalidate();
 }
 
+
+void CChildView::SendTypedMessage() {
+	parentFrame->m_transmission->Send(std::string(CT2CA(m_str.operator LPCWSTR())));
+	this->InputBufferClear();
+	Invalidate();
+}
+void CChildView::CreateRoom(CString roomName) {
+}
+
 void CChildView::OnSetFocus(CWnd* pOldWnd)
 {
 	if (page == Page::chattingRoom)
@@ -316,8 +369,11 @@ void CChildView::InputBufferClear() {
 	this->m_caretInfo.Clear();
 }
 
-void CChildView::UpdateRoomList(Room msg) {
-	this->RoomNameList.AddTail(msg);
+void CChildView::ClearRoomList() {
+	this->RoomList.RemoveAll();
+}
+void CChildView::UpdateRoomList(Room room) {
+	this->RoomList.AddTail(room);
 	if (this->page == Page::RoomList) Invalidate();
 }
 void CChildView::UpdateMessageList(Message msg) {
@@ -350,7 +406,8 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 			closeButton.right + margin, closeButton.bottom + margin);
 
 		if (createButtonArea.PtInRect(point)) {
-			AfxMessageBox(_T("Create"));
+			CreateRoomDlg dlg;
+			dlg.DoModal();
 		}
 
 		if (closeButtonArea.PtInRect(point)) {
@@ -359,3 +416,5 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 	}
 	CWnd::OnLButtonDown(nFlags, point);
 }
+
+
