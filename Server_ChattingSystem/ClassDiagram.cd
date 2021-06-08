@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="CAboutDlg" Collapsed="true">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAABAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Server_ChattingSystem.cpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CChildView" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAIAAEAAAAAAAAAAAgAgAAAAAAAAQAAAAAAABA=</HashCode>
+      <FileName>ChildView.h</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CMainFrame" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AASAEAAAAAAQIACACAQAiIAAgCAAAgAAAAIAAgAAQAI=</HashCode>
+      <FileName>MainFrm.h</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CServerChattingSystemApp" Collapsed="true">
+    <Position X="2.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAABAAAAAAQAAAABAAAAAAA=</HashCode>
+      <FileName>Server_ChattingSystem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AMQPServer" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AMgAEAIAQAAAIABAAAAAAAAACAAAAQAAAIAAAACAEAI=</HashCode>
+      <FileName>AMQPServer.h</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataModule" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgKAAAIgAEAAAAAAAAAAAAAggGAAAAAAAAAAABAAEoA=</HashCode>
+      <FileName>DataModule.h</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Processor" Collapsed="true">
+    <Position X="0.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAIAAQCAAAIACAAAAAAAAAAAAAQQAAAAAAAAAEAAA=</HashCode>
+      <FileName>Processor.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="ConnectionInfo" Collapsed="true">
+    <Position X="2.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAEAAAAAAAAAAQAAAAEAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AMQPSettings.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Client" Collapsed="true">
+    <Position X="0.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAgAAAAQ=</HashCode>
+      <FileName>DataSettings.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Room" Collapsed="true">
+    <Position X="2.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAgAAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataSettings.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="CustomMessage" Collapsed="true">
+    <Position X="4" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEAAAAAAAAAAAAQABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataSettings.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ResponseInfo" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>EventSettings.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Interface Name="iServer" Collapsed="true">
+    <Position X="4" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAEAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAQAI=</HashCode>
+      <FileName>iServer.h</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="iDataModule" Collapsed="true">
+    <Position X="0.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgKAAAAAAEAAAAAAAAAAAAAggEAAAAAAAAAAABAAEIA=</HashCode>
+      <FileName>iDataModule.h</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="iDisplayModule" Collapsed="true">
+    <Position X="2.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>iDisplayModule.h</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="iTransmissionServer" Collapsed="true">
+    <Position X="0.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAQAAAAAAAAAAAAAAACAAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>iTransmissionServer.h</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="MessageType" Collapsed="true">
+    <Position X="2.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAIAAAAEAIAAAAAggAAAAAAAA=</HashCode>
+      <FileName>DataSettings.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="EventList" Collapsed="true">
+    <Position X="0.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAACAAQAIAAAAAAAAAAAA=</HashCode>
+      <FileName>EventSettings.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ResponseList" Collapsed="true">
+    <Position X="4" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAABAAAAAAAIAAAAAAIAAAgBgAAAAAAAAA=</HashCode>
+      <FileName>EventSettings.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="맑은 고딕" Size="9" />
+</ClassDiagram>

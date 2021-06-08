@@ -23,12 +23,13 @@ public:
 public:
 	virtual void Close(UID id);
 	virtual void SendTo(UID id, std::string);
+	virtual void Accept(std::string);
 
 	virtual void SetServer(iServer*);
 
 	// Methods
 public:
-	void Accept(std::string);
+	
 
 	void RecvThread();
 	void MessageDecoding(std::string);

@@ -400,6 +400,7 @@ void CChildView::CreateRoom(CString roomName) {
 }
 void CChildView::JoinRoom() {
 	this->page = Page::chattingRoom;
+	this->messageList.RemoveAll();
 	Invalidate();
 }
 void CChildView::LeaveRoom() {
