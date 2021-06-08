@@ -9,18 +9,10 @@
 #include "Client_ChattingSystem.h"
 #include "MainFrm.h"
 
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
-
-
 // CClientChattingSystemApp
 
 BEGIN_MESSAGE_MAP(CClientChattingSystemApp, CWinApp)
-	ON_COMMAND(ID_APP_ABOUT, &CClientChattingSystemApp::OnAppAbout)
 END_MESSAGE_MAP()
-
 
 // CClientChattingSystemApp 생성
 
@@ -83,48 +75,3 @@ int CClientChattingSystemApp::ExitInstance()
 	//TODO: 추가한 추가 리소스를 처리합니다.
 	return CWinApp::ExitInstance();
 }
-
-// CClientChattingSystemApp 메시지 처리기
-
-
-// 응용 프로그램 정보에 사용되는 CAboutDlg 대화 상자입니다.
-
-class CAboutDlg : public CDialogEx
-{
-public:
-	CAboutDlg() noexcept;
-
-// 대화 상자 데이터입니다.
-#ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_ABOUTBOX };
-#endif
-
-protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
-
-// 구현입니다.
-protected:
-	DECLARE_MESSAGE_MAP()
-};
-CAboutDlg::CAboutDlg() noexcept : CDialogEx(IDD_ABOUTBOX)
-{
-}
-void CAboutDlg::DoDataExchange(CDataExchange* pDX)
-{
-	CDialogEx::DoDataExchange(pDX);
-}
-
-BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
-END_MESSAGE_MAP()
-
-// 대화 상자를 실행하기 위한 응용 프로그램 명령입니다.
-void CClientChattingSystemApp::OnAppAbout()
-{
-	CAboutDlg aboutDlg;
-	aboutDlg.DoModal();
-}
-
-// CClientChattingSystemApp 메시지 처리기
-
-
-
