@@ -4,12 +4,13 @@
 #include "iApplication.h"
 
 #include "SimpleAmqpClient/SimpleAmqpClient.h"
+#include "ClientReceiver.h"
 
 class AMQPClient : public iTransmission 
 {
 	// static memebers
 public:
-	static std::shared_ptr<bool> isRunning;
+	//static std::shared_ptr<bool> isRunning;
 
 	// Constructor & Destructor
 public:
@@ -26,7 +27,7 @@ public:
 
 	// Method
 public:
-	void RecvThread();
+	//void RecvThread();
 	void MessageDecoding(std::string);
 
 	// properties
@@ -37,4 +38,7 @@ private:
 	std::string messageQueueName;
 
 	UID uid;
+
+	friend class Receiver;
+	Receiver receiver;
 };
