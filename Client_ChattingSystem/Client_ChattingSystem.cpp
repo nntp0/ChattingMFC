@@ -1,6 +1,4 @@
 ﻿#pragma once
-// Client_ChattingSystem.cpp: 애플리케이션에 대한 클래스 동작을 정의합니다.
-//
 
 #include "pch.h"
 #include "framework.h"
@@ -10,11 +8,8 @@
 #include "MainFrm.h"
 
 // CClientChattingSystemApp
-
 BEGIN_MESSAGE_MAP(CClientChattingSystemApp, CWinApp)
 END_MESSAGE_MAP()
-
-// CClientChattingSystemApp 생성
 
 CClientChattingSystemApp::CClientChattingSystemApp() noexcept
 {
@@ -30,9 +25,6 @@ CClientChattingSystemApp::CClientChattingSystemApp() noexcept
 // 유일한 CClientChattingSystemApp 개체입니다.
 
 CClientChattingSystemApp theApp;
-
-
-// CClientChattingSystemApp 초기화
 
 BOOL CClientChattingSystemApp::InitInstance()
 {
