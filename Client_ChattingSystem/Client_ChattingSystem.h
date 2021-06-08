@@ -19,11 +19,16 @@ class CClientChattingSystemApp : public CWinApp
 public:
 	CClientChattingSystemApp() noexcept;
 
+
+// 재정의입니다.
 public:
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();
 
+// 구현입니다.
+
 public:
 	DECLARE_MESSAGE_MAP()
 };
+
 extern CClientChattingSystemApp theApp;
