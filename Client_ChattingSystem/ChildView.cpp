@@ -63,6 +63,9 @@ void CChildView::OnDestroy()
 	CWnd::OnDestroy();
 }
 
+//------------------------------------------------------------------------------
+//							Display Section
+//------------------------------------------------------------------------------
 void CChildView::OnPaint() 
 {
 	CPaintDC dc(this);
@@ -210,14 +213,10 @@ void CChildView::DisplayRoomInfoSpace(CPaintDC& dc, const CRect& rect) {
 	dc.DrawText(CString("x"), 1, &closeButton, DT_LEFT);
 	dc.SelectObject(def_font);
 	font.DeleteObject();
-
-
 }
 void CChildView::DisplayLogSpace(CPaintDC& dc, const CRect& rect) {
-
-	int spaceSize = 60;
 	CRect CommentSpace(rect);
-	CommentSpace.top = CommentSpace.bottom - spaceSize;
+	CommentSpace.top = CommentSpace.bottom - DisplayLogSize;
 
 	dc.FillSolidRect(rect, RGB(155, 187, 212));
 	auto pos = this->messageList.GetHeadPosition();
@@ -274,13 +273,12 @@ void CChildView::DisplayLogSpace(CPaintDC& dc, const CRect& rect) {
 		dc.SelectObject(def_font);
 		font.DeleteObject();
 
-		CommentSpace.top -= spaceSize;
-		CommentSpace.bottom -= spaceSize;
+		CommentSpace.top -= DisplayLogSize;
+		CommentSpace.bottom -= DisplayLogSize;
 	}
 }
 void CChildView::DisplayTypingSpace(CPaintDC& dc, const CRect& rect) {
 
-	int margin = 5;
 	CRect marginSpace(margin, margin, 0, 0);
 
 	CFont font;
@@ -311,6 +309,56 @@ void CChildView::DisplayTypingSpace(CPaintDC& dc, const CRect& rect) {
 		margin + typingSpaceSize.top + m_caretInfo.offset.y);
 	SetCaretPos(poi);
 }
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+void CChildView::INShowCaret() {
+	if (page == Page::chattingRoom)
+	{
+		CreateSolidCaret(4, 20);
+		CPoint poi(margin + typingSpaceSize.left + m_caretInfo.offset.x,
+			margin + typingSpaceSize.top + m_caretInfo.offset.y);
+		SetCaretPos(poi);
+		ShowCaret();
+	}
+	else if (page == Page::RoomList) {
+
+	}
+}
+
+void CChildView::OnSetFocus(CWnd* pOldWnd)
+{
+	INShowCaret();
+}
+void CChildView::OnKillFocus(CWnd* pNewWnd)
+{
+	HideCaret();
+}
+
+// Internal
+void CChildView::INClearBuffer() {
+	this->m_str.Empty();
+	this->m_strSize.RemoveAll();
+	this->m_caretInfo.Clear();
+}
+void CChildView::INClearRoomList() {
+	AfxMessageBox(_T("IN: DisplayModule - ClearRoomList"));
+
+	this->mtxRoomList.lock();
+	this->RoomList.RemoveAll();
+	this->mtxRoomList.unlock();
+
+	AfxMessageBox(_T("OUT: DisplayModule - ClearRoomList"));
+}
+void CChildView::INClearMessageList() {
+	AfxMessageBox(_T("IN: DisplayModule - ClearMessageList"));
+
+	this->mtxMessageList.lock();
+	this->messageList.RemoveAll();
+	this->mtxMessageList.unlock();
+
+	AfxMessageBox(_T("OUT: DisplayModule - ClearMessageList"));
+}
 
 void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
@@ -331,11 +379,9 @@ void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 		CLIP_DEFAULT_PRECIS,      // nClipPrecision
 		DEFAULT_QUALITY,          // nQuality
 		DEFAULT_PITCH | FF_SWISS, // nPitchAndFamily
-		_T("맑은고딕")));            // lpszFacename
+		_T("맑은고딕")));			// lpszFacename
 
 	CFont* def_font = dc.SelectObject(&font);
-
-	
 	CSize fontSize = dc.GetTextExtent((LPCTSTR)&nChar, 1);
 
 	if (nChar == VK_RETURN) {
@@ -349,11 +395,10 @@ void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 			m_str += (TCHAR)nChar;
 		}
 		else {
-			SendTypedMessage();
+			ActSendChatting();
 		}
 	}
 	else if (nChar == _T('\b')) {
-
 		if (m_str.GetLength() > 0) {
 			BackSpaceInfo temp = m_strSize.GetAt(m_strSize.GetSize() - 1);
 
@@ -381,63 +426,42 @@ void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 	Invalidate();
 }
 
-void CChildView::SendTypedMessage() {
+// Activity
+void CChildView::ActSendChatting() {
 	std::string msg("norm");
 	msg += std::string(CT2CA(m_str.operator LPCWSTR()));
 	parentFrame->m_transmission->Send(msg);
-	this->InputBufferClear();
+	this->INClearBuffer();
 	Invalidate();
 }
-void CChildView::CreateRoom(CString roomName) {
+void CChildView::ActCreateRoom(CString roomName) {
+
 }
-void CChildView::JoinRoom() {
-	this->page = Page::chattingRoom;
-	this->messageList.RemoveAll();
-	Invalidate();
-}
-void CChildView::LeaveRoom() {
+void CChildView::ActLeaveRoom() {
 	this->page = Page::RoomList;
-	this->InputBufferClear();
-	this->messageList.RemoveAll();
-	parentFrame->m_transmission->Send("rmls");
-	HideCaret();
+	this->INClearBuffer();
+	this->INClearRoomList();
+	this->INClearMessageList();
+	Invalidate();
+}
+void CChildView::ActJoinRoom() {
+	this->page = Page::chattingRoom;
 	Invalidate();
 }
 
-void CChildView::OnSetFocus(CWnd* pOldWnd)
-{
-	if (page == Page::chattingRoom)
-	{		
-		CreateSolidCaret(4, 20);
-		CPoint poi(margin + typingSpaceSize.left + m_caretInfo.offset.x,
-			margin + typingSpaceSize.top + m_caretInfo.offset.y);
-		SetCaretPos(poi);
-		ShowCaret();
-	}
-	else if (page == Page::RoomList) {
 
-	}
-}
-void CChildView::OnKillFocus(CWnd* pNewWnd)
-{
-	HideCaret();
-}
-
-void CChildView::InputBufferClear() {
-	this->m_str.Empty();
-	this->m_strSize.RemoveAll();
-	this->m_caretInfo.Clear();
-}
-
-void CChildView::ClearRoomList() {
-	this->RoomList.RemoveAll();
-}
 void CChildView::UpdateRoomList(Room room) {
+	this->mtxRoomList.lock();
 	this->RoomList.AddTail(room);
+	this->mtxRoomList.unlock();
+
 	if (this->page == Page::RoomList) Invalidate();
 }
 void CChildView::UpdateMessageList(Message msg) {
+	this->mtxMessageList.lock();
 	this->messageList.AddHead(msg);
+	this->mtxMessageList.unlock();
+
 	if (this->page == Page::chattingRoom) Invalidate();
 }
 void CChildView::UpdateUserInfo(std::string userName, std::string roomName) {
@@ -450,14 +474,13 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	if (this->page == Page::chattingRoom) {
 
-		
-
 		if (roomInfoSpaceSize.PtInRect(point)) {
 			CRect closeButtonArea = CRect(closeButton.left - margin, closeButton.top - margin,
 				closeButton.right + margin, closeButton.bottom + margin);
 			
 			if (closeButtonArea.PtInRect(point)) {
-				LeaveRoom();
+				AfxMessageBox(_T("IN: DisplayModule - CloseButton"));
+				ActLeaveRoom();
 			}
 			else {
 				isDrag = true;
@@ -515,9 +538,10 @@ void CChildView::OnMouseMove(UINT nFlags, CPoint point)
 		parentFrame->MoveWindow(&frameloc, 1);
 		dragSPos = now;
 	}
+
+	// Data Modifying
 	else {
-		if (this->page == Page::chattingRoom) {
-		}
+		if (this->page == Page::chattingRoom) {}
 		else if (this->page == Page::RoomList) {
 			if (roomListSpaceSize.PtInRect(point)) {
 				int yOffset = point.y - roomListSpaceSize.top;
@@ -544,15 +568,10 @@ void CChildView::OnMouseMove(UINT nFlags, CPoint point)
 			}
 		}
 	}
-	
-
 	CWnd::OnMouseMove(nFlags, point);
 }
-
-
 void CChildView::OnLButtonUp(UINT nFlags, CPoint point)
 {
-	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 	if (isDrag) isDrag = false;
 
 	CWnd::OnLButtonUp(nFlags, point);

@@ -168,11 +168,11 @@ void CMainFrame::RecvMessage(std::string str) {
 		str = str.substr(len);
 
 		m_wndView.UpdateUserInfo(uName, rName);
-		m_wndView.JoinRoom();
+		m_wndView.ActJoinRoom();
 	}
 	else if (buf == "rmls") {
 
-		m_wndView.ClearRoomList();
+		m_wndView.INClearRoomList();
 		Room room;
 
 		std::string buf = str.substr(0, 4);
