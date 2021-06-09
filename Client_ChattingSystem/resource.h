@@ -5,8 +5,8 @@
 #define IDD_ABOUTBOX                    100
 #define IDR_MAINFRAME                   128
 #define IDR_ClientChattingSystemTYPE    130
-#define IDD_DIALOG1                     310
-#define IDC_EDIT1                       1000
+#define IDD_CRROOM                      310
+#define IDC_RoomName                    1000
 
 // Next default values for new objects
 // 

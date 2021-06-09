@@ -395,7 +395,7 @@ void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 			m_str += (TCHAR)nChar;
 		}
 		else {
-			ActSendChatting();
+			ReqSendChatting();
 		}
 	}
 	else if (nChar == _T('\b')) {
@@ -427,26 +427,36 @@ void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 }
 
 // Activity
-void CChildView::ActSendChatting() {
+void CChildView::ReqSendChatting() {
 	std::string msg("norm");
 	msg += std::string(CT2CA(m_str.operator LPCWSTR()));
+
 	parentFrame->m_transmission->Send(msg);
+
 	this->INClearBuffer();
 	Invalidate();
 }
-void CChildView::ActCreateRoom(CString roomName) {
+void CChildView::ReqCreateRoom(CString roomName) {
+	std::string msg("rmcr");
+	msg += std::string(CT2CA(roomName.operator LPCWSTR()));
 
+	parentFrame->m_transmission->Send(msg);
 }
-void CChildView::ActLeaveRoom() {
+void CChildView::ReqLeaveRoom() {
 	this->page = Page::RoomList;
 	this->INClearBuffer();
 	this->INClearRoomList();
 	this->INClearMessageList();
 	Invalidate();
 }
-void CChildView::ActJoinRoom() {
-	this->page = Page::chattingRoom;
-	Invalidate();
+void CChildView::ReqJoinRoom(int roomID) {
+	char buf[5];
+	sprintf_s(buf, 5, "%d", roomID);
+
+	std::string msg("rmjn");
+	msg += buf;
+
+	parentFrame->m_transmission->Send(msg);
 }
 
 
@@ -479,8 +489,7 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 				closeButton.right + margin, closeButton.bottom + margin);
 			
 			if (closeButtonArea.PtInRect(point)) {
-				AfxMessageBox(_T("IN: DisplayModule - CloseButton"));
-				ActLeaveRoom();
+				ReqLeaveRoom();
 			}
 			else {
 				isDrag = true;
@@ -500,7 +509,7 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 				CreateRoomDlg dlg;
 				if (IDOK == dlg.DoModal()) {
 					CString roomName = dlg.RoomName;
-					AfxMessageBox(roomName);
+					ReqCreateRoom(roomName);
 				}
 			}
 			else if (closeButtonArea.PtInRect(point)) {
@@ -514,13 +523,7 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 			if (roomNum < RoomList.GetSize()) {
 				Room room = RoomList.GetAt(RoomList.FindIndex(roomNum));
 
-				char buf[5];
-				sprintf_s(buf, 5, "%d", room.roomID);
-
-				std::string msg("rmjn");
-				msg += buf;
-
-				parentFrame->m_transmission->Send(msg);
+				ReqJoinRoom(room.roomID);
 			}
 		}
 	}
@@ -578,4 +581,9 @@ void CChildView::OnLButtonUp(UINT nFlags, CPoint point)
 	if (isDrag) isDrag = false;
 
 	CWnd::OnLButtonUp(nFlags, point);
+}
+
+void CChildView::ResJoinRoom() {
+	this->page = Page::chattingRoom;
+	Invalidate();
 }

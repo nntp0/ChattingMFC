@@ -168,7 +168,7 @@ void CMainFrame::RecvMessage(std::string str) {
 		str = str.substr(len);
 
 		m_wndView.UpdateUserInfo(uName, rName);
-		m_wndView.ActJoinRoom();
+		m_wndView.ResJoinRoom();
 	}
 	else if (buf == "rmls") {
 

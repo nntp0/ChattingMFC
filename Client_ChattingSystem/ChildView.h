@@ -75,10 +75,12 @@ public:
 	void INClearMessageList();
 	void INShowCaret();
 
-	void ActLeaveRoom();
-	void ActSendChatting();
-	void ActJoinRoom();
-	void ActCreateRoom(CString);
+	void ReqLeaveRoom();
+	void ReqSendChatting();
+	void ReqJoinRoom(int);
+	void ReqCreateRoom(CString);
+
+	void ResJoinRoom();
 
 // (External)
 // Data Module 에서 불러들여옴
