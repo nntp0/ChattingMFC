@@ -34,14 +34,12 @@ public:
 private:
 	iApplication* application;
 
-	AmqpClient::Channel::ptr_t channel;
+	AmqpClient::Channel::ptr_t channelRecvOnly;
+	AmqpClient::Channel::ptr_t channelSendOnly;
 	std::string messageQueueName;
 
 	UID uid;
 
 	friend class Receiver;
 	Receiver receiver;
-
-	// to eliminate race condition
-	std::mutex connectionLock;
 };

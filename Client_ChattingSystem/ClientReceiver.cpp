@@ -7,17 +7,12 @@ Receiver::Receiver() {}
 Receiver::~Receiver() {}
 
 bool Receiver::Job() {
-
-    mainThread->connectionLock.lock();
-    std::string consumer_tag = mainThread->channel->BasicConsume(mainThread->messageQueueName, "");
-    mainThread->connectionLock.unlock();
+    std::string consumer_tag = mainThread->channelRecvOnly->BasicConsume(mainThread->messageQueueName, "");
 
     while (onWork) {
         AmqpClient::Envelope::ptr_t envolope;
 
-        mainThread->connectionLock.lock();
-        bool check = mainThread->channel->BasicConsumeMessage(consumer_tag, envolope, 50);        
-        mainThread->connectionLock.unlock();
+        bool check = mainThread->channelRecvOnly->BasicConsumeMessage(consumer_tag, envolope, 50);
 
         if (check) {
             std::string buffer = envolope->Message()->Body();
@@ -27,11 +22,8 @@ bool Receiver::Job() {
 
         }
     }
-    mainThread->connectionLock.lock();
-    mainThread->channel->BasicCancel(consumer_tag);
-    mainThread->connectionLock.unlock();
+    mainThread->channelRecvOnly->BasicCancel(consumer_tag);
 
-    AfxMessageBox(_T("Dead"));
 	return true;
 }
 void Receiver::SetReceiver(AMQPClient* mainThread) {
