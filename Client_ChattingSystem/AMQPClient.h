@@ -42,5 +42,6 @@ private:
 	friend class Receiver;
 	Receiver receiver;
 
+	// to eliminate race condition
 	std::mutex connectionLock;
 };

@@ -22,6 +22,7 @@ AMQPClient::AMQPClient() {
 	channel = AmqpClient::Channel::Open(ret);
 
 	this->messageQueueName = channel->DeclareQueue("", false, true, true, false);
+
     receiver.SetReceiver(this);
 	Connect();
 }
@@ -31,7 +32,6 @@ AMQPClient::~AMQPClient() {
 }
 
 void AMQPClient::Connect() {
-
     connectionLock.lock();
 	channel->BasicPublish("", "server", AmqpClient::BasicMessage::Create(std::string("conn") + this->messageQueueName));
     connectionLock.unlock();
