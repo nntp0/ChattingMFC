@@ -11,7 +11,7 @@ void AMQPClient::MessageDecoding(std::string buffer) {
         this->uid = buffer.substr(4);
     }
     else {
-        this->application->RecvMessage(buffer);
+        this->application->RecvMessage("sc" + buffer);
     }
 }
 

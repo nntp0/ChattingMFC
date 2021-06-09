@@ -342,22 +342,14 @@ void CChildView::INClearBuffer() {
 	this->m_caretInfo.Clear();
 }
 void CChildView::INClearRoomList() {
-	AfxMessageBox(_T("IN: DisplayModule - ClearRoomList"));
-
 	this->mtxRoomList.lock();
 	this->RoomList.RemoveAll();
 	this->mtxRoomList.unlock();
-
-	AfxMessageBox(_T("OUT: DisplayModule - ClearRoomList"));
 }
 void CChildView::INClearMessageList() {
-	AfxMessageBox(_T("IN: DisplayModule - ClearMessageList"));
-
 	this->mtxMessageList.lock();
 	this->messageList.RemoveAll();
 	this->mtxMessageList.unlock();
-
-	AfxMessageBox(_T("OUT: DisplayModule - ClearMessageList"));
 }
 
 void CChildView::UpdateRoomList(Room room) {
@@ -452,8 +444,6 @@ void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 }
 void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	parentFrame->processor.RegisterEvent("Clicked");
-
 	if (this->page == Page::chattingRoom) {
 
 		if (roomInfoSpaceSize.PtInRect(point)) {
@@ -568,7 +558,7 @@ void CChildView::ReqSendChatting() {
 	std::string msg("norm");
 	msg += std::string(CT2CA(m_str.operator LPCWSTR()));
 
-	parentFrame->m_transmission->Send(msg);
+	parentFrame->processor.RegisterEvent("cs" + msg);
 
 	this->INClearBuffer();
 	Invalidate();
@@ -577,7 +567,7 @@ void CChildView::ReqCreateRoom(CString roomName) {
 	std::string msg("rmcr");
 	msg += std::string(CT2CA(roomName.operator LPCWSTR()));
 
-	parentFrame->m_transmission->Send(msg);
+	parentFrame->processor.RegisterEvent("cs" + msg);
 }
 void CChildView::ReqLeaveRoom() {
 	this->page = Page::RoomList;
@@ -586,7 +576,7 @@ void CChildView::ReqLeaveRoom() {
 	this->INClearMessageList();
 
 	std::string msg("rmlv");
-	parentFrame->m_transmission->Send(msg);
+	parentFrame->processor.RegisterEvent("cs" + msg);
 	Invalidate();
 }
 void CChildView::ReqJoinRoom(int roomID) {
@@ -596,7 +586,7 @@ void CChildView::ReqJoinRoom(int roomID) {
 	std::string msg("rmjn");
 	msg += buf;
 
-	parentFrame->m_transmission->Send(msg);
+	parentFrame->processor.RegisterEvent("cs" + msg);
 }
 
 // Response

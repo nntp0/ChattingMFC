@@ -88,6 +88,7 @@ CMainFrame::CMainFrame() noexcept
 	: m_transmission(new AMQPClient())
 {
 	m_transmission->SetApplication(this);
+	processor.SetModules(m_transmission, &m_wndView);
 	processor.Start();
 }
 CMainFrame::~CMainFrame()
@@ -133,107 +134,7 @@ void CMainFrame::Tick() {
 void CMainFrame::RecvMessage(std::string str) {
 	TRACE(_T("ControlMessage"));
 
-	std::string buf = str.substr(0, 4);
-	str = str.substr(4);
-	
-	if (buf == "clcr") {
-		std::string buf = str.substr(0, 2);
-		str = str.substr(2);
-		int len = stoi(buf);
-
-		std::string uName = str.substr(0, len);
-		str = str.substr(len);
-
-		buf = str.substr(0, 2);
-		str = str.substr(2);
-		len = stoi(buf);
-
-		std::string rName = str.substr(0, len);
-		str = str.substr(len);
-
-		m_wndView.UpdateUserInfo(uName, rName);
-
-		this->m_transmission->Send("rmls");
-	}
-	else if (buf == "clls") {
-		std::string buf = "미구현";
-	}
-	else if (buf == "rmcr") {
-		this->m_transmission->Send("rmls");
-	}
-	else if (buf == "rmlv") {
-		std::string buf = "미구현";
-	}
-	else if (buf == "rmjn") {
-		std::string buf = str.substr(0, 2);
-		str = str.substr(2);
-		int len = stoi(buf);
-
-		std::string uName = str.substr(0, len);
-		str = str.substr(len);
-
-		buf = str.substr(0, 2);
-		str = str.substr(2);
-		len = stoi(buf);
-
-		std::string rName = str.substr(0, len);
-		str = str.substr(len);
-
-		m_wndView.UpdateUserInfo(uName, rName);
-		m_wndView.ResJoinRoom();
-	}
-	else if (buf == "rmls") {
-
-		m_wndView.INClearRoomList();
-		Room room;
-
-		std::string buf = str.substr(0, 4);
-		str = str.substr(4);
-		int count = stoi(buf);
-
-		for (int i = 0; i < count; i++) {
-			std::string buf = str.substr(0, 4);
-			str = str.substr(4);
-			UINT rID = stoi(buf);
-
-			buf = str.substr(0, 2);
-			str = str.substr(2);
-			int len = stoi(buf);
-
-			std::string rName = str.substr(0, len);
-			str = str.substr(len);
-
-			room.roomID = rID;
-			room.name = CString::CStringT(CA2CT(rName.c_str()));
-
-			m_wndView.UpdateRoomList(room);
-		}
-	}
-	else if (buf == "norm") {
-		
-		std::string buf = str.substr(0, 2);
-		str = str.substr(2);
-		int len = stoi(buf);
-
-		std::string uName = str.substr(0, len);
-		str = str.substr(len);
-
-		buf = str.substr(0, 2);
-		str = str.substr(2);
-		len = stoi(buf);
-
-		std::string rName = str.substr(0, len);
-		str = str.substr(len);
-
-		Message recvMsg;
-		recvMsg.userName = CString(CA2CT(uName.c_str()));
-		recvMsg.msg = CString(CA2CT(str.c_str()));
-
-		m_wndView.UpdateMessageList(recvMsg);
-	}
-	else {
-		AfxMessageBox(_T("Protocol, Critical Error"));
-	}
+	this->processor.RegisterEvent(str);
 }
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
