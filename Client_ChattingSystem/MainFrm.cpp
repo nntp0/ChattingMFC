@@ -88,10 +88,12 @@ CMainFrame::CMainFrame() noexcept
 	: m_transmission(new AMQPClient())
 {
 	m_transmission->SetApplication(this);
+	processor.Start();
 }
 CMainFrame::~CMainFrame()
 {
 	delete m_transmission;
+	processor.Stop();
 }
 
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)

@@ -452,6 +452,8 @@ void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 }
 void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 {
+	parentFrame->processor.RegisterEvent("Clicked");
+
 	if (this->page == Page::chattingRoom) {
 
 		if (roomInfoSpaceSize.PtInRect(point)) {

@@ -7,6 +7,7 @@
 
 #include "iApplication.h"
 #include "iTransmission.h"
+#include "Processor.h"
 
 class CMainFrame : public CFrameWnd, public iApplication
 {
@@ -19,6 +20,7 @@ protected:
 	// Modules
 public:
 	iTransmission *m_transmission = nullptr;
+	Processor processor;
 
 	// Method Override
 public:

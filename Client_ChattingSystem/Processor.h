@@ -14,7 +14,7 @@ protected:
 	virtual bool Job();
 
 public:
-
+	void RegisterEvent(std::string);
 
 private:
 	std::queue<std::string> messageList;
