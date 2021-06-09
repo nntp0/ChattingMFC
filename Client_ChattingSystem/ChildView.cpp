@@ -360,6 +360,31 @@ void CChildView::INClearMessageList() {
 	AfxMessageBox(_T("OUT: DisplayModule - ClearMessageList"));
 }
 
+void CChildView::UpdateRoomList(Room room) {
+	this->mtxRoomList.lock();
+	this->RoomList.AddTail(room);
+	this->mtxRoomList.unlock();
+
+	if (this->page == Page::RoomList) Invalidate();
+}
+void CChildView::UpdateMessageList(Message msg) {
+	this->mtxMessageList.lock();
+	this->messageList.AddHead(msg);
+	this->mtxMessageList.unlock();
+
+	if (this->page == Page::chattingRoom) Invalidate();
+}
+void CChildView::UpdateUserInfo(std::string userName, std::string roomName) {
+	this->myName = CString(CA2CT(userName.c_str()));
+	this->currRoom = CString(CA2CT(roomName.c_str()));
+	if (this->page == Page::chattingRoom) Invalidate();
+}
+
+
+
+//------------------------------------------------------------------------------
+//						주요 Display Event 생성 지점
+//------------------------------------------------------------------------------
 void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	CClientDC dc(this);
@@ -425,61 +450,6 @@ void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 	font.DeleteObject();
 	Invalidate();
 }
-
-// Activity
-void CChildView::ReqSendChatting() {
-	std::string msg("norm");
-	msg += std::string(CT2CA(m_str.operator LPCWSTR()));
-
-	parentFrame->m_transmission->Send(msg);
-
-	this->INClearBuffer();
-	Invalidate();
-}
-void CChildView::ReqCreateRoom(CString roomName) {
-	std::string msg("rmcr");
-	msg += std::string(CT2CA(roomName.operator LPCWSTR()));
-
-	parentFrame->m_transmission->Send(msg);
-}
-void CChildView::ReqLeaveRoom() {
-	this->page = Page::RoomList;
-	this->INClearBuffer();
-	this->INClearRoomList();
-	this->INClearMessageList();
-	Invalidate();
-}
-void CChildView::ReqJoinRoom(int roomID) {
-	char buf[5];
-	sprintf_s(buf, 5, "%d", roomID);
-
-	std::string msg("rmjn");
-	msg += buf;
-
-	parentFrame->m_transmission->Send(msg);
-}
-
-
-void CChildView::UpdateRoomList(Room room) {
-	this->mtxRoomList.lock();
-	this->RoomList.AddTail(room);
-	this->mtxRoomList.unlock();
-
-	if (this->page == Page::RoomList) Invalidate();
-}
-void CChildView::UpdateMessageList(Message msg) {
-	this->mtxMessageList.lock();
-	this->messageList.AddHead(msg);
-	this->mtxMessageList.unlock();
-
-	if (this->page == Page::chattingRoom) Invalidate();
-}
-void CChildView::UpdateUserInfo(std::string userName, std::string roomName) {
-	this->myName = CString(CA2CT(userName.c_str()));
-	this->currRoom = CString(CA2CT(roomName.c_str()));
-	if (this->page == Page::chattingRoom) Invalidate();
-}
-
 void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	if (this->page == Page::chattingRoom) {
@@ -582,7 +552,52 @@ void CChildView::OnLButtonUp(UINT nFlags, CPoint point)
 
 	CWnd::OnLButtonUp(nFlags, point);
 }
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
+
+
+// Request
+//	Send a Message:	'norm' + body
+//	Create Room:	'rmcr' + roomName
+//	Leave Room:		'rmlv
+//	Join Room:		'rmjn' + roomID
+void CChildView::ReqSendChatting() {
+	std::string msg("norm");
+	msg += std::string(CT2CA(m_str.operator LPCWSTR()));
+
+	parentFrame->m_transmission->Send(msg);
+
+	this->INClearBuffer();
+	Invalidate();
+}
+void CChildView::ReqCreateRoom(CString roomName) {
+	std::string msg("rmcr");
+	msg += std::string(CT2CA(roomName.operator LPCWSTR()));
+
+	parentFrame->m_transmission->Send(msg);
+}
+void CChildView::ReqLeaveRoom() {
+	this->page = Page::RoomList;
+	this->INClearBuffer();
+	this->INClearRoomList();
+	this->INClearMessageList();
+
+	std::string msg("rmlv");
+	parentFrame->m_transmission->Send(msg);
+	Invalidate();
+}
+void CChildView::ReqJoinRoom(int roomID) {
+	char buf[5];
+	sprintf_s(buf, 5, "%d", roomID);
+
+	std::string msg("rmjn");
+	msg += buf;
+
+	parentFrame->m_transmission->Send(msg);
+}
+
+// Response
 void CChildView::ResJoinRoom() {
 	this->page = Page::chattingRoom;
 	Invalidate();
