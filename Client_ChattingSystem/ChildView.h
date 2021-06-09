@@ -74,6 +74,7 @@ public:
 	void INClearRoomList();
 	void INClearMessageList();
 	void INShowCaret();
+	void INHideCaret();
 
 	void ReqLeaveRoom();
 	void ReqSendChatting();

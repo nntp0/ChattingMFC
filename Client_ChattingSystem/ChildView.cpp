@@ -324,6 +324,12 @@ void CChildView::INShowCaret() {
 	else if (page == Page::RoomList) {
 
 	}
+	else {
+		AfxMessageBox(_T("NoWay"));
+	}
+}
+void CChildView::INHideCaret() {
+	HideCaret();
 }
 
 void CChildView::OnSetFocus(CWnd* pOldWnd)
@@ -332,7 +338,7 @@ void CChildView::OnSetFocus(CWnd* pOldWnd)
 }
 void CChildView::OnKillFocus(CWnd* pNewWnd)
 {
-	HideCaret();
+	INHideCaret();
 }
 
 // Internal
@@ -574,6 +580,7 @@ void CChildView::ReqLeaveRoom() {
 	this->INClearBuffer();
 	this->INClearRoomList();
 	this->INClearMessageList();
+	this->INHideCaret();
 
 	std::string msg("rmlv");
 	parentFrame->processor.RegisterEvent("cs" + msg);
@@ -592,5 +599,7 @@ void CChildView::ReqJoinRoom(int roomID) {
 // Response
 void CChildView::ResJoinRoom() {
 	this->page = Page::chattingRoom;
+	//AfxMessageBox(_T("Hello")); <= 유/무에 따라 Caret 보이는지 안보이는지가 결정된다. 이상한 버그
+	INShowCaret();
 	Invalidate();
 }
