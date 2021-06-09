@@ -41,4 +41,6 @@ private:
 
 	friend class Receiver;
 	Receiver receiver;
+
+	std::mutex connectionLock;
 };

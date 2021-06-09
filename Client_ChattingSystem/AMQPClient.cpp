@@ -51,17 +51,22 @@ AMQPClient::~AMQPClient() {
 }
 
 void AMQPClient::Connect() {
-	channel->BasicPublish("", "server", AmqpClient::BasicMessage::Create(std::string("conn") + this->messageQueueName));
 
+    connectionLock.lock();
+	channel->BasicPublish("", "server", AmqpClient::BasicMessage::Create(std::string("conn") + this->messageQueueName));
+    connectionLock.unlock();
     receiver.Start();
 }
 void AMQPClient::Close() {
-    channel->BasicPublish("", "server", AmqpClient::BasicMessage::Create(std::string("disc") + this->uid));
-
     receiver.Stop();
+    connectionLock.lock();
+    channel->BasicPublish("", "server", AmqpClient::BasicMessage::Create(std::string("disc") + this->uid));
+    connectionLock.unlock();
 }
 void AMQPClient::Send(std::string  msg) {
+    connectionLock.lock();
     channel->BasicPublish("", "server", AmqpClient::BasicMessage::Create(this->uid + msg));
+    connectionLock.unlock();
 }
 
 void AMQPClient::SetApplication(iApplication* application) {

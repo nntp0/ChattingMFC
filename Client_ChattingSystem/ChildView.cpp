@@ -11,7 +11,6 @@
 #define new DEBUG_NEW
 #endif
 
-
 #include "CreateRoomDlg.h"
 
 // CChildView Constructor / Destructor
@@ -35,8 +34,6 @@ BEGIN_MESSAGE_MAP(CChildView, CWnd)
 	ON_WM_LBUTTONUP()
 END_MESSAGE_MAP()
 
-// CChildView 메시지 처리기
-
 BOOL CChildView::PreCreateWindow(CREATESTRUCT& cs) 
 {
 	if (!CWnd::PreCreateWindow(cs))
@@ -55,7 +52,6 @@ int CChildView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	// TODO:  여기에 특수화된 작성 코드를 추가합니다.
-
 
 	parentFrame = ((CMainFrame*)GetParentFrame());
 	return 0;
@@ -113,12 +109,8 @@ void CChildView::DisplayToolsSpace(CPaintDC& dc, const CRect& rect) {
 	font.DeleteObject();
 }
 void CChildView::DisplayRoomListSpace(CPaintDC& dc, const CRect& rect) {
-	
-	
-	int spaceSize = 70;
-	int spaceTime = 0;
 	CRect RoomSpace(rect);
-	RoomSpace.bottom = RoomSpace.top + spaceSize;
+	RoomSpace.bottom = RoomSpace.top + DisplayRoomSize;
 
 	auto pos = this->RoomList.GetHeadPosition();
 

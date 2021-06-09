@@ -16,7 +16,7 @@ namespace nntp {
 		std::thread(WorkFlow, this).detach();
 
 		while (status != OwnerStatus::Started);
-
+		
 		return true;
 	}
 	bool thread::Stop() {
@@ -27,7 +27,10 @@ namespace nntp {
 		onWork = false;
 		notice.notify_all();
 
-		while (status != OwnerStatus::Stopped);
+		while (status != OwnerStatus::Stopped) {
+			Sleep(10);
+		};
+
 		return true;
 	}
 
