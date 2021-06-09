@@ -498,7 +498,10 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 
 			if (createButtonArea.PtInRect(point)) {
 				CreateRoomDlg dlg;
-				dlg.DoModal();
+				if (IDOK == dlg.DoModal()) {
+					CString roomName = dlg.RoomName;
+					AfxMessageBox(roomName);
+				}
 			}
 			else if (closeButtonArea.PtInRect(point)) {
 				((CMainFrame*)AfxGetMainWnd())->OnClose();
