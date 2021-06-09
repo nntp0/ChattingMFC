@@ -16,11 +16,9 @@ public:
 	virtual ~CMainFrame();
 protected: 
 	
-// 특성입니다.
+	// Modules
 public:
 	iTransmission *m_transmission = nullptr;
-// 작업입니다.
-public:
 
 	// Method Override
 public:
@@ -31,7 +29,8 @@ public:
 	// iApplication
 	virtual void Tick();
 	virtual void RecvMessage(std::string str);
-// 구현입니다.
+
+	// 구현입니다.
 public:
 #ifdef _DEBUG
 	virtual void AssertValid() const;
