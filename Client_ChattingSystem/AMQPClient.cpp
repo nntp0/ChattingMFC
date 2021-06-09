@@ -33,19 +33,27 @@ AMQPClient::~AMQPClient() {
 
 void AMQPClient::Connect() {
     connectionLock.lock();
+    AfxMessageBox(CString("AMQPClient::Connect Lock"));
 	channel->BasicPublish("", "server", AmqpClient::BasicMessage::Create(std::string("conn") + this->messageQueueName));
+    AfxMessageBox(CString("AMQPClient::Connect UnLock"));
     connectionLock.unlock();
     receiver.Start();
 }
 void AMQPClient::Close() {
     receiver.Stop();
     connectionLock.lock();
+    AfxMessageBox(CString("AMQPClient::Close Lock"));
     channel->BasicPublish("", "server", AmqpClient::BasicMessage::Create(std::string("disc") + this->uid));
+    AfxMessageBox(CString("AMQPClient::Close UnLock"));
     connectionLock.unlock();
 }
 void AMQPClient::Send(std::string  msg) {
+    
+    AfxMessageBox(CString("AMQPClient::Send LockWait"));
     connectionLock.lock();
+    AfxMessageBox(CString("AMQPClient::Send Lock"));
     channel->BasicPublish("", "server", AmqpClient::BasicMessage::Create(this->uid + msg));
+    AfxMessageBox(CString("AMQPClient::Send UnLock"));
     connectionLock.unlock();
 }
 

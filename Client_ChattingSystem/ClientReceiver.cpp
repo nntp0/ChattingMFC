@@ -14,8 +14,9 @@ bool Receiver::Job() {
 
     while (onWork) {
         AmqpClient::Envelope::ptr_t envolope;
+
         mainThread->connectionLock.lock();
-        bool check = mainThread->channel->BasicConsumeMessage(consumer_tag, envolope, 50);
+        bool check = mainThread->channel->BasicConsumeMessage(consumer_tag, envolope, 50);        
         mainThread->connectionLock.unlock();
 
         if (check) {

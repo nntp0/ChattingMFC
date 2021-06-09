@@ -17,8 +17,6 @@ bool Processor::Job() {
 	messageList.pop();
 
 	messageListLock.unlock();
-	
-	AfxMessageBox(CString(msg.c_str()));
 
 	auto type = msg.substr(0, 2);
 	msg = msg.substr(2);
