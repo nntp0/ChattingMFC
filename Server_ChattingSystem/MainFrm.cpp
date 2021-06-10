@@ -18,8 +18,6 @@
 #define new DEBUG_NEW
 #endif
 
-// CMainFrame
-
 IMPLEMENT_DYNAMIC(CMainFrame, CFrameWnd)
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
@@ -27,18 +25,9 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
-// CMainFrame 생성/소멸
-
-/*
-* Behaviors
-*	MainFrame controls FrontEnd / BackEnd Works
-*	FrontEnds, there is a view, who will show a log, such as a client has connected with ID.
-*	BackEnds, As a core module, MainFrame manages transmission & logger
-* Reponsibilities
-*	CoreModule Holder
-*	CoreModule: Manage Modules, each module sends event to core module, then core module deal with that events
-*/
-
+//------------------------------------------------------------------------------------------------------------------------------
+//											기본 제공
+//------------------------------------------------------------------------------------------------------------------------------
 CMainFrame::CMainFrame() noexcept
 {
 	// TODO: 여기에 멤버 초기화 코드를 추가합니다.
@@ -46,28 +35,9 @@ CMainFrame::CMainFrame() noexcept
 CMainFrame::~CMainFrame()
 {
 }
-
-int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
-{
-	if (CFrameWnd::OnCreate(lpCreateStruct) == -1)
-		return -1;
-
-	// 프레임의 클라이언트 영역을 차지하는 뷰를 만듭니다.
-	if (!m_wndView.Create(nullptr, nullptr, AFX_WS_DEFAULT_VIEW,
-		CRect(0, 0, 0, 0), this, AFX_IDW_PANE_FIRST, nullptr))
-	{
-		TRACE0("뷰 창을 만들지 못했습니다.\n");
-		return -1;
-	}
-
-	this->transmission = std::shared_ptr<AMQPServer>(new AMQPServer);
-	this->Run();
-
-	return 0;
-}
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
-	if( !CFrameWnd::PreCreateWindow(cs) )
+	if (!CFrameWnd::PreCreateWindow(cs))
 		return FALSE;
 	// TODO: CREATESTRUCT cs를 수정하여 여기에서
 	//  Window 클래스 또는 스타일을 수정합니다.
@@ -80,9 +50,6 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 
 	return TRUE;
 }
-
-// CMainFrame 진단
-
 #ifdef _DEBUG
 void CMainFrame::AssertValid() const
 {
@@ -116,6 +83,40 @@ void CMainFrame::OnClose()
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 	CFrameWnd::OnClose();
 }
+//------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------
+
+
+/*
+* Behaviors
+*	MainFrame controls FrontEnd / BackEnd Works
+*	FrontEnds, there is a view, who will show a log, such as a client has connected with ID.
+*	BackEnds, As a core module, MainFrame manages transmission & logger
+* Reponsibilities
+*	CoreModule Holder
+*	CoreModule: Manage Modules, each module sends event to core module, then core module deal with that events
+*/
+int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+	if (CFrameWnd::OnCreate(lpCreateStruct) == -1)
+		return -1;
+
+	// 프레임의 클라이언트 영역을 차지하는 뷰를 만듭니다.
+	if (!m_wndView.Create(nullptr, nullptr, AFX_WS_DEFAULT_VIEW,
+		CRect(0, 0, 0, 0), this, AFX_IDW_PANE_FIRST, nullptr))
+	{
+		TRACE0("뷰 창을 만들지 못했습니다.\n");
+		return -1;
+	}
+
+	this->transmission = std::shared_ptr<AMQPServer>(new AMQPServer);
+	this->Run();
+
+	return 0;
+}
+
+
+
 
 
 

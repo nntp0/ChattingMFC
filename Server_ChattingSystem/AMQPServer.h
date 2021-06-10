@@ -3,17 +3,13 @@
 #include "iTransmissionServer.h"
 
 #include "SimpleAmqpClient/SimpleAmqpClient.h"
-
+#include "Receiver.h"
 #include <vector>
 
 #ifndef __AMQPServer_H_INCLUDED__
 #define __AMQPServer_H_INCLUDED__
 class AMQPServer : public iTransmissionServer
 {
-	// static memebers
-public:
-	static std::shared_ptr<bool> isRunning;
-
 	// Constructor & Destructor
 public:
 	AMQPServer();
@@ -21,27 +17,28 @@ public:
 
 	// Method Override
 public:
+	virtual void Accept(std::string);
 	virtual void Close(UID id);
 	virtual void SendTo(UID id, std::string);
-	virtual void Accept(std::string);
 
 	virtual void SetServer(iServer*);
 
 	// Methods
 public:
-	
-
-	void RecvThread();
 	void MessageDecoding(std::string);
 
 	// Properties
 private:
 	iServer* server;
 
-	AmqpClient::Channel::ptr_t channel;
+	AmqpClient::Channel::ptr_t channelRecvOnly;
+	AmqpClient::Channel::ptr_t channelSendOnly;
 	std::string messageQueueName;
 
 	std::vector<ConnectionInfo> clientList;
+
+	friend class Receiver;
+	Receiver receiver;
 
 	// Helper Method
 private:
