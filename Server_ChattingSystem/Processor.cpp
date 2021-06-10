@@ -310,3 +310,35 @@ CustomMessage Processor::MessageDecoding(std::string message) {
 
 	return decodedMessage;
 }
+
+bool Processor::Job() {
+	messageListLock.lock(); 
+	
+	std::string msg(messageList.front());
+	messageList.pop();
+
+	messageListLock.unlock();
+
+	std::string type = msg.substr(0, 4);
+	msg = msg.substr(4);
+
+	if (type == "conn") {
+		ProcessEvent(EventList::ClientConnection, msg);
+	}
+	else if (type == "disc") {
+		ProcessEvent(EventList::ClientDisconnection, msg);
+	}
+	else {
+		ProcessEvent(EventList::ReceiveMessage, msg);
+	}
+
+	return true;
+}
+void Processor::RegisterEvent(std::string msg) {
+
+	messageListLock.lock();
+	messageList.push(msg);
+	messageListLock.unlock();
+
+	YouHaveWork();
+}

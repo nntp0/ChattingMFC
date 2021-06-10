@@ -116,29 +116,24 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 }
 
 
-
-
-
-
-
 #include "Processor.h"
 
-std::shared_ptr<Processor> CMainFrame::FindIdleProcessor() {
-	return processor;
+Processor* CMainFrame::FindIdleProcessor() {
+	return &processor;
 }
 
 void CMainFrame::Tick() { AfxMessageBox(_T("Hello. I am Server")); }
 void CMainFrame::Connect(UID id) {
-	auto idleProcessor = FindIdleProcessor();
-	idleProcessor->ProcessEvent(EventList::ClientConnection, id);
+	auto idleProcessor = FindIdleProcessor();	
+	idleProcessor->RegisterEvent("conn" + id);
 }
 void CMainFrame::Disconnect(UID id) {
 	auto idleProcessor = FindIdleProcessor();
-	idleProcessor->ProcessEvent(EventList::ClientDisconnection, id);
+	idleProcessor->RegisterEvent("disc" + id);
 }
 void CMainFrame::RecvMessage(std::string msg) {
 	auto idleProcessor = FindIdleProcessor();
-	idleProcessor->ProcessEvent(EventList::ReceiveMessage, msg);
+	idleProcessor->RegisterEvent("norm" + msg);
 }
 
 void CMainFrame::Run() {
@@ -147,6 +142,6 @@ void CMainFrame::Run() {
 	this->dataModule = std::shared_ptr<DataModule>(new DataModule);
 	this->displayModule = &m_wndView;
 
-	this->processor = std::shared_ptr<Processor>(new Processor);
-	this->processor->SetModules(this->transmission, displayModule, this->dataModule);
+	this->processor.SetModules(this->transmission, displayModule, this->dataModule);
+	this->processor.Start();
 }

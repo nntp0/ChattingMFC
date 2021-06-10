@@ -10,6 +10,7 @@
 #include "Processor.h"
 
 #include <memory>
+#include "NNTPlib.h"
 
 class CMainFrame : public CFrameWnd, public iServer
 {
@@ -53,7 +54,7 @@ public:
 	
 	// methods
 public:
-	std::shared_ptr<Processor> FindIdleProcessor();
+	Processor* FindIdleProcessor();
 
 	// method override
 public:
@@ -72,7 +73,7 @@ private:
 	iDisplayModule* displayModule = nullptr;
 	std::shared_ptr<iDataModule> dataModule;
 
-	std::shared_ptr<Processor> processor;
+	Processor processor;
 };
 
 
