@@ -74,7 +74,9 @@ void AMQPServer::SendTo(UID id, std::string message) {
     }
 
     if (targetQueue != "") {
+        mtxChannelSendOnly.lock();
         channelSendOnly->BasicPublish("", targetQueue, AmqpClient::BasicMessage::Create(message));
+        mtxChannelSendOnly.unlock();
     }
     else {
         AfxMessageBox(_T("Doesn't Exist"));

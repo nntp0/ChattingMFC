@@ -40,6 +40,8 @@ private:
 	friend class Receiver;
 	Receiver receiver;
 
+	std::mutex mtxChannelSendOnly;
+
 	// Helper Method
 private:
 	UID createID() {
