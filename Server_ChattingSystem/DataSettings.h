@@ -15,16 +15,17 @@ struct Client {
 	int clientID;
 	int joinedRoomID;
 
-	Client() 
-		: name(), clientID(), joinedRoomID() {}
 	Client(std::string name, int clientID, int joinedRoomID) 
 		: name(name), clientID(clientID), joinedRoomID(joinedRoomID) {}
 };
 struct Room {
 	std::string name;
-	int roomID=0;
+	int roomID=-1;
 
 	std::set<int> clientList;
+
+	Room(std::string name, int roomID)
+		: name(name), roomID(roomID), clientList() {}
 };
 enum class MessageType {
 	RoomCreation,
