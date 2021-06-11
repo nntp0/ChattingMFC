@@ -18,42 +18,43 @@ void Processor::SetModules(
 void Processor::ProcessEvent(EventList eType, std::string args) {
 
 	switch (eType) {
+		// 새로운 Client 접속 시,
+		//	1. 해당 사실 Display
+		//	2. Data 로 저장 (아이디 기본 할당)
+		//	3. 접속되었다는 사실 알림
 		case EventList::ClientConnection: 
 		{
 			std::string buf = args + " connected";
 			CString cstr = CString::CStringT(CA2CT(buf.c_str()));
-
 			this->displayModule->DisplayLog(cstr);
 
-			Client newClient;
-			newClient.clientID = std::stoul(args);
-			buf = "Client " + args;
-			newClient.name = buf;
+			Client newClient("Client" + args, std::stoi(args), 0);
 			this->dataModule->newClient(newClient);
 
-			ResponseInfo resInfo;
-			resInfo.roomName = "MainHall";
-			resInfo.userName = newClient.name;
+			ResponseInfo resInfo(newClient.name, "MainHall", "");
 			std::string encodedMsg = MessageEncoding(ResponseList::ClientConnected, resInfo);
 
 			this->transmission->SendTo(args, encodedMsg);
 
 			break;
 		}
+
+		// Client 연결 종료 시,
+		//	1. 해당 사실 Display
+		//	2. Data Module 내용 갱신
 		case EventList::ClientDisconnection:
 		{
 			std::string buf = args + " disconnected";
 			CString cstr = CString::CStringT(CA2CT(buf.c_str()));
-
 			this->displayModule->DisplayLog(cstr);
 
-			Client leftClient;
-			leftClient.clientID = std::stoul(args);
+			Client leftClient("", std::stoi(args), -1);
 			this->dataModule->closeClient(leftClient);
 
 			break;
 		}
-		// Process 
+
+		// 일반적인 Message 에 대한 Process 
 		//	1. Message 를 Decoding
 		//	2. Decoding 된 내용에 따라 처리
 		case EventList::ReceiveMessage:
@@ -61,38 +62,61 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 			auto decodedMessage = this->MessageDecoding(args);
 
 			switch (decodedMessage.type) {
+
+				// 방생성
+				//	1. Data Module 에 방 생성
+				//	2. 방 생성되었다는 정보를 모든 Client 에 알립니다.
 			case MessageType::RoomCreation:
 			{
-				Room newRoom;
-				newRoom.name = decodedMessage.body;
+				Room newRoom(decodedMessage.body, -1);
 				this->dataModule->newRoom(newRoom);
 
-				ResponseInfo resInfo;
-				resInfo.roomName = decodedMessage.body;
-				resInfo.userName = decodedMessage.uid;
+				ResponseInfo resInfo(decodedMessage.uid, decodedMessage.body, "");
 				std::string encodedMsg = MessageEncoding(ResponseList::RoomCreated, resInfo);
-				this->transmission->SendTo(decodedMessage.uid, encodedMsg);
+
+				auto clientList = this->dataModule->getClientList();
+				for (auto it = clientList.cbegin(); it != clientList.cend(); it++) {
+					char buf[10];
+					sprintf_s(buf, 10, "%04d", it->clientID);
+
+					this->transmission->SendTo(buf, encodedMsg);
+				}
 
 				break;
 			}
+
+				// 방나가기
+				//  1. Data Module 에 방 나갔다고 갱신
+				//	2. 방에서도 해당 유저 제거
+				//  2. 나간 사실 알림
 			case MessageType::RoomLeave:
 			{
-				ResponseInfo resInfo;
-				resInfo.userName = decodedMessage.uid;
+				Client leftClient("", stoi(decodedMessage.uid), 0);
+				this->dataModule->LeaveRoom(leftClient);
+
+				ResponseInfo resInfo("", "", "");
 				std::string encodedMsg = MessageEncoding(ResponseList::RoomLeaved, resInfo);
 				this->transmission->SendTo(decodedMessage.uid, encodedMsg);
 
 				break;
 			}
+
+				// 방 목록 조회
+				//	1. Data Module 에서 목록 조회
+				//	2. 해당 데이터 string 으로 변경
+				//	3. 전송
 			case MessageType::RoomList:
 			{
 				auto roomList = this->dataModule->getRoomList();
 
-				char buf[5];
 				std::string message = "";
 
+				// 방 개수
+				char buf[5];
 				sprintf_s(buf, 5, "%04d", roomList.size());
 				message += buf;
+
+				// 방 아이디 (4자리) + 방 이름 길이 + 방 이름
 				for (auto it = roomList.begin(); it != roomList.end(); it++) {
 					sprintf_s(buf, 5, "%04d", it->roomID);
 					message += buf;
@@ -101,29 +125,36 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 					message += it->name;
 				}
 
-				ResponseInfo resInfo;
-				resInfo.extra = message;
+				ResponseInfo resInfo("", "", message);
 				std::string encodedMsg = MessageEncoding(ResponseList::RoomList, resInfo);
 				this->transmission->SendTo(decodedMessage.uid, encodedMsg);
 
 				break;
 			}
+
+				// 방 입장
+				//	1. 방 정보와, 유저 정보를 Data Module 에 갱신
+				//	2. 해당 사실 방에 속한 모든 유저에게 전송
 			case MessageType::RoomJoin:
 			{
-				Room room;
-				room.roomID = std::stoi(decodedMessage.body);
-				Client client;
-				client.clientID = std::stoi(decodedMessage.uid);
+				Room room("", std::stoi(decodedMessage.body));
+				Client client("", std::stoi(decodedMessage.uid), -1);
 
 				this->dataModule->JoinRoom(room, client);
 
-				ResponseInfo resInfo;
-				resInfo.roomName = this->dataModule->GetRoomName(room.roomID);
-				resInfo.userName = this->dataModule->GetClientName(client.clientID);
+				std::string roomName = this->dataModule->GetRoomName(room.roomID);
+				std::string userName = this->dataModule->GetClientName(client.clientID);
+				ResponseInfo resInfo(userName, roomName, "");
 				std::string encodedMsg = MessageEncoding(ResponseList::RoomJoined, resInfo);
 				this->transmission->SendTo(decodedMessage.uid, encodedMsg);
+
 				break;
 			}
+
+				// 유저 목록
+				//	1. 유저 목록 전부 획득
+				//	2. 해당 유저 속한 방에 있는 유저 정보 전부 std::string
+				//	3. 전송
 			case MessageType::ClientList:
 			{
 				int roomID = 0;
@@ -134,26 +165,31 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 					}
 				}
 				
-				char buf[5];
+				// 유저수(4자리) + 유저아이디(4자리) + 유저명 길이 + 유저명
 				std::string message = "";
-
+				char buf[5];
 				sprintf_s(buf, 5, "%04d", clientList.size());
 				message += buf;
 				for (auto it = clientList.begin(); it != clientList.end(); it++) {
 					if (it->joinedRoomID == roomID) {
 						sprintf_s(buf, 5, "%04d", it->clientID);
 						message += buf;
+						sprintf_s(buf, 5, "%02d", it->name.length());
+						message += buf;
 						message += it->name;
 					}
 				}
 
-				ResponseInfo resInfo;
-				resInfo.extra = message;
+				ResponseInfo resInfo("", "", message);
 				std::string encodedMsg = MessageEncoding(ResponseList::ClientList, resInfo);
 				this->transmission->SendTo(decodedMessage.uid, encodedMsg);
 
 				break;
 			}
+
+				// 일반메시지
+				//	1. 유저가 속한 방 획득
+				//	2. 해당 방 유저에게 메세지 전달
 			case MessageType::Normal:
 			{
 				auto temp = this->dataModule->getClientList();
@@ -165,12 +201,12 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 					}
 				}
 
-				ResponseInfo resInfo;
-				resInfo.roomName = this->dataModule->GetRoomName(roomID);
-				resInfo.userName = this->dataModule->GetClientName(std::stoi(decodedMessage.uid));
-				resInfo.extra = decodedMessage.body;
+				std::string roomName = this->dataModule->GetRoomName(roomID);
+				std::string userName = this->dataModule->GetClientName(std::stoi(decodedMessage.uid));
+				ResponseInfo resInfo(userName, roomName, decodedMessage.body);
 				std::string encodedMsg = MessageEncoding(ResponseList::Normal, resInfo);
 
+				// *** 더 빠른 로직 가능함 ***
 				for (auto it = temp.begin(); it != temp.end(); it++) {
 					if (it->joinedRoomID == roomID) {
 						
@@ -180,14 +216,18 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 						this->transmission->SendTo(std::string(buf), encodedMsg);
 					}
 				}
+
 				break;
 			}
+
 			default:
 				break;
 			}
 
 			break;
 		}
+
+		// 공지 (미구현)
 		case EventList::Notification:
 		{
 			break;
@@ -199,15 +239,13 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 	}
 }
 
-
-// Transmission Methods
+// Helper Methods
 std::string Processor::MessageEncoding(ResponseList type, ResponseInfo info) {
 	
 	std::string encodedMsg = "";
 	char buf[5];
 	switch (type) {
-		case ResponseList::ClientConnected:
-		{
+		case ResponseList::ClientConnected: {
 			encodedMsg += "clcr";
 
 			sprintf_s(buf, 5, "%02d", info.userName.length());
@@ -220,25 +258,21 @@ std::string Processor::MessageEncoding(ResponseList type, ResponseInfo info) {
 
 			break;
 		}
-		case ResponseList::ClientList:
-		{
+		case ResponseList::ClientList: {
 			encodedMsg += "clls";
 			encodedMsg += info.extra;
 
 			break;
 		}
-		case ResponseList::RoomCreated:
-		{
+		case ResponseList::RoomCreated: {
 			encodedMsg += "rmcr";
 			break;
 		}
-		case ResponseList::RoomLeaved:
-		{
+		case ResponseList::RoomLeaved: {
 			encodedMsg += "rmlv";
 			break;
 		}
-		case ResponseList::RoomJoined:
-		{
+		case ResponseList::RoomJoined: {
 			encodedMsg += "rmjn";
 			sprintf_s(buf, 5, "%02d", info.userName.length());
 			encodedMsg += buf;
@@ -249,14 +283,12 @@ std::string Processor::MessageEncoding(ResponseList type, ResponseInfo info) {
 			encodedMsg += info.roomName;
 			break;
 		}
-		case ResponseList::RoomList:
-		{
+		case ResponseList::RoomList: {
 			encodedMsg += "rmls";
 			encodedMsg += info.extra;
 			break;
 		}
-		case ResponseList::Normal:
-		{
+		case ResponseList::Normal: {
 			encodedMsg += "norm";
 			sprintf_s(buf, 5, "%02d", info.userName.length());
 			encodedMsg += buf;
@@ -269,20 +301,20 @@ std::string Processor::MessageEncoding(ResponseList type, ResponseInfo info) {
 			encodedMsg += info.extra;
 			break;
 		}
-		default:
-		{
+		default: {
 			break;
 		}
 	}
 
 	return encodedMsg;
 }
+
+// 유저 ID (4자리) + 코드 (4자리) + 추가정보
 CustomMessage Processor::MessageDecoding(std::string message) {
 	CustomMessage decodedMessage;
 	decodedMessage.uid = message.substr(0, 4);
 
-	auto code = message.substr(4, 4);
-
+	std::string code = message.substr(4, 4);
 	if (code == "rmcr") {
 		decodedMessage.type = MessageType::RoomCreation;
 	}
@@ -302,10 +334,13 @@ CustomMessage Processor::MessageDecoding(std::string message) {
 		decodedMessage.type = MessageType::Normal;
 	}
 	else {
-		decodedMessage.type = MessageType::Normal;
-		decodedMessage.body = message.substr(4);
+		// 잘못된 타입 정보, 전송 오류
 
+		this->displayModule->DisplayLog(CString("Message Type Error"));
 		this->displayModule->DisplayLog(CString::CStringT(CA2CT(message.c_str())));
+
+		decodedMessage.type = MessageType::Error;
+
 		return decodedMessage;
 	}
 
@@ -331,6 +366,7 @@ bool Processor::Job() {
 	else if (type == "disc") {
 		ProcessEvent(EventList::ClientDisconnection, msg);
 	}
+	// *** Error Handling 고려, 개선해야함 ***
 	else {
 		ProcessEvent(EventList::ReceiveMessage, msg);
 	}

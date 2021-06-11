@@ -31,6 +31,9 @@ struct ResponseInfo {
 	std::string userName;
 	std::string roomName;
 	std::string extra;
+
+	ResponseInfo(std::string userName, std::string roomName, std::string extra) 
+		: userName(userName), roomName(roomName), extra(extra) {}
 };
 
 #endif

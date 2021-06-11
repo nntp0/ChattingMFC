@@ -2,9 +2,7 @@
 #include "DataModule.h"
 
 DataModule::DataModule() {
-	Room hall;
-	hall.roomID = 0;
-	hall.name = "MainHall";
+	Room hall("Main Hall", 0);
 	roomList.push_back(hall);
 }
 DataModule::~DataModule() {}
@@ -26,16 +24,18 @@ void DataModule::closeRoom(Room closedRoom) {
 	}
 }
 void DataModule::closeClient(Client closedClient) {
-	Room updatedRoom;
+	int roomID = -1;
 	for (auto it = this->clientList.begin(); it != this->clientList.end(); it++) {
 		if (it->clientID == closedClient.clientID) {
-			updatedRoom.roomID = it->joinedRoomID;
+			roomID = it->joinedRoomID;
 			this->clientList.erase(it);
 			break;
 		}
 	}
+	if (roomID == -1) return;
+
 	for (auto roomIter = roomList.begin(); roomIter != roomList.end(); roomIter++) {
-		if (roomIter->roomID == updatedRoom.roomID) {
+		if (roomIter->roomID == roomID) {
 			roomIter->clientList.erase(closedClient.clientID);
 			break;
 		}
@@ -43,12 +43,6 @@ void DataModule::closeClient(Client closedClient) {
 }
 
 void DataModule::JoinRoom(Room room, Client client) {
-	for (auto roomIter = roomList.begin(); roomIter != roomList.end(); roomIter++) {
-		if (roomIter->roomID == 0) {
-			roomIter->clientList.erase(client.clientID);
-			break;
-		}
-	}
 	for (auto roomIter = roomList.begin(); roomIter != roomList.end(); roomIter++) {
 		if (roomIter->roomID == room.roomID) {
 			roomIter->clientList.insert(client.clientID);

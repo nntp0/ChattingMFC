@@ -35,6 +35,8 @@ enum class MessageType {
 	ClientList,
 	Normal,
 	Argent,
+	
+	Error,
 };
 struct CustomMessage {
 	UID uid;
