@@ -62,25 +62,24 @@ void DataModule::JoinRoom(Room room, Client client) {
 		}
 	}
 }
-void DataModule::LeaveRoom(Room room, Client client) {
+void DataModule::LeaveRoom(Client client) {
+	
+	int roomID;
+	
+	for (auto clientIter = clientList.begin(); clientIter != clientList.end(); clientIter++) {
+		if (clientIter->clientID == client.clientID) {
+			roomID = clientIter->joinedRoomID;
+			clientIter->joinedRoomID = -1;
+			break;
+		}
+	}
 	for (auto roomIter = roomList.begin(); roomIter != roomList.end(); roomIter++) {
-		if (roomIter->roomID == room.roomID) {
+		if (roomIter->roomID == roomID) {
 			roomIter->clientList.erase(client.clientID);
 			break;
 		}
 	}
-	for (auto roomIter = roomList.begin(); roomIter != roomList.end(); roomIter++) {
-		if (roomIter->roomID == 0) {
-			roomIter->clientList.insert(client.clientID);
-			break;
-		}
-	}
-	for (auto clientIter = clientList.begin(); clientIter != clientList.end(); clientIter++) {
-		if (clientIter->clientID == client.clientID) {
-			clientIter->joinedRoomID = 0;
-			break;
-		}
-	}
+
 }
 
 std::string DataModule::GetClientName(int clientID) {

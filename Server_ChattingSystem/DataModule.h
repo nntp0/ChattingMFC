@@ -18,7 +18,7 @@ public:
 	virtual void closeClient(Client);
 
 	virtual void JoinRoom(Room, Client);
-	virtual void LeaveRoom(Room, Client);
+	virtual void LeaveRoom(Client);
 
 	virtual const std::vector<Room> getRoomList();
 	virtual const std::vector<Client> getClientList();
