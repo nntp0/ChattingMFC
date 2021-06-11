@@ -64,7 +64,6 @@ void Processor::MessageFromServer(std::string msg) {
 		msg = msg.substr(len);
 
 		display->UpdateUserInfo(uName, rName);
-		this->RegisterEvent("csrmls");
 	}
 	else if (buf == "clls") {
 		std::string buf = "미구현";
@@ -73,7 +72,7 @@ void Processor::MessageFromServer(std::string msg) {
 		this->RegisterEvent("csrmls");
 	}
 	else if (buf == "rmlv") {
-		std::string buf = "미구현";
+		this->RegisterEvent("csrmls");
 	}
 	else if (buf == "rmjn") {
 		std::string buf = msg.substr(0, 2);
