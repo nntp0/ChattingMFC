@@ -12,21 +12,19 @@
 
 struct Client {
 	std::string name;
-	UINT clientID;
+	int clientID;
+	int joinedRoomID;
 
-	//std::vector<UINT> joinedRoomList;
-	UINT joinedRoomID;
-
-	Client() : name(), clientID() {
-		//joinedRoomList.push_back(0);
-		joinedRoomID = 0;
-	}
+	Client() 
+		: name(), clientID(), joinedRoomID() {}
+	Client(std::string name, int clientID, int joinedRoomID) 
+		: name(name), clientID(clientID), joinedRoomID(joinedRoomID) {}
 };
 struct Room {
 	std::string name;
-	UINT roomID=0;
+	int roomID=0;
 
-	std::set<UINT> clientList;
+	std::set<int> clientList;
 };
 enum class MessageType {
 	RoomCreation,

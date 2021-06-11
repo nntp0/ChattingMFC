@@ -24,8 +24,8 @@ public:
 	virtual const std::vector<Client> getClientList();
 
 public:
-	virtual std::string GetClientName(UINT clientID);
-	virtual std::string GetRoomName(UINT roomID);
+	virtual std::string GetClientName(int clientID);
+	virtual std::string GetRoomName(int roomID);
 
 private:
 	std::vector<Client> clientList;

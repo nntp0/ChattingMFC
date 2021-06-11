@@ -69,7 +69,7 @@ void CMainFrame::OnSetFocus(CWnd* /*pOldWnd*/)
 	// 뷰 창으로 포커스를 이동합니다.
 	m_wndView.SetFocus();
 }
-BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo)
+BOOL CMainFrame::OnCmdMsg(int nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo)
 {
 	// 뷰에서 첫째 크랙이 해당 명령에 나타나도록 합니다.
 	if (m_wndView.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))

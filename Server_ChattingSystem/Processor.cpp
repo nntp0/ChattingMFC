@@ -14,6 +14,7 @@ void Processor::SetModules(
 	this->dataModule = data;
 }
 
+
 void Processor::ProcessEvent(EventList eType, std::string args) {
 
 	switch (eType) {
@@ -30,7 +31,6 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 			newClient.name = buf;
 			this->dataModule->newClient(newClient);
 
-			
 			ResponseInfo resInfo;
 			resInfo.roomName = "MainHall";
 			resInfo.userName = newClient.name;
@@ -53,6 +53,9 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 
 			break;
 		}
+		// Process 
+		//	1. Message 를 Decoding
+		//	2. Decoding 된 내용에 따라 처리
 		case EventList::ReceiveMessage:
 		{
 			auto decodedMessage = this->MessageDecoding(args);
@@ -77,8 +80,8 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 				ResponseInfo resInfo;
 				resInfo.userName = decodedMessage.uid;
 				std::string encodedMsg = MessageEncoding(ResponseList::RoomLeaved, resInfo);
-				
 				this->transmission->SendTo(decodedMessage.uid, encodedMsg);
+
 				break;
 			}
 			case MessageType::RoomList:
@@ -123,7 +126,7 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 			}
 			case MessageType::ClientList:
 			{
-				UINT roomID = 0;
+				int roomID = 0;
 				auto clientList = this->dataModule->getClientList();
 				for (auto it = clientList.begin(); it != clientList.end(); it++) {
 					if (it->clientID == std::stoi(decodedMessage.uid)) {
@@ -154,7 +157,7 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 			case MessageType::Normal:
 			{
 				auto temp = this->dataModule->getClientList();
-				UINT roomID = -1;
+				int roomID = -1;
 
 				for (auto it = temp.begin(); it != temp.end(); it++) {
 					if (it->clientID == std::stoi(decodedMessage.uid)) {

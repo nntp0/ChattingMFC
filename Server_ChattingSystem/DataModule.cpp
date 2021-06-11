@@ -83,7 +83,7 @@ void DataModule::LeaveRoom(Room room, Client client) {
 	}
 }
 
-std::string DataModule::GetClientName(UINT clientID) {
+std::string DataModule::GetClientName(int clientID) {
 	for (auto clientIter = clientList.begin(); clientIter != clientList.end(); clientIter++) {
 		if (clientIter->clientID == clientID) {
 			return clientIter->name;
@@ -91,7 +91,7 @@ std::string DataModule::GetClientName(UINT clientID) {
 	}
 	return "";
 }
-std::string DataModule::GetRoomName(UINT roomID) {
+std::string DataModule::GetRoomName(int roomID) {
 	for (auto iter = roomList.begin(); iter != roomList.end(); iter++) {
 		if (iter->roomID == roomID) {
 			return iter->name;
