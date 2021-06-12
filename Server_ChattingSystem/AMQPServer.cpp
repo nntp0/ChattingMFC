@@ -24,7 +24,7 @@ void AMQPServer::SetServer(iServer* server) {
 AMQPServer::AMQPServer() : clientList()
 {
     AmqpClient::Channel::OpenOpts ret;
-    ret.host = std::string("localhost");
+    ret.host = std::string("192.168.0.1");
     ret.auth = AmqpClient::Channel::OpenOpts::BasicAuth("guest", "guest");
     channelRecvOnly = AmqpClient::Channel::Open(ret);
     channelSendOnly = AmqpClient::Channel::Open(ret);
