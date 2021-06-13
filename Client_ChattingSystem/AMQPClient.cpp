@@ -17,7 +17,7 @@ void AMQPClient::MessageDecoding(std::string buffer) {
 
 AMQPClient::AMQPClient() {
 	AmqpClient::Channel::OpenOpts ret;
-	ret.host = std::string("192.168.0.1");
+	ret.host = std::string("localhost");
 	ret.auth = AmqpClient::Channel::OpenOpts::BasicAuth("guest", "guest");
 	channelRecvOnly = AmqpClient::Channel::Open(ret);
     channelSendOnly = AmqpClient::Channel::Open(ret);
