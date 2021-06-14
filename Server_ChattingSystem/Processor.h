@@ -22,7 +22,11 @@ public:
 
 	// Method
 public:
-	void SetModules(std::shared_ptr<iTransmissionServer>, iDisplayModule*, std::shared_ptr<iDataModule>);
+	void SetModules(
+		std::shared_ptr<iTransmissionServer>, 
+		std::shared_ptr<iDisplayModule>, 
+		std::shared_ptr<iDataModule>
+	);
 	
 
 	// Helper Methods
@@ -34,7 +38,7 @@ private:
 	// Modules
 private:
 	std::shared_ptr<iTransmissionServer> transmission;
-	iDisplayModule* displayModule = nullptr;
+	std::shared_ptr<iDisplayModule> displayModule;
 	std::shared_ptr<iDataModule> dataModule;
 
 	// method override

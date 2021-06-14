@@ -5,8 +5,8 @@ Processor::Processor() {}
 Processor::~Processor () {}
 
 void Processor::SetModules(
-	std::shared_ptr<iTransmissionServer> transmission, 
-	iDisplayModule* display, 
+	std::shared_ptr<iTransmissionServer> transmission,
+	std::shared_ptr<iDisplayModule> display,
 	std::shared_ptr<iDataModule> data) {
 	
 	this->transmission = transmission;
@@ -24,9 +24,8 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 		//	3. 접속되었다는 사실 알림
 		case EventList::ClientConnection: 
 		{
-			std::string buf = args + " connected";
-			CString cstr = CString::CStringT(CA2CT(buf.c_str()));
-			this->displayModule->DisplayLog(cstr);
+			std::string log = "[SYS] [" + args + "] connected";
+			this->displayModule->WriteLog(log);
 
 			Client newClient("Client" + args, std::stoi(args), 0);
 			this->dataModule->newClient(newClient);
@@ -44,9 +43,8 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 		//	2. Data Module 내용 갱신
 		case EventList::ClientDisconnection:
 		{
-			std::string buf = args + " disconnected";
-			CString cstr = CString::CStringT(CA2CT(buf.c_str()));
-			this->displayModule->DisplayLog(cstr);
+			std::string log = "[SYS] [" + args + "] disconnected";
+			this->displayModule->WriteLog(log);
 
 			Client leftClient("", std::stoi(args), -1);
 			this->dataModule->closeClient(leftClient);
@@ -68,6 +66,9 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 				//	2. 방 생성되었다는 정보를 모든 Client 에 알립니다.
 			case MessageType::RoomCreation:
 			{
+				std::string log = "[REQ] [RoomCreation] [" + decodedMessage.uid + "] [RoomName] : " + decodedMessage.body;
+				this->displayModule->WriteLog(log);
+
 				Room newRoom(decodedMessage.body, -1);
 				this->dataModule->newRoom(newRoom);
 
@@ -91,6 +92,9 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 				//  2. 나간 사실 알림
 			case MessageType::RoomLeave:
 			{
+				std::string buf = "[REQ] [RoomLeave] [" + decodedMessage.uid + "]";
+				this->displayModule->WriteLog(buf);
+
 				Client leftClient("", stoi(decodedMessage.uid), 0);
 				this->dataModule->LeaveRoom(leftClient);
 
@@ -107,6 +111,9 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 				//	3. 전송
 			case MessageType::RoomList:
 			{
+				std::string log = "[REQ] [RoomList] [" + decodedMessage.uid + "]";
+				this->displayModule->WriteLog(log);
+
 				auto roomList = this->dataModule->getRoomList();
 
 				std::string message = "";
@@ -137,6 +144,9 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 				//	2. 해당 사실 방에 속한 모든 유저에게 전송
 			case MessageType::RoomJoin:
 			{
+				std::string log = "[REQ] [RoomJoin] [" + decodedMessage.uid + "] To [" + decodedMessage.body + "]";
+				this->displayModule->WriteLog(log);
+
 				Room room("", std::stoi(decodedMessage.body));
 				Client client("", std::stoi(decodedMessage.uid), -1);
 
@@ -157,6 +167,9 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 				//	3. 전송
 			case MessageType::ClientList:
 			{
+				std::string log = "[REQ] [ClientList] [" + decodedMessage.uid + "]";
+				this->displayModule->WriteLog(log);
+
 				int roomID = 0;
 				auto clientList = this->dataModule->getClientList();
 				for (auto it = clientList.begin(); it != clientList.end(); it++) {
@@ -336,8 +349,8 @@ CustomMessage Processor::MessageDecoding(std::string message) {
 	else {
 		// 잘못된 타입 정보, 전송 오류
 
-		this->displayModule->DisplayLog(CString("Message Type Error"));
-		this->displayModule->DisplayLog(CString::CStringT(CA2CT(message.c_str())));
+		this->displayModule->WriteLog("Message Type Error");
+		this->displayModule->WriteLog(message);
 
 		decodedMessage.type = MessageType::Error;
 

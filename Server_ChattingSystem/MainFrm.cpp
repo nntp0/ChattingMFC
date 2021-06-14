@@ -81,6 +81,10 @@ BOOL CMainFrame::OnCmdMsg(int nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* 
 void CMainFrame::OnClose()
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	
+	this->processor.Stop();
+	this->displayModule->Stop();
+
 	CFrameWnd::OnClose();
 }
 //------------------------------------------------------------------------------------------------------------------------------
@@ -140,8 +144,9 @@ void CMainFrame::Run() {
 	this->transmission->SetServer(this);
 
 	this->dataModule = std::shared_ptr<DataModule>(new DataModule);
-	this->displayModule = &m_wndView;
+	this->displayModule = std::shared_ptr<Logger>(new Logger);
+	this->displayModule->Start();
 
-	this->processor.SetModules(this->transmission, displayModule, this->dataModule);
+	this->processor.SetModules(this->transmission, this->displayModule, this->dataModule);
 	this->processor.Start();
 }

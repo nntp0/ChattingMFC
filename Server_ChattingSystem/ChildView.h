@@ -7,7 +7,7 @@
 
 #include "iDisplayModule.h"
 
-class CChildView : public CWnd, public iDisplayModule
+class CChildView : public CWnd
 {
 // 생성입니다.
 public:
@@ -34,10 +34,9 @@ protected:
 
 	// Properties
 private:
-	CList<CString> logList;
-	int max_logListSize = _MAXLOGLISTSIZE;
+
 	// Method Override
 public:
-	virtual void DisplayLog(CString msg);
+
 };
 

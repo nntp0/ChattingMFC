@@ -11,6 +11,7 @@
 
 #include <memory>
 #include "NNTPlib.h"
+#include "Logger.h"
 
 class CMainFrame : public CFrameWnd, public iServer
 {
@@ -69,8 +70,7 @@ public:
 	// properties
 private:
 	std::shared_ptr<iTransmissionServer> transmission;
-
-	iDisplayModule* displayModule = nullptr;
+	std::shared_ptr<Logger> displayModule = nullptr;
 	std::shared_ptr<iDataModule> dataModule;
 
 	Processor processor;

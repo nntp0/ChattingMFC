@@ -1,11 +1,12 @@
 #pragma once
 
 #include "NNTPlib.h"
+#include "iDisplayModule.h"
 #include <vector>
 #include <queue>
 #include <string>
 
-class Logger : public nntp::thread {
+class Logger : public nntp::thread, public iDisplayModule {
 public:
 	Logger();
 	virtual ~Logger();
@@ -15,7 +16,8 @@ protected:
 
 
 public:
-	void WriteLog(std::string);
+	virtual void WriteLog(std::string);
+	virtual void DisplayLog(CString msg);
 
 
 private:
