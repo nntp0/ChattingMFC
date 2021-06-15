@@ -141,6 +141,30 @@ void Processor::MessageFromServer(std::string msg) {
 
 		display->UpdateMessageList(recvMsg);
 	}
+	else if (buf == "noti") {
+		std::string buf = msg.substr(0, 2);
+		msg = msg.substr(2);
+		int code = stoi(buf);
+		
+		buf = msg.substr(0, 2);
+		msg = msg.substr(2);
+		int len = stoi(buf);
+
+		std::string rName = msg.substr(0, len);
+		msg = msg.substr(len);
+
+		if (code == 0) {
+			Message recvMsg;
+			recvMsg.userName = CString(std::string("_system").c_str());
+			recvMsg.msg = CString(CA2CT(msg.c_str()));
+
+			display->UpdateMessageList(recvMsg);
+		}
+		else {
+			AfxMessageBox(_T("??"));
+		}
+			
+	}
 	else {
 		AfxMessageBox(_T("Protocol, Critical Error"));
 	}

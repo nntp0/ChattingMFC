@@ -165,7 +165,7 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 				
 				char buf[10];
 				sprintf_s(buf, 10, "%04d", std::stoi(decodedMessage.body));
-				RegisterEvent("noti" + std::string(buf) + " Hello Users ");
+				RegisterEvent("noti" + std::string(buf) + userName + "님이 입장하셨습니다.");
 
 
 				break;
@@ -250,7 +250,8 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 			break;
 		}
 
-		// 공지 (미구현)
+		// 서버에서 클라이언트로 정보를 송신
+		// 특정 Room 에 존재하는 모든 클라이언트 들에게 송신한다.
 		case EventList::Notification:
 		{
 			std::string roomID = args.substr(0, 4);
@@ -266,7 +267,7 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 					sprintf_s(buf, 10, "%04d", iter->clientID);
 					
 					char msg[100];
-					sprintf_s(msg, 100, "norm06system%02d%s%s", roomName.length(), roomName.c_str(), message.c_str());
+					sprintf_s(msg, 100, "noti00%02d%s%s", roomName.length(), roomName.c_str(), message.c_str());
 					this->transmission->SendTo(std::string(buf), std::string(msg));
 				}
 			}
