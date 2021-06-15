@@ -102,6 +102,10 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 				std::string encodedMsg = MessageEncoding(ResponseList::RoomLeaved, resInfo);
 				this->transmission->SendTo(decodedMessage.uid, encodedMsg);
 
+				// 여기부터 Notification
+
+
+
 				break;
 			}
 
@@ -157,6 +161,12 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 				ResponseInfo resInfo(userName, roomName, "");
 				std::string encodedMsg = MessageEncoding(ResponseList::RoomJoined, resInfo);
 				this->transmission->SendTo(decodedMessage.uid, encodedMsg);
+
+				
+				char buf[10];
+				sprintf_s(buf, 10, "%04d", std::stoi(decodedMessage.body));
+				RegisterEvent("noti" + std::string(buf) + " Hello Users ");
+
 
 				break;
 			}
@@ -243,6 +253,24 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 		// 공지 (미구현)
 		case EventList::Notification:
 		{
+			std::string roomID = args.substr(0, 4);
+			std::string message = args.substr(4);
+			
+			int temp = stoi(roomID);
+			std::string roomName = this->dataModule->GetRoomName(temp);
+
+			auto clientList = this->dataModule->getClientList();
+			for (auto iter = clientList.begin(); iter != clientList.end(); iter++) {
+				if (iter->joinedRoomID == temp) {
+					char buf[10];
+					sprintf_s(buf, 10, "%04d", iter->clientID);
+					
+					char msg[100];
+					sprintf_s(msg, 100, "norm06system%02d%s%s", roomName.length(), roomName.c_str(), message.c_str());
+					this->transmission->SendTo(std::string(buf), std::string(msg));
+				}
+			}
+
 			break;
 		}
 		default:
@@ -378,6 +406,9 @@ bool Processor::Job() {
 	}
 	else if (type == "disc") {
 		ProcessEvent(EventList::ClientDisconnection, msg);
+	}
+	else if (type == "noti") {
+		ProcessEvent(EventList::Notification, msg);
 	}
 	// *** Error Handling 고려, 개선해야함 ***
 	else {
