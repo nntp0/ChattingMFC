@@ -1,9 +1,38 @@
 #include "pch.h"
 #include "DataModule.h"
+#include <random>
+
+std::string UTF8toUTF16(const char* utf8) {
+	int length = MultiByteToWideChar(CP_UTF8, 0, utf8, (int)strlen(utf8) + 1, NULL, NULL);
+	wchar_t* pBuf = new wchar_t[length + 1];
+	MultiByteToWideChar(CP_UTF8, 0, utf8, (int)strlen(utf8) + 1, pBuf, length);
+	pBuf[length] = 0;
+	std::string utf16 = std::string(CT2CA(pBuf));
+	delete[] pBuf;
+
+	return utf16;
+}
+//https://modoocode.com/304
+int GetRandomNum(int size) {
+	static std::random_device rd;
+	static std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> dis(0, size);
+
+	return dis(gen);
+}
 
 DataModule::DataModule() {
 	Room hall("Main Hall", 0);
 	roomList.push_back(hall);
+
+	std::ifstream NameList("DefaultClientNameList.txt");
+	std::string line;
+
+	while (std::getline(NameList, line)) {
+		this->nameList.push_back(UTF8toUTF16(line.c_str()));
+	}
+	nameListSize = nameList.size();
+	NameList.close();
 }
 DataModule::~DataModule() {}
 
@@ -20,6 +49,7 @@ bool DataModule::newRoom(Room newRoom) {
 	return true;
 }
 bool DataModule::newClient(Client newClient) {
+	newClient.name = createClientName();
 	this->clientList.push_back(newClient);
 	return true;
 }
@@ -91,4 +121,9 @@ const std::vector<Client>& DataModule::GetClientList() {
 }
 
 int DataModule::createRoomID() { static int id = 0; return id++; }
-int DataModule::createClientID() { static int id = 0; return id++; }
+
+
+std::string DataModule::createClientName() { 
+	int idx = GetRandomNum(nameListSize);
+	return nameList[idx];
+}

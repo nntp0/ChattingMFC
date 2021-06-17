@@ -1,6 +1,8 @@
 #pragma once
 
 #include "iDataModule.h"
+#include <iostream>
+#include <fstream>
 
 #ifndef __DataModule_H_INCLUDED__
 #define __DataModule_H_INCLUDED__
@@ -31,8 +33,10 @@ private:
 	std::vector<Client> clientList;
 	std::vector<Room> roomList;
 
+	std::vector<std::string> nameList;
+	int nameListSize;
 private:
 	int createRoomID();
-	int createClientID();
+	std::string createClientName();
 };
 #endif

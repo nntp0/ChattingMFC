@@ -27,10 +27,10 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 			std::string log = "[SYS] [" + args + "] connected";
 			this->displayModule->WriteLog(log);
 
-			Client newClient("Client" + args, std::stoi(args), 0);
+			Client newClient("", std::stoi(args), 0);
 			this->dataModule->newClient(newClient);
 
-			ResponseInfo resInfo(newClient.name, "MainHall", "");
+			ResponseInfo resInfo(this->dataModule->GetClient(newClient.clientID)->name, "MainHall", "");
 			std::string encodedMsg = MessageEncoding(ResponseList::ClientConnected, resInfo);
 
 			this->transmission->SendTo(args, encodedMsg);
