@@ -59,6 +59,7 @@ bool DataModule::LeaveRoom(Client client) {
 			break;
 		}
 	}
+	targetClient->joinedRoom = -1;
 
 }
 
