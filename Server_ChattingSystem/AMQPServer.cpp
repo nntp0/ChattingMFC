@@ -29,7 +29,7 @@ AMQPServer::AMQPServer() : clientList()
     channelRecvOnly = AmqpClient::Channel::Open(ret);
     channelSendOnly = AmqpClient::Channel::Open(ret);
 
-    this->messageQueueName = channelRecvOnly->DeclareQueue("server", false, true, false, false);
+    this->messageQueueName = channelRecvOnly->DeclareQueue("server", false, false, false, true);
 
     receiver.SetReceiver(this);
     receiver.Start();

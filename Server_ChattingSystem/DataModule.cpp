@@ -49,7 +49,7 @@ bool DataModule::newRoom(Room newRoom) {
 	return true;
 }
 bool DataModule::newClient(Client newClient) {
-	newClient.name = createClientName();
+	newClient.name = createClientName() + std::to_string(newClient.clientID);
 	this->clientList.push_back(newClient);
 	return true;
 }
@@ -123,7 +123,9 @@ const std::vector<Client>& DataModule::GetClientList() {
 int DataModule::createRoomID() { static int id = 0; return id++; }
 
 
-std::string DataModule::createClientName() { 
+std::string DataModule::createClientName() {
+	if (nameListSize == 0) return "DefaultName";
+	
 	int idx = GetRandomNum(nameListSize);
 	return nameList[idx];
 }

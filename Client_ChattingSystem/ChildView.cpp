@@ -284,6 +284,8 @@ void CChildView::DisplayLogSpace(CPaintDC& dc, const CRect& rect) {
 
 		CommentSpace.top -= DisplayLogSize;
 		CommentSpace.bottom -= DisplayLogSize;
+		
+		if (CommentSpace.top < chattingLogSpaceSize.top) break;
 	}
 }
 void CChildView::DisplayTypingSpace(CPaintDC& dc, const CRect& rect) {
