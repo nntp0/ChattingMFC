@@ -13,10 +13,10 @@
 struct Client {
 	std::string name;
 	int clientID;
-	int joinedRoomID;
+	int joinedRoom;
 
-	Client(std::string name, int clientID, int joinedRoomID) 
-		: name(name), clientID(clientID), joinedRoomID(joinedRoomID) {}
+	Client(std::string name, int clientID, int joinedRoom) 
+		: name(name), clientID(clientID), joinedRoom(joinedRoom) {}
 };
 struct Room {
 	std::string name;

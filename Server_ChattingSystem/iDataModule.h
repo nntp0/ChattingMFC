@@ -8,19 +8,18 @@
 __interface iDataModule {
 
 public:
-	virtual void newRoom(Room);
-	virtual void newClient(Client);
+	virtual bool newRoom(Room);
+	virtual bool newClient(Client);
 
-	virtual void closeRoom(Room);
-	virtual void closeClient(Client);
+	virtual bool closeClient(Client);
 
-	virtual void JoinRoom(Room, Client);
-	virtual void LeaveRoom(Client);
+	virtual bool JoinRoom(Room, Client);
+	virtual bool LeaveRoom(Client);
 
-	virtual const std::vector<Room> getRoomList();
-	virtual const std::vector<Client> getClientList();
+	virtual const std::vector<Room>& GetRoomList();
+	virtual const std::vector<Client>& GetClientList();
 
-	virtual std::string GetClientName(int clientID);
-	virtual std::string GetRoomName(int roomID);
+	virtual Client* GetClient(int clientID);
+	virtual Room* GetRoom(int roomID);
 };
 #endif

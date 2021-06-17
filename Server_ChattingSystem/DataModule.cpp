@@ -7,66 +7,52 @@ DataModule::DataModule() {
 }
 DataModule::~DataModule() {}
 
-void DataModule::newRoom(Room newRoom) {
-	newRoom.roomID = this->roomList.size();
+bool DataModule::newRoom(Room newRoom) {
+
+	bool isExistName = false;
+	for (auto iter = roomList.begin(); iter != roomList.end(); iter++) {
+		if (iter->name == newRoom.name) isExistName = true;
+	}
+	if (isExistName) return false;
+
+	newRoom.roomID = createRoomID();
 	this->roomList.push_back(newRoom);
+	return true;
 }
-void DataModule::newClient(Client newClient) {
+bool DataModule::newClient(Client newClient) {
 	this->clientList.push_back(newClient);
+	return true;
 }
 
-void DataModule::closeRoom(Room closedRoom) {
-	for (auto it = this->roomList.begin(); it != this->roomList.end(); it++) {
-		if (it->roomID == closedRoom.roomID) {
-			this->roomList.erase(it);
-			break;
-		}
-	}
-}
-void DataModule::closeClient(Client closedClient) {
-	int roomID = -1;
+bool DataModule::closeClient(Client closedClient) {
+	bool isErased = false;
 	for (auto it = this->clientList.begin(); it != this->clientList.end(); it++) {
 		if (it->clientID == closedClient.clientID) {
-			roomID = it->joinedRoomID;
+			isErased = true;
 			this->clientList.erase(it);
 			break;
 		}
 	}
-	if (roomID == -1) return;
-
-	for (auto roomIter = roomList.begin(); roomIter != roomList.end(); roomIter++) {
-		if (roomIter->roomID == roomID) {
-			roomIter->clientList.erase(closedClient.clientID);
-			break;
-		}
-	}
+	return isErased;
 }
 
-void DataModule::JoinRoom(Room room, Client client) {
-	for (auto roomIter = roomList.begin(); roomIter != roomList.end(); roomIter++) {
-		if (roomIter->roomID == room.roomID) {
-			roomIter->clientList.insert(client.clientID);
-			break;
-		}
-	}
-	for (auto clientIter = clientList.begin(); clientIter != clientList.end(); clientIter++) {
-		if (clientIter->clientID == client.clientID) {
-			clientIter->joinedRoomID = room.roomID;
-			break;
-		}
-	}
+bool DataModule::JoinRoom(Room room, Client client) {
+	Room* targetRoom = GetRoom(room.roomID);
+	Client* targetClient = GetClient(client.clientID);
+
+	if (targetRoom == nullptr || targetClient == nullptr) return false;
+
+	targetRoom->clientList.insert(client.clientID);
+	targetClient->joinedRoom = room.roomID;
+
+	return true;
 }
-void DataModule::LeaveRoom(Client client) {
+bool DataModule::LeaveRoom(Client client) {
 	
-	int roomID;
+	Client* targetClient = GetClient(client.clientID);
+	if (targetClient == nullptr) return false;
 	
-	for (auto clientIter = clientList.begin(); clientIter != clientList.end(); clientIter++) {
-		if (clientIter->clientID == client.clientID) {
-			roomID = clientIter->joinedRoomID;
-			clientIter->joinedRoomID = -1;
-			break;
-		}
-	}
+	int roomID = targetClient->joinedRoom;
 	for (auto roomIter = roomList.begin(); roomIter != roomList.end(); roomIter++) {
 		if (roomIter->roomID == roomID) {
 			roomIter->clientList.erase(client.clientID);
@@ -76,27 +62,32 @@ void DataModule::LeaveRoom(Client client) {
 
 }
 
-std::string DataModule::GetClientName(int clientID) {
-	for (auto clientIter = clientList.begin(); clientIter != clientList.end(); clientIter++) {
-		if (clientIter->clientID == clientID) {
-			return clientIter->name;
-		}
+Client* DataModule::GetClient(int clientID) {
+	auto iter = clientList.begin();
+
+	for (auto iter = clientList.begin(); iter != clientList.end(); iter++) {
+		if (iter->clientID == clientID) return iter._Ptr;
 	}
-	return "";
+
+	return nullptr;
 }
-std::string DataModule::GetRoomName(int roomID) {
+Room* DataModule::GetRoom(int roomID) {
+	auto iter = roomList.begin();
+
 	for (auto iter = roomList.begin(); iter != roomList.end(); iter++) {
-		if (iter->roomID == roomID) {
-			return iter->name;
-		}
+		if (iter->roomID == roomID) return iter._Ptr;
 	}
-	return "";
+	
+	return nullptr;
 }
 
 
-const std::vector<Room> DataModule::getRoomList() {
+const std::vector<Room>& DataModule::GetRoomList() {
 	return this->roomList;
 }
-const std::vector<Client> DataModule::getClientList() {
+const std::vector<Client>& DataModule::GetClientList() {
 	return this->clientList;
 }
+
+int DataModule::createRoomID() { static int id = 0; return id++; }
+int DataModule::createClientID() { static int id = 0; return id++; }

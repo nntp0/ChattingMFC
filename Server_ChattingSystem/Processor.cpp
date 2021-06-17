@@ -75,7 +75,7 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 				ResponseInfo resInfo(decodedMessage.uid, decodedMessage.body, "");
 				std::string encodedMsg = MessageEncoding(ResponseList::RoomCreated, resInfo);
 
-				auto clientList = this->dataModule->getClientList();
+				auto clientList = this->dataModule->GetClientList();
 				for (auto it = clientList.cbegin(); it != clientList.cend(); it++) {
 					char buf[10];
 					sprintf_s(buf, 10, "%04d", it->clientID);
@@ -118,7 +118,7 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 				std::string log = "[REQ] [RoomList] [" + decodedMessage.uid + "]";
 				this->displayModule->WriteLog(log);
 
-				auto roomList = this->dataModule->getRoomList();
+				auto roomList = this->dataModule->GetRoomList();
 
 				std::string message = "";
 
@@ -156,8 +156,8 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 
 				this->dataModule->JoinRoom(room, client);
 
-				std::string roomName = this->dataModule->GetRoomName(room.roomID);
-				std::string userName = this->dataModule->GetClientName(client.clientID);
+				std::string roomName = this->dataModule->GetRoom(room.roomID)->name;
+				std::string userName = this->dataModule->GetClient(client.clientID)->name;
 				ResponseInfo resInfo(userName, roomName, "");
 				std::string encodedMsg = MessageEncoding(ResponseList::RoomJoined, resInfo);
 				this->transmission->SendTo(decodedMessage.uid, encodedMsg);
@@ -181,10 +181,10 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 				this->displayModule->WriteLog(log);
 
 				int roomID = 0;
-				auto clientList = this->dataModule->getClientList();
+				auto clientList = this->dataModule->GetClientList();
 				for (auto it = clientList.begin(); it != clientList.end(); it++) {
 					if (it->clientID == std::stoi(decodedMessage.uid)) {
-						roomID = it->joinedRoomID;
+						roomID = it->joinedRoom;
 					}
 				}
 				
@@ -194,7 +194,7 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 				sprintf_s(buf, 5, "%04d", clientList.size());
 				message += buf;
 				for (auto it = clientList.begin(); it != clientList.end(); it++) {
-					if (it->joinedRoomID == roomID) {
+					if (it->joinedRoom == roomID) {
 						sprintf_s(buf, 5, "%04d", it->clientID);
 						message += buf;
 						sprintf_s(buf, 5, "%02d", it->name.length());
@@ -215,23 +215,23 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 				//	2. 해당 방 유저에게 메세지 전달
 			case MessageType::Normal:
 			{
-				auto temp = this->dataModule->getClientList();
+				auto temp = this->dataModule->GetClientList();
 				int roomID = -1;
 
 				for (auto it = temp.begin(); it != temp.end(); it++) {
 					if (it->clientID == std::stoi(decodedMessage.uid)) {
-						roomID = it->joinedRoomID;
+						roomID = it->joinedRoom;
 					}
 				}
 
-				std::string roomName = this->dataModule->GetRoomName(roomID);
-				std::string userName = this->dataModule->GetClientName(std::stoi(decodedMessage.uid));
+				std::string roomName = this->dataModule->GetRoom(roomID)->name;
+				std::string userName = this->dataModule->GetClient(std::stoi(decodedMessage.uid))->name;
 				ResponseInfo resInfo(userName, roomName, decodedMessage.body);
 				std::string encodedMsg = MessageEncoding(ResponseList::Normal, resInfo);
 
 				// *** 더 빠른 로직 가능함 ***
 				for (auto it = temp.begin(); it != temp.end(); it++) {
-					if (it->joinedRoomID == roomID) {
+					if (it->joinedRoom == roomID) {
 						
 						char buf[10];
 						sprintf_s(buf, 10, "%04d", it->clientID);
@@ -258,11 +258,11 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 			std::string message = args.substr(4);
 			
 			int temp = stoi(roomID);
-			std::string roomName = this->dataModule->GetRoomName(temp);
+			std::string roomName = this->dataModule->GetRoom(temp)->name;
 
-			auto clientList = this->dataModule->getClientList();
+			auto clientList = this->dataModule->GetClientList();
 			for (auto iter = clientList.begin(); iter != clientList.end(); iter++) {
-				if (iter->joinedRoomID == temp) {
+				if (iter->joinedRoom == temp) {
 					char buf[10];
 					sprintf_s(buf, 10, "%04d", iter->clientID);
 					
