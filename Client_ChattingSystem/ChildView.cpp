@@ -251,12 +251,21 @@ void CChildView::DisplayLogSpace(CPaintDC& dc, const CRect& rect) {
 			dc.Rectangle(CRect(CommentSpace.right - 55, CommentSpace.top + 5,
 				CommentSpace.right - 5, CommentSpace.bottom - 5));
 			dc.RoundRect(CRect(CommentSpace.right - 70 - fontSize.cx - margin, CommentSpace.top + 25 - margin,
-				CommentSpace.right - 70 + margin, CommentSpace.bottom - 10 + margin), CPoint(17,17));
+				CommentSpace.right - 70 + margin, CommentSpace.bottom - 10 + margin), CPoint(17, 17));
 
 			dc.DrawText(user.GetString(), user.GetLength(), &CRect(CommentSpace.left, CommentSpace.top,
 				CommentSpace.right - 60, CommentSpace.bottom - 20), DT_RIGHT);
 			dc.DrawText(msg.GetString(), msg.GetLength(), &CRect(CommentSpace.left, CommentSpace.top + 30,
 				CommentSpace.right - 70, CommentSpace.bottom - 10), DT_RIGHT);
+		}
+		else if (user == "_system") {
+			// delta = top / bottom 에서 떨어진 거리
+			int delta = (DisplayLogSize - fontSize.cy) / 2;
+
+			dc.FillSolidRect(CRect(CommentSpace.left + 10, CommentSpace.top + delta - margin,
+				CommentSpace.right - 10, CommentSpace.bottom - delta + margin), RGB(169, 189, 206));
+			dc.DrawText(msg.GetString(), msg.GetLength(), &CRect(CommentSpace.left + 10, CommentSpace.top + delta,
+				CommentSpace.right - 10, CommentSpace.bottom - delta), DT_CENTER);
 		}
 		else {
 			dc.Rectangle(CRect(CommentSpace.left + 5, CommentSpace.top + 5,
