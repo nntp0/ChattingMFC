@@ -250,8 +250,18 @@ void CChildView::DisplayLogSpace(CPaintDC& dc, const CRect& rect) {
 		if (user == myName) {
 			dc.Rectangle(CRect(CommentSpace.right - 55, CommentSpace.top + 5,
 				CommentSpace.right - 5, CommentSpace.bottom - 5));
+
+			CBrush brush;
+			brush.CreateSolidBrush(RGB(247, 230, 0));
+			CBrush* oldBrush = dc.SelectObject(&brush);
+
 			dc.RoundRect(CRect(CommentSpace.right - 70 - fontSize.cx - margin, CommentSpace.top + 25 - margin,
 				CommentSpace.right - 70 + margin, CommentSpace.bottom - 10 + margin), CPoint(17, 17));
+
+			brush.DeleteObject();
+			dc.SelectObject(oldBrush);
+
+
 
 			dc.DrawText(user.GetString(), user.GetLength(), &CRect(CommentSpace.left, CommentSpace.top,
 				CommentSpace.right - 60, CommentSpace.bottom - 20), DT_RIGHT);
