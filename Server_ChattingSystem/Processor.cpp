@@ -95,16 +95,24 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 				std::string buf = "[REQ] [RoomLeave] [" + decodedMessage.uid + "]";
 				this->displayModule->WriteLog(buf);
 
+
 				Client leftClient("", stoi(decodedMessage.uid), 0);
+				// 여기부터 Notification
+
+				Client* targetClient = this->dataModule->GetClient(leftClient.clientID);
+
+				char roomID[10];
+				sprintf_s(roomID, 10, "%04d", targetClient->joinedRoom);
+				RegisterEvent("noti" + std::string(roomID) + targetClient->name + "님이 퇴장하셨습니다.");
+
+				//
 				this->dataModule->LeaveRoom(leftClient);
 
 				ResponseInfo resInfo("", "", "");
 				std::string encodedMsg = MessageEncoding(ResponseList::RoomLeaved, resInfo);
 				this->transmission->SendTo(decodedMessage.uid, encodedMsg);
 
-				// 여기부터 Notification
-
-
+				
 
 				break;
 			}
