@@ -22,7 +22,7 @@ int GetRandomNum(int size) {
 }
 
 DataModule::DataModule() {
-	Room hall("Main Hall", 0);
+	Room hall("Main Hall", createRoomID());
 	roomList.push_back(hall);
 
 	std::ifstream NameList("DefaultClientNameList.txt");
