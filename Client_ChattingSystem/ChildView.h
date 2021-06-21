@@ -144,6 +144,13 @@ private:
 		createButtonLoc.x + ButtonSize.x,
 		createButtonLoc.y + ButtonSize.y
 	);
+	const CPoint sendButtonLoc = CPoint(typingSpaceSize.right - 60, typingSpaceSize.top + 10);
+	CRect sendButton = CRect(
+		sendButtonLoc.x,
+		sendButtonLoc.y,
+		sendButtonLoc.x + 50,
+		sendButtonLoc.y + 30
+	);
 
 public:
 	void DisplayRoomList(CPaintDC& dc);

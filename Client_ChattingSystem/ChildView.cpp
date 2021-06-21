@@ -323,12 +323,26 @@ void CChildView::DisplayTypingSpace(CPaintDC& dc, const CRect& rect) {
 	dc.SetBkMode(TRANSPARENT);
 	dc.DrawText(m_str.GetString(), m_str.GetLength(), &(rect - marginSpace), DT_LEFT);
 
-	dc.SelectObject(def_font);
-	font.DeleteObject();
+	
 
 	CPoint poi(margin + typingSpaceSize.left + m_caretInfo.offset.x,
 		margin + typingSpaceSize.top + m_caretInfo.offset.y);
 	SetCaretPos(poi);
+
+	CBrush brush;
+	brush.CreateSolidBrush(RGB(247, 230, 0));
+	CBrush* oldBrush = dc.SelectObject(&brush);
+
+	dc.RoundRect(sendButton, CPoint(2, 2));
+
+	brush.DeleteObject();
+	dc.SelectObject(oldBrush);
+
+	dc.DrawText(_T("전송"), 2, &sendButton, DT_CENTER | DT_SINGLELINE | DT_VCENTER);
+
+	dc.SelectObject(def_font);
+	font.DeleteObject();
+
 }
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -483,6 +497,14 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 			else {
 				isDrag = true;
 				GetCursorPos(&dragSPos);
+			}
+		}
+		else if (typingSpaceSize.PtInRect(point)) {
+			CRect sendButtonArea = CRect(sendButton.left - margin, sendButton.top - margin,
+				sendButton.right + margin, sendButton.bottom + margin);
+
+			if (sendButtonArea.PtInRect(point)) {
+				ReqSendChatting();
 			}
 		}
 	}
