@@ -92,6 +92,10 @@ private:
 	CString currRoom;
 	CString myName;
 
+	bool isFocused = false;
+	bool isSendable = false;
+
+
 public:
 	void UpdateRoomList(Room);
 	void UpdateMessageList(Message);

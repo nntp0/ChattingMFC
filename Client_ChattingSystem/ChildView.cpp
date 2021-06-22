@@ -330,15 +330,25 @@ void CChildView::DisplayTypingSpace(CPaintDC& dc, const CRect& rect) {
 	SetCaretPos(poi);
 
 	CBrush brush;
-	brush.CreateSolidBrush(RGB(247, 230, 0));
+	if (!isFocused) {
+		brush.CreateSolidBrush(RGB(240, 240, 240));
+		dc.SetTextColor(RGB(200, 200, 200));
+	}
+	else {
+		brush.CreateSolidBrush(RGB(247, 230, 0));
+		if (!isSendable) {
+			dc.SetTextColor(RGB(189, 176, 58));
+		}
+	}
 	CBrush* oldBrush = dc.SelectObject(&brush);
 
 	dc.RoundRect(sendButton, CPoint(2, 2));
 
 	brush.DeleteObject();
 	dc.SelectObject(oldBrush);
-
+	
 	dc.DrawText(_T("전송"), 2, &sendButton, DT_CENTER | DT_SINGLELINE | DT_VCENTER);
+	dc.SetTextColor(RGB(0, 0, 0));
 
 	dc.SelectObject(def_font);
 	font.DeleteObject();
@@ -369,10 +379,12 @@ void CChildView::INHideCaret() {
 
 void CChildView::OnSetFocus(CWnd* pOldWnd)
 {
+	isFocused = true;
 	INShowCaret();
 }
 void CChildView::OnKillFocus(CWnd* pNewWnd)
 {
+	isFocused = false;
 	INHideCaret();
 }
 
@@ -381,6 +393,8 @@ void CChildView::INClearBuffer() {
 	this->m_str.Empty();
 	this->m_strSize.RemoveAll();
 	this->m_caretInfo.Clear();
+
+	isSendable = false;
 }
 void CChildView::INClearRoomList() {
 	this->mtxRoomList.lock();
@@ -471,12 +485,16 @@ void CChildView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 			m_strSize.RemoveAt(m_strSize.GetSize() - 1);
 			m_str.Delete(m_str.GetLength() - 1);
+
+			if (m_str.GetLength() == 0) isSendable = false;
 		}
 	}
 	else {
 		m_str += (TCHAR)nChar;
 		m_caretInfo.offset.x += fontSize.cx;
 		m_strSize.Add(BackSpaceInfo(true, fontSize.cx));
+
+		isSendable = true;
 	}
 
 	dc.SelectObject(def_font);
@@ -604,6 +622,8 @@ void CChildView::OnLButtonUp(UINT nFlags, CPoint point)
 //	Leave Room:		'rmlv
 //	Join Room:		'rmjn' + roomID
 void CChildView::ReqSendChatting() {
+	if (this->m_str.GetLength() == 0) return;
+
 	std::string msg("norm");
 	msg += std::string(CT2CA(m_str.operator LPCWSTR()));
 
