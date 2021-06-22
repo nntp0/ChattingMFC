@@ -43,11 +43,3 @@ RabbitMQ 브로커는 rabbitmq 3.8.17 을 다운로드 받았고, RabbitMQ clien
   변경 예정 목록
   - Server 에 비해 기능 분할이 완벽하게 이루어져 있지 않습니다. Refactoring 을 거쳐 보다 깔끔한 구성을 갖도록 개편할 예정입니다.
   - Double Buffering 기능이 View Module 에 구현되어있지 않습니다. flickering 이 발생하고 있습니다.
-
-
-
-21-06-17
-
-  - 09:03
-    1. 프로젝트 개발 환경 변경
-    2. text.txt 추적환경 제거
