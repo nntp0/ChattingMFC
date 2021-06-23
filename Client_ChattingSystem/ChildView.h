@@ -5,41 +5,15 @@
 
 #pragma once
 
-#include "DataSettings.h"
-#include <string>
-#include <mutex>
+
+
 
 #ifndef __CChildView_H_INCLUDED__
 #define __CChildView_H_INCLUDED__
 
 class CMainFrame;
 
-// Display Module 이 담당해야하는 데이터 영역
-//	1. Caret 의 위치
-//	2. BackSpace 정보
 
-struct CaretInfo {
-public:
-	CPoint offset;
-	CArray<int, int> lineInfo;
-
-public:
-	CaretInfo() : offset(0, 0), lineInfo() {}
-
-public:
-	void Clear() {
-		offset.x = 0;
-		offset.y = 0;
-		lineInfo.RemoveAll();
-	}
-};
-struct BackSpaceInfo {
-	bool isX;
-	int size;
-
-	BackSpaceInfo() : isX(false), size(0) {}
-	BackSpaceInfo(bool isX, int size) : isX(isX), size(size) {}
-};
 // CChildView 창
 
 class CChildView : public CWnd
@@ -63,10 +37,7 @@ public:
 	CMainFrame* parentFrame = nullptr;
 
 
-private:
-	std::mutex mtxMessageList;
-	std::mutex mtxRoomList;
-	std::mutex mtxCharInfo;	// Not Used
+
 
 // Helper Method
 public:
@@ -83,40 +54,13 @@ public:
 
 	void ResJoinRoom();
 
-// (External)
-// Data Module 에서 불러들여옴
-private:
-	CList<Message> messageList;
-	CList<Room> RoomList;
 
-	CString currRoom;
-	CString myName;
-
-	bool isFocused = false;
-	bool isSendable = false;
-
-
-public:
-	void UpdateRoomList(Room);
-	void UpdateMessageList(Message);
-	void UpdateUserInfo(std::string userName, std::string roomName);
-
-// (Internal)
-// Module 내에서만 사용 됨
-private:
-	int pointedRoom = -1;
-
-	CString m_str;
-	CArray<BackSpaceInfo, BackSpaceInfo> m_strSize;
-	CaretInfo m_caretInfo;
 
 // Display Section
 private:
-	enum class Page {
-		chattingRoom,
-		RoomList
-	};
 
+	bool isFocused = false;
+	bool isSendable = false;
 	bool isDrag = false;
 	CPoint dragSPos;
 
@@ -124,7 +68,7 @@ private:
 	const int DisplayRoomSize = 70;
 	const int DisplayLogSize = 60;
 
-	Page page = Page::chattingRoom;
+	
 	const CRect roomInfoSpaceSize = CRect(0, 0, 440, 80);
 	const CRect chattingLogSpaceSize = CRect(0, 80, 440, 520);
 	const CRect typingSpaceSize = CRect(0, 520, 440, 600);

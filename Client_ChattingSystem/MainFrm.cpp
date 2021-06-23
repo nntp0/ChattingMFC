@@ -85,15 +85,15 @@ BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO*
 //							 건든 부분
 //------------------------------------------------------------------------------
 CMainFrame::CMainFrame() noexcept
-	: m_transmission(new AMQPClient())
+	: transmission(new AMQPClient())
 {
-	m_transmission->SetApplication(this);
-	processor.SetModules(m_transmission, &m_wndView);
+	transmission->SetApplication(this);
+	processor.SetModules(transmission, &m_wndView);
 	processor.Start();
 }
 CMainFrame::~CMainFrame()
 {
-	delete m_transmission;
+	delete transmission;
 	processor.Stop();
 }
 
@@ -122,7 +122,7 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 void CMainFrame::OnClose()
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-	this->m_transmission->Close();
+	this->transmission->Close();
 	CFrameWnd::OnClose();
 }
 

@@ -19,7 +19,7 @@ protected:
 	
 	// Modules
 public:
-	iTransmission *m_transmission = nullptr;
+	iTransmission *transmission = nullptr;
 	Processor processor;
 
 	// Method Override
