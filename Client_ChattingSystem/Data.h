@@ -1,22 +1,16 @@
 #pragma once
 #include "DataSettings.h"
-#include <string>
 #include <mutex>
-
-// Display Module 이 담당해야하는 데이터 영역
-//	1. Caret 의 위치
-//	2. BackSpace 정보
-
-
-
+#include <vector>
 
 class DataModule {
+
+	friend class CChildView;
 
 public:
 	void INClearRoomList();
 	void INClearMessageList();
 
-	friend class CChildView;
 private:
 	CList<Message> messageList;
 	CList<Room> RoomList;
@@ -27,5 +21,10 @@ private:
 private:
 	std::mutex mtxMessageList;
 	std::mutex mtxRoomList;
-	std::mutex mtxCharInfo;	// Not Used
+
+
+public:
+	bool SetUserInfo(std::string userName, std::string roomName);
+	bool UpdateRoomList(std::vector<Room> roomList);
+	bool AddMessage(Message msg);
 };

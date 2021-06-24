@@ -11,11 +11,6 @@
 #define new DEBUG_NEW
 #endif
 
-
-
-
-
-
 #include "CreateRoomDlg.h"
 
 // CChildView Constructor / Destructor
@@ -27,25 +22,18 @@ CChildView::~CChildView()
 {
 }
 void CChildView::UpdateRoomList(std::vector<Room> roomList) {
-	this->dataModule.mtxRoomList.lock();
-	this->dataModule.RoomList.RemoveAll();
-	for (auto iter = roomList.begin(); iter != roomList.end(); iter++) {
-		this->dataModule.RoomList.AddTail(*iter);
-	}
-	this->dataModule.mtxRoomList.unlock();
+	this->dataModule.UpdateRoomList(roomList);
 
 	if (this->page == Page::RoomList) Invalidate();
 }
 void CChildView::UpdateMessageList(Message msg) {
-	this->dataModule.mtxMessageList.lock();
-	this->dataModule.messageList.AddHead(msg);
-	this->dataModule.mtxMessageList.unlock();
+	this->dataModule.AddMessage(msg);
 
 	if (this->page == Page::chattingRoom) Invalidate();
 }
 void CChildView::UpdateUserInfo(std::string userName, std::string roomName) {
-	this->dataModule.myName = CString(CA2CT(userName.c_str()));
-	this->dataModule.currRoom = CString(CA2CT(roomName.c_str()));
+	dataModule.SetUserInfo(userName, roomName);
+
 	if (this->page == Page::chattingRoom) Invalidate();
 }
 
