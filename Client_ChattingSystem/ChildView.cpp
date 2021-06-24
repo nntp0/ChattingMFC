@@ -11,6 +11,11 @@
 #define new DEBUG_NEW
 #endif
 
+
+
+
+
+
 #include "CreateRoomDlg.h"
 
 // CChildView Constructor / Destructor
@@ -20,6 +25,28 @@ CChildView::CChildView()
 }
 CChildView::~CChildView()
 {
+}
+void CChildView::UpdateRoomList(std::vector<Room> roomList) {
+	this->dataModule.mtxRoomList.lock();
+	this->dataModule.RoomList.RemoveAll();
+	for (auto iter = roomList.begin(); iter != roomList.end(); iter++) {
+		this->dataModule.RoomList.AddTail(*iter);
+	}
+	this->dataModule.mtxRoomList.unlock();
+
+	if (this->page == Page::RoomList) Invalidate();
+}
+void CChildView::UpdateMessageList(Message msg) {
+	this->dataModule.mtxMessageList.lock();
+	this->dataModule.messageList.AddHead(msg);
+	this->dataModule.mtxMessageList.unlock();
+
+	if (this->page == Page::chattingRoom) Invalidate();
+}
+void CChildView::UpdateUserInfo(std::string userName, std::string roomName) {
+	this->dataModule.myName = CString(CA2CT(userName.c_str()));
+	this->dataModule.currRoom = CString(CA2CT(roomName.c_str()));
+	if (this->page == Page::chattingRoom) Invalidate();
 }
 
 BEGIN_MESSAGE_MAP(CChildView, CWnd)
@@ -115,15 +142,14 @@ void CChildView::DisplayRoomListSpace(CPaintDC& dc, const CRect& rect) {
 	CRect RoomSpace(rect);
 	RoomSpace.bottom = RoomSpace.top + DisplayRoomSize;
 
-	auto pos = this->RoomList.GetHeadPosition();
-
+	auto pos = this->dataModule.RoomList.GetHeadPosition();
 	int index = 0;
 	while (pos != NULL) {
 		
 		if (index++ == pointedRoom) dc.FillSolidRect(CRect(RoomSpace.left, RoomSpace.top,
 			RoomSpace.right, RoomSpace.bottom), RGB(242, 242, 242));
 
-		Room temp = this->RoomList.GetNext(pos);
+		Room temp = this->dataModule.RoomList.GetNext(pos);
 
 		dc.Rectangle(CRect(RoomSpace.left + 10, RoomSpace.top + 10,
 			RoomSpace.left + 60, RoomSpace.top + 60));
@@ -209,7 +235,7 @@ void CChildView::DisplayRoomInfoSpace(CPaintDC& dc, const CRect& rect) {
 
 	
 
-	dc.DrawText(currRoom, currRoom.GetLength(), CRect(80, 20, 200, 40), DT_LEFT);
+	dc.DrawText(this->dataModule.currRoom, this->dataModule.currRoom.GetLength(), CRect(80, 20, 200, 40), DT_LEFT);
 	dc.DrawText(CString("x"), 1, &closeButton, DT_LEFT);
 	dc.SelectObject(def_font);
 	font.DeleteObject();
@@ -219,9 +245,9 @@ void CChildView::DisplayLogSpace(CPaintDC& dc, const CRect& rect) {
 	CommentSpace.top = CommentSpace.bottom - DisplayLogSize;
 
 	dc.FillSolidRect(rect, RGB(155, 187, 212));
-	auto pos = this->messageList.GetHeadPosition();
+	auto pos = this->dataModule.messageList.GetHeadPosition();
 	while (pos != NULL) {
-		Message temp = this->messageList.GetNext(pos);
+		Message temp = this->dataModule.messageList.GetNext(pos);
 
 		CString user = temp.userName;
 		CString msg = temp.msg;
@@ -247,7 +273,7 @@ void CChildView::DisplayLogSpace(CPaintDC& dc, const CRect& rect) {
 		CSize fontSize = dc.GetTextExtent(msg);
 		SetBkMode(dc, TRANSPARENT);
 
-		if (user == myName) {
+		if (user == this->dataModule.myName) {
 			dc.Rectangle(CRect(CommentSpace.right - 55, CommentSpace.top + 5,
 				CommentSpace.right - 5, CommentSpace.bottom - 5));
 
@@ -396,16 +422,6 @@ void CChildView::INClearBuffer() {
 
 	isSendable = false;
 }
-void CChildView::INClearRoomList() {
-	this->mtxRoomList.lock();
-	this->RoomList.RemoveAll();
-	this->mtxRoomList.unlock();
-}
-void CChildView::INClearMessageList() {
-	this->mtxMessageList.lock();
-	this->messageList.RemoveAll();
-	this->mtxMessageList.unlock();
-}
 
 
 
@@ -530,8 +546,8 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 			int yOffset = point.y - roomListSpaceSize.top;
 			int roomNum = yOffset / DisplayRoomSize;
 
-			if (roomNum < RoomList.GetSize()) {
-				Room room = RoomList.GetAt(RoomList.FindIndex(roomNum));
+			if (roomNum < this->dataModule.RoomList.GetSize()) {
+				Room room = this->dataModule.RoomList.GetAt(this->dataModule.RoomList.FindIndex(roomNum));
 
 				ReqJoinRoom(room.roomID);
 			}
@@ -563,7 +579,7 @@ void CChildView::OnMouseMove(UINT nFlags, CPoint point)
 				int yOffset = point.y - roomListSpaceSize.top;
 				int roomNum = yOffset / DisplayRoomSize;
 
-				if (roomNum < RoomList.GetSize()) {
+				if (roomNum < this->dataModule.RoomList.GetSize()) {
 					if (pointedRoom != roomNum) {
 						pointedRoom = roomNum;
 						Invalidate();
@@ -622,8 +638,8 @@ void CChildView::ReqCreateRoom(CString roomName) {
 void CChildView::ReqLeaveRoom() {
 	this->page = Page::RoomList;
 	this->INClearBuffer();
-	this->INClearRoomList();
-	this->INClearMessageList();
+	this->dataModule.INClearRoomList();
+	this->dataModule.INClearMessageList();
 	this->INHideCaret();
 
 	std::string msg("rmlv");

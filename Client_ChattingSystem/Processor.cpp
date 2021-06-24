@@ -1,5 +1,4 @@
 #include "pch.h"
-
 #include "Processor.h"
 
 Processor::Processor()
@@ -93,9 +92,8 @@ void Processor::MessageFromServer(std::string msg) {
 		display->ResJoinRoom();
 	}
 	else if (buf == "rmls") {
-
-		display->INClearRoomList();
-		Room room;
+		
+		std::vector<Room> roomList;
 
 		std::string buf = msg.substr(0, 4);
 		msg = msg.substr(4);
@@ -113,11 +111,10 @@ void Processor::MessageFromServer(std::string msg) {
 			std::string rName = msg.substr(0, len);
 			msg = msg.substr(len);
 
-			room.roomID = rID;
-			room.name = CString::CStringT(CA2CT(rName.c_str()));
+			roomList.push_back(Room(CString::CStringT(CA2CT(rName.c_str())), rID));
 
-			display->UpdateRoomList(room);
 		}
+		display->UpdateRoomList(roomList);
 	}
 	else if (buf == "norm") {
 

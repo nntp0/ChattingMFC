@@ -8,6 +8,10 @@
 struct Room {
 	CString name;
 	UINT roomID = 0;
+
+public:
+	Room() {}
+	Room(CString name, UINT id) : name(name), roomID(id) {}
 };
 struct Message {
 	CString userName;

@@ -5,7 +5,31 @@
 
 #pragma once
 
+#include "Data.h"
+#include <vector>
 
+struct CaretInfo {
+public:
+	CPoint offset;
+	CArray<int, int> lineInfo;
+
+public:
+	CaretInfo() : offset(0, 0), lineInfo() {}
+
+public:
+	void Clear() {
+		offset.x = 0;
+		offset.y = 0;
+		lineInfo.RemoveAll();
+	}
+};
+struct BackSpaceInfo {
+	bool isX;
+	int size;
+
+	BackSpaceInfo() : isX(false), size(0) {}
+	BackSpaceInfo(bool isX, int size) : isX(isX), size(size) {}
+};
 
 
 #ifndef __CChildView_H_INCLUDED__
@@ -35,15 +59,12 @@ protected:
 // 특성입니다.
 public:
 	CMainFrame* parentFrame = nullptr;
-
-
-
+	DataModule dataModule;
 
 // Helper Method
 public:
 	void INClearBuffer();
-	void INClearRoomList();
-	void INClearMessageList();
+
 	void INShowCaret();
 	void INHideCaret();
 
@@ -54,7 +75,19 @@ public:
 
 	void ResJoinRoom();
 
+// Internal
+private:
+	enum class Page {
+		chattingRoom,
+		RoomList
+	};
+	Page page = Page::chattingRoom;
 
+	int pointedRoom = -1;
+
+	CString m_str;
+	CArray<BackSpaceInfo, BackSpaceInfo> m_strSize;
+	CaretInfo m_caretInfo;
 
 // Display Section
 private:
@@ -111,6 +144,10 @@ public:
 	void DisplayTypingSpace(CPaintDC& dc, const CRect& rect);
 	void DisplayRoomInfoSpace(CPaintDC& dc, const CRect& rect);
 
+public:
+	void UpdateRoomList(std::vector<Room>);
+	void UpdateMessageList(Message);
+	void UpdateUserInfo(std::string userName, std::string roomName);
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
