@@ -130,50 +130,46 @@ void CChildView::DisplayRoomListSpace(CPaintDC& dc, const CRect& rect) {
 	CRect RoomSpace(rect);
 	RoomSpace.bottom = RoomSpace.top + DisplayRoomSize;
 
-	auto pos = this->dataModule.RoomList.GetHeadPosition();
+
+	CFont font;
+	VERIFY(font.CreateFont(
+		20,                       // nHeight
+		0,                        // nWidth
+		0,                        // nEscapement
+		0,                        // nOrientation
+		FW_NORMAL,                // nWeight
+		FALSE,                    // bItalic
+		FALSE,                    // bUnderline
+		0,                        // cStrikeOut
+		ANSI_CHARSET,             // nCharSet
+		OUT_DEFAULT_PRECIS,       // nOutPrecision
+		CLIP_DEFAULT_PRECIS,      // nClipPrecision
+		DEFAULT_QUALITY,          // nQuality
+		DEFAULT_PITCH | FF_SWISS, // nPitchAndFamily
+		_T("맑은고딕")));            // lpszFacename
+	CFont* def_font = dc.SelectObject(&font);
+
+	auto roomNameList = this->dataModule.GetRoomList();
 	int index = 0;
-	while (pos != NULL) {
+	for (auto iter = roomNameList.begin(); iter != roomNameList.end(); iter++) {
+
 		
 		if (index++ == pointedRoom) dc.FillSolidRect(CRect(RoomSpace.left, RoomSpace.top,
 			RoomSpace.right, RoomSpace.bottom), RGB(242, 242, 242));
 
-		Room temp = this->dataModule.RoomList.GetNext(pos);
-
 		dc.Rectangle(CRect(RoomSpace.left + 10, RoomSpace.top + 10,
 			RoomSpace.left + 60, RoomSpace.top + 60));
-		
-		UINT rid = temp.roomID;
-		CString name = temp.name;
-
-		CFont font;
-		VERIFY(font.CreateFont(
-			20,                       // nHeight
-			0,                        // nWidth
-			0,                        // nEscapement
-			0,                        // nOrientation
-			FW_NORMAL,                // nWeight
-			FALSE,                    // bItalic
-			FALSE,                    // bUnderline
-			0,                        // cStrikeOut
-			ANSI_CHARSET,             // nCharSet
-			OUT_DEFAULT_PRECIS,       // nOutPrecision
-			CLIP_DEFAULT_PRECIS,      // nClipPrecision
-			DEFAULT_QUALITY,          // nQuality
-			DEFAULT_PITCH | FF_SWISS, // nPitchAndFamily
-			_T("맑은고딕")));            // lpszFacename
-		CFont* def_font = dc.SelectObject(&font);
 
 		dc.SetBkMode(TRANSPARENT);
-		dc.DrawText(name.GetString(), name.GetLength(), &(CRect(RoomSpace.left + 70, RoomSpace.top + 15,
+		dc.DrawText(iter->GetString(), iter->GetLength(), &(CRect(RoomSpace.left + 70, RoomSpace.top + 15,
 			RoomSpace.right, RoomSpace.top + 35)), DT_LEFT);
-
-		dc.SelectObject(def_font);
-		font.DeleteObject();
 
 		RoomSpace.top += DisplayRoomSize;
 		RoomSpace.bottom += DisplayRoomSize;
-
 	}
+
+	dc.SelectObject(def_font);
+	font.DeleteObject();
 }
 
 // ChattingRoom View
@@ -233,30 +229,31 @@ void CChildView::DisplayLogSpace(CPaintDC& dc, const CRect& rect) {
 	CommentSpace.top = CommentSpace.bottom - DisplayLogSize;
 
 	dc.FillSolidRect(rect, RGB(155, 187, 212));
-	auto pos = this->dataModule.messageList.GetHeadPosition();
-	while (pos != NULL) {
-		Message temp = this->dataModule.messageList.GetNext(pos);
+	
+	CFont font;
+	VERIFY(font.CreateFont(
+		15,                       // nHeight
+		0,                        // nWidth
+		0,                        // nEscapement
+		0,                        // nOrientation
+		FW_NORMAL,                // nWeight
+		FALSE,                    // bItalic
+		FALSE,                    // bUnderline
+		0,                        // cStrikeOut
+		ANSI_CHARSET,             // nCharSet
+		OUT_DEFAULT_PRECIS,       // nOutPrecision
+		CLIP_DEFAULT_PRECIS,      // nClipPrecision
+		DEFAULT_QUALITY,          // nQuality
+		DEFAULT_PITCH | FF_SWISS, // nPitchAndFamily
+		_T("맑은고딕")));            // lpszFacename
+	CFont* def_font = dc.SelectObject(&font);
 
-		CString user = temp.userName;
-		CString msg = temp.msg;
 
-		CFont font;
-		VERIFY(font.CreateFont(
-			15,                       // nHeight
-			0,                        // nWidth
-			0,                        // nEscapement
-			0,                        // nOrientation
-			FW_NORMAL,                // nWeight
-			FALSE,                    // bItalic
-			FALSE,                    // bUnderline
-			0,                        // cStrikeOut
-			ANSI_CHARSET,             // nCharSet
-			OUT_DEFAULT_PRECIS,       // nOutPrecision
-			CLIP_DEFAULT_PRECIS,      // nClipPrecision
-			DEFAULT_QUALITY,          // nQuality
-			DEFAULT_PITCH | FF_SWISS, // nPitchAndFamily
-			_T("맑은고딕")));            // lpszFacename
-		CFont* def_font = dc.SelectObject(&font);
+	auto messageList = this->dataModule.GetMessageList();
+	for( auto iter = messageList.rbegin(); iter != messageList.rend(); iter++) {
+
+		CString user = iter->userName;
+		CString msg = iter->msg;
 
 		CSize fontSize = dc.GetTextExtent(msg);
 		SetBkMode(dc, TRANSPARENT);
@@ -274,8 +271,6 @@ void CChildView::DisplayLogSpace(CPaintDC& dc, const CRect& rect) {
 
 			brush.DeleteObject();
 			dc.SelectObject(oldBrush);
-
-
 
 			dc.DrawText(user.GetString(), user.GetLength(), &CRect(CommentSpace.left, CommentSpace.top,
 				CommentSpace.right - 60, CommentSpace.bottom - 20), DT_RIGHT);
@@ -303,14 +298,13 @@ void CChildView::DisplayLogSpace(CPaintDC& dc, const CRect& rect) {
 				CommentSpace.right, CommentSpace.bottom - 10), DT_LEFT);
 		}
 
-		dc.SelectObject(def_font);
-		font.DeleteObject();
-
 		CommentSpace.top -= DisplayLogSize;
 		CommentSpace.bottom -= DisplayLogSize;
 		
 		if (CommentSpace.top < chattingLogSpaceSize.top) break;
 	}
+	dc.SelectObject(def_font);
+	font.DeleteObject();
 }
 void CChildView::DisplayTypingSpace(CPaintDC& dc, const CRect& rect) {
 
@@ -534,10 +528,10 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 			int yOffset = point.y - roomListSpaceSize.top;
 			int roomNum = yOffset / DisplayRoomSize;
 
-			if (roomNum < this->dataModule.RoomList.GetSize()) {
-				Room room = this->dataModule.RoomList.GetAt(this->dataModule.RoomList.FindIndex(roomNum));
-
-				ReqJoinRoom(room.roomID);
+			int roomID = this->dataModule.GetRoomID(roomNum);
+			
+			if (roomID != -2) {
+				ReqJoinRoom(roomID);
 			}
 		}
 	}
@@ -567,7 +561,7 @@ void CChildView::OnMouseMove(UINT nFlags, CPoint point)
 				int yOffset = point.y - roomListSpaceSize.top;
 				int roomNum = yOffset / DisplayRoomSize;
 
-				if (roomNum < this->dataModule.RoomList.GetSize()) {
+				if (roomNum < this->dataModule.GetRoomListSize()) {
 					if (pointedRoom != roomNum) {
 						pointedRoom = roomNum;
 						Invalidate();

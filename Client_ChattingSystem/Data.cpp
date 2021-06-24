@@ -3,21 +3,18 @@
 
 void DataModule::INClearRoomList() {
 	mtxRoomList.lock();
-	RoomList.RemoveAll();
+	RoomList.clear();
 	mtxRoomList.unlock();
 }
 void DataModule::INClearMessageList() {
 	mtxMessageList.lock();
-	messageList.RemoveAll();
+	messageList.clear();
 	mtxMessageList.unlock();
 }
 
 bool DataModule::UpdateRoomList(std::vector<Room> roomList) {
 	mtxRoomList.lock();
-	RoomList.RemoveAll();
-	for (auto iter = roomList.begin(); iter != roomList.end(); iter++) {
-		RoomList.AddTail(*iter);
-	}
+	this->RoomList.assign(roomList.begin(), roomList.end());
 	mtxRoomList.unlock();
 
 	return true;
@@ -25,7 +22,7 @@ bool DataModule::UpdateRoomList(std::vector<Room> roomList) {
 
 bool DataModule::AddMessage(Message msg) {
 	mtxMessageList.lock();
-	messageList.AddHead(msg);
+	messageList.push_back(msg);
 	mtxMessageList.unlock();
 
 	return true;

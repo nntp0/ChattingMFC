@@ -7,7 +7,7 @@
 
 struct Room {
 	CString name;
-	UINT roomID = 0;
+	int roomID = 0;
 
 public:
 	Room() {}
