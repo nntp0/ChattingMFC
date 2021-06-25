@@ -3,7 +3,7 @@
 C++ MFC 기반으로 통신하는 서버-클라이언트 구조 채팅 프로그램입니다.
 카카오톡을 흉내내어 구성되어있습니다
 
-#### 구현 사진 추가 예정
+https://www.youtube.com/watch?v=wSfluL_AFx0
 
 크게, 서버 - RabbitMQ 브로커 - 클라이언트 구조를 갖고 있습니다.
 RabbitMQ 브로커는 rabbitmq 3.8.17 을 다운로드 받았고, RabbitMQ client 라이브러리는 SimpleAMQPclient 를 이용했습니다.
