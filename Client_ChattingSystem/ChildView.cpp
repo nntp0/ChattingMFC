@@ -54,8 +54,8 @@ BOOL CChildView::PreCreateWindow(CREATESTRUCT& cs)
 	if (!CWnd::PreCreateWindow(cs))
 		return FALSE;
 
-	cs.dwExStyle &= ~WS_EX_CLIENTEDGE;
-	cs.style &= ~WS_BORDER;
+	/*cs.dwExStyle &= ~WS_EX_CLIENTEDGE;
+	cs.style |= WS_BORDER;*/
 	cs.lpszClass = AfxRegisterWndClass(CS_HREDRAW|CS_VREDRAW|CS_DBLCLKS, 
 		::LoadCursor(nullptr, IDC_ARROW), reinterpret_cast<HBRUSH>(COLOR_WINDOW+1), nullptr);
 
@@ -218,8 +218,8 @@ void CChildView::DisplayRoomInfoSpace(CPaintDC& dc, const CRect& rect) {
 	CFont* def_font = dc.SelectObject(&font);
 
 	
-
-	dc.DrawText(this->dataModule.currRoom, this->dataModule.currRoom.GetLength(), CRect(80, 20, 200, 40), DT_LEFT);
+	CString currRoom = this->dataModule.GetCurrRoomName();
+	dc.DrawText(currRoom, currRoom.GetLength(), CRect(80, 20, 200, 40), DT_LEFT);
 	dc.DrawText(CString("x"), 1, &closeButton, DT_LEFT);
 	dc.SelectObject(def_font);
 	font.DeleteObject();
@@ -258,7 +258,9 @@ void CChildView::DisplayLogSpace(CPaintDC& dc, const CRect& rect) {
 		CSize fontSize = dc.GetTextExtent(msg);
 		SetBkMode(dc, TRANSPARENT);
 
-		if (user == this->dataModule.myName) {
+		CString myName = this->dataModule.GetMyName();
+
+		if (user == myName) {
 			dc.Rectangle(CRect(CommentSpace.right - 55, CommentSpace.top + 5,
 				CommentSpace.right - 5, CommentSpace.bottom - 5));
 
@@ -528,10 +530,10 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 			int yOffset = point.y - roomListSpaceSize.top;
 			int roomNum = yOffset / DisplayRoomSize;
 
-			int roomID = this->dataModule.GetRoomID(roomNum);
+			int temp = this->dataModule.GetRoomID(roomNum);
 			
-			if (roomID != -2) {
-				ReqJoinRoom(roomID);
+			if (temp != -2) {
+				ReqJoinRoom(temp);
 			}
 		}
 	}

@@ -4,7 +4,7 @@
 #include <vector>
 
 class DataModule {
-	friend class CChildView;
+
 public:
 	void INClearRoomList();
 	void INClearMessageList();
@@ -26,24 +26,18 @@ public:
 	bool UpdateRoomList(std::vector<Room> roomList);
 	bool AddMessage(Message msg);
 
-	std::vector<CString> GetRoomList() {
-		std::vector<CString> roomNameList;
-		mtxRoomList.lock();
-		for (auto iter = RoomList.cbegin(); iter != RoomList.cend(); iter++) {
-			roomNameList.push_back(iter->name);
-		}
-		mtxRoomList.unlock();
-
-		return roomNameList;
-	}
+	std::vector<CString> GetRoomList();
 	std::vector<Message> GetMessageList() {
 		return messageList;
 	}
-	int GetRoomID(size_t index) {
-		if (RoomList.size() > index) return -2;
-		return RoomList[index].roomID;
-	}
+	int GetRoomID(size_t index);
 	int GetRoomListSize() {
 		return RoomList.size();
+	}
+	CString GetCurrRoomName() {
+		return currRoom;
+	}
+	CString GetMyName() {
+		return myName;
 	}
 };

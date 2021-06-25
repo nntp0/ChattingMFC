@@ -21,6 +21,7 @@ bool DataModule::UpdateRoomList(std::vector<Room> roomList) {
 }
 
 bool DataModule::AddMessage(Message msg) {
+
 	mtxMessageList.lock();
 	messageList.push_back(msg);
 	mtxMessageList.unlock();
@@ -32,4 +33,18 @@ bool DataModule::SetUserInfo(std::string userName, std::string roomName) {
 	currRoom = CString(CA2CT(roomName.c_str()));
 
 	return true;
+}
+int DataModule::GetRoomID(size_t index) {
+	if (RoomList.size() <= index) return -2;
+	return RoomList[index].roomID;
+}
+std::vector<CString> DataModule::GetRoomList() {
+	std::vector<CString> roomNameList;
+	mtxRoomList.lock();
+	for (auto iter = RoomList.cbegin(); iter != RoomList.cend(); iter++) {
+		roomNameList.push_back(iter->name);
+	}
+	mtxRoomList.unlock();
+
+	return roomNameList;
 }
