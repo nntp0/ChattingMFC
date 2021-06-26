@@ -525,6 +525,10 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 			else if (closeButtonArea.PtInRect(point)) {
 				((CMainFrame*)AfxGetMainWnd())->OnClose();
 			}
+			else {
+				isDrag = true;
+				GetCursorPos(&dragSPos);
+			}
 		}
 		else if (roomListSpaceSize.PtInRect(point)) {
 			int yOffset = point.y - roomListSpaceSize.top;
