@@ -27,6 +27,12 @@ void CChildView::UpdateRoomList(std::vector<Room> roomList) {
 	if (this->page == Page::RoomList) Invalidate();
 }
 void CChildView::UpdateMessageList(Message msg) {
+	if (msg.userName == "_system")
+		msg.type = Message::Type::System;
+	else if (msg.userName == this->dataModule.GetMyName())
+		msg.type = Message::Type::Me;
+	else  msg.type = Message::Type::Others;
+
 	this->dataModule.AddMessage(msg);
 
 	if (this->page == Page::chattingRoom) Invalidate();
@@ -260,44 +266,55 @@ void CChildView::DisplayLogSpace(CPaintDC& dc, const CRect& rect) {
 
 		CString myName = this->dataModule.GetMyName();
 
-		if (user == myName) {
-			dc.Rectangle(CRect(CommentSpace.right - 55, CommentSpace.top + 5,
-				CommentSpace.right - 5, CommentSpace.bottom - 5));
+		switch (iter->type) {
+			case Message::Type::Me:
+			{
+				dc.Rectangle(CRect(CommentSpace.right - 55, CommentSpace.top + 5,
+					CommentSpace.right - 5, CommentSpace.bottom - 5));
 
-			CBrush brush;
-			brush.CreateSolidBrush(RGB(247, 230, 0));
-			CBrush* oldBrush = dc.SelectObject(&brush);
+				CBrush brush;
+				brush.CreateSolidBrush(RGB(247, 230, 0));
+				CBrush* oldBrush = dc.SelectObject(&brush);
 
-			dc.RoundRect(CRect(CommentSpace.right - 70 - fontSize.cx - margin, CommentSpace.top + 25 - margin,
-				CommentSpace.right - 70 + margin, CommentSpace.bottom - 10 + margin), CPoint(17, 17));
+				dc.RoundRect(CRect(CommentSpace.right - 70 - fontSize.cx - margin, CommentSpace.top + 25 - margin,
+					CommentSpace.right - 70 + margin, CommentSpace.bottom - 10 + margin), CPoint(17, 17));
 
-			brush.DeleteObject();
-			dc.SelectObject(oldBrush);
+				brush.DeleteObject();
+				dc.SelectObject(oldBrush);
 
-			dc.DrawText(user.GetString(), user.GetLength(), &CRect(CommentSpace.left, CommentSpace.top,
-				CommentSpace.right - 60, CommentSpace.bottom - 20), DT_RIGHT);
-			dc.DrawText(msg.GetString(), msg.GetLength(), &CRect(CommentSpace.left, CommentSpace.top + 30,
-				CommentSpace.right - 70, CommentSpace.bottom - 10), DT_RIGHT);
-		}
-		else if (user == "_system") {
-			// delta = top / bottom 에서 떨어진 거리
-			int delta = (DisplayLogSize - fontSize.cy) / 2;
+				dc.DrawText(user.GetString(), user.GetLength(), &CRect(CommentSpace.left, CommentSpace.top,
+					CommentSpace.right - 60, CommentSpace.bottom - 20), DT_RIGHT);
+				dc.DrawText(msg.GetString(), msg.GetLength(), &CRect(CommentSpace.left, CommentSpace.top + 30,
+					CommentSpace.right - 70, CommentSpace.bottom - 10), DT_RIGHT);
 
-			dc.FillSolidRect(CRect(CommentSpace.left + 10, CommentSpace.top + delta - margin,
-				CommentSpace.right - 10, CommentSpace.bottom - delta + margin), RGB(169, 189, 206));
-			dc.DrawText(msg.GetString(), msg.GetLength(), &CRect(CommentSpace.left + 10, CommentSpace.top + delta,
-				CommentSpace.right - 10, CommentSpace.bottom - delta), DT_CENTER);
-		}
-		else {
-			dc.Rectangle(CRect(CommentSpace.left + 5, CommentSpace.top + 5,
-				CommentSpace.left + 55, CommentSpace.bottom - 5));
-			dc.RoundRect(CRect(CommentSpace.left + 70 - margin, CommentSpace.top + 25 - margin,
-				CommentSpace.left + 70 + fontSize.cx + margin, CommentSpace.bottom - 10 + margin), CPoint(17, 17));
+				break;
+			}
+			case Message::Type::System:
+			{
+				// delta = top / bottom 에서 떨어진 거리
+				int delta = (DisplayLogSize - fontSize.cy) / 2;
 
-			dc.DrawText(user.GetString(), user.GetLength(), &CRect(CommentSpace.left + 60, CommentSpace.top,
-				CommentSpace.right, CommentSpace.bottom - 20), DT_LEFT);
-			dc.DrawText(msg.GetString(), msg.GetLength(), &CRect(CommentSpace.left + 70, CommentSpace.top + 30,
-				CommentSpace.right, CommentSpace.bottom - 10), DT_LEFT);
+				dc.FillSolidRect(CRect(CommentSpace.left + 10, CommentSpace.top + delta - margin,
+					CommentSpace.right - 10, CommentSpace.bottom - delta + margin), RGB(169, 189, 206));
+				dc.DrawText(msg.GetString(), msg.GetLength(), &CRect(CommentSpace.left + 10, CommentSpace.top + delta,
+					CommentSpace.right - 10, CommentSpace.bottom - delta), DT_CENTER);
+
+				break;
+			}
+			case Message::Type::Others:
+			{
+				dc.Rectangle(CRect(CommentSpace.left + 5, CommentSpace.top + 5,
+					CommentSpace.left + 55, CommentSpace.bottom - 5));
+				dc.RoundRect(CRect(CommentSpace.left + 70 - margin, CommentSpace.top + 25 - margin,
+					CommentSpace.left + 70 + fontSize.cx + margin, CommentSpace.bottom - 10 + margin), CPoint(17, 17));
+
+				dc.DrawText(user.GetString(), user.GetLength(), &CRect(CommentSpace.left + 60, CommentSpace.top,
+					CommentSpace.right, CommentSpace.bottom - 20), DT_LEFT);
+				dc.DrawText(msg.GetString(), msg.GetLength(), &CRect(CommentSpace.left + 70, CommentSpace.top + 30,
+					CommentSpace.right, CommentSpace.bottom - 10), DT_LEFT);
+
+				break;
+			}
 		}
 
 		CommentSpace.top -= DisplayLogSize;

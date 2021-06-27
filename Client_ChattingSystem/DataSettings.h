@@ -16,6 +16,12 @@ public:
 struct Message {
 	CString userName;
 	CString msg;
+	enum class Type {
+		System,
+		Me,
+		Others
+	};
+	Type type;
 };
 
 #endif
