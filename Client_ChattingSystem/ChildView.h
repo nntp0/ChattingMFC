@@ -134,15 +134,15 @@ private:
 	);
 
 public:
-	void DisplayRoomList(CPaintDC& dc);
-	void DisplayClientInfoSpace(CPaintDC& dc);
-	void DisplayToolsSpace(CPaintDC& dc, const CRect& rect);
-	void DisplayRoomListSpace(CPaintDC& dc, const CRect& rect);
+	void DisplayRoomList(CDC& dc);
+	void DisplayClientInfoSpace(CDC& dc);
+	void DisplayToolsSpace(CDC& dc, const CRect& rect);
+	void DisplayRoomListSpace(CDC& dc, const CRect& rect);
 
-	void DisplayChattingRoom(CPaintDC& dc);
-	void DisplayLogSpace(CPaintDC& dc, const CRect& rect);
-	void DisplayTypingSpace(CPaintDC& dc, const CRect& rect);
-	void DisplayRoomInfoSpace(CPaintDC& dc, const CRect& rect);
+	void DisplayChattingRoom(CDC& dc);
+	void DisplayLogSpace(CDC& dc, const CRect& rect);
+	void DisplayTypingSpace(CDC& dc, const CRect& rect);
+	void DisplayRoomInfoSpace(CDC& dc, const CRect& rect);
 
 public:
 	void UpdateRoomList(std::vector<Room>);

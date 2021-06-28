@@ -90,21 +90,41 @@ void CChildView::OnDestroy()
 void CChildView::OnPaint() 
 {
 	CPaintDC dc(this);
+
+	CRect rect;
+	GetClientRect(&rect);
+
+	CDC memDC;
+	CBitmap* pOldBitmap, bitmap;
+
+	memDC.CreateCompatibleDC(&dc);
+	bitmap.CreateCompatibleBitmap(&dc, rect.right, rect.bottom);
+	pOldBitmap = memDC.SelectObject(&bitmap);
 	
-	if (this->page == Page::chattingRoom) DisplayChattingRoom(dc);
-	else if (this->page == Page::RoomList) DisplayRoomList(dc);
+	memDC.PatBlt(0, 0, rect.Width(), rect.Height(), WHITENESS);
+
+	if (this->page == Page::chattingRoom) DisplayChattingRoom(memDC);
+	else if (this->page == Page::RoomList) DisplayRoomList(memDC);
+
+	dc.BitBlt(0, 0, rect.Width(), rect.Height(), &memDC, 0, 0, SRCCOPY);
+
+	memDC.SelectObject(pOldBitmap);
+
+	// 생성한 리소스 해제.
+	memDC.DeleteDC();
+	bitmap.DeleteObject();
 }
 
 // RoomList View
-void CChildView::DisplayRoomList(CPaintDC &dc) {
+void CChildView::DisplayRoomList(CDC &dc) {
 	DisplayClientInfoSpace(dc);
 	DisplayToolsSpace(dc, toolsSpaceSize);
 	DisplayRoomListSpace(dc, roomListSpaceSize);
 }
-void CChildView::DisplayClientInfoSpace(CPaintDC& dc) {
+void CChildView::DisplayClientInfoSpace(CDC& dc) {
 	dc.FillSolidRect(clientInfoSpaceSize, RGB(236, 236, 237));
 }
-void CChildView::DisplayToolsSpace(CPaintDC& dc, const CRect& rect) {
+void CChildView::DisplayToolsSpace(CDC& dc, const CRect& rect) {
 	dc.FillSolidRect(toolsSpaceSize, RGB(100, 236, 237));
 
 // x Button
@@ -132,7 +152,7 @@ void CChildView::DisplayToolsSpace(CPaintDC& dc, const CRect& rect) {
 	dc.SelectObject(def_font);
 	font.DeleteObject();
 }
-void CChildView::DisplayRoomListSpace(CPaintDC& dc, const CRect& rect) {
+void CChildView::DisplayRoomListSpace(CDC& dc, const CRect& rect) {
 	CRect RoomSpace(rect);
 	RoomSpace.bottom = RoomSpace.top + DisplayRoomSize;
 
@@ -179,12 +199,12 @@ void CChildView::DisplayRoomListSpace(CPaintDC& dc, const CRect& rect) {
 }
 
 // ChattingRoom View
-void CChildView::DisplayChattingRoom(CPaintDC& dc) {
+void CChildView::DisplayChattingRoom(CDC& dc) {
 	DisplayRoomInfoSpace(dc, roomInfoSpaceSize);
 	DisplayLogSpace(dc, chattingLogSpaceSize);
 	DisplayTypingSpace(dc, typingSpaceSize);
 }
-void CChildView::DisplayRoomInfoSpace(CPaintDC& dc, const CRect& rect) {
+void CChildView::DisplayRoomInfoSpace(CDC& dc, const CRect& rect) {
 	dc.FillSolidRect(rect, RGB(169, 189, 206));
 
 // Client Image
@@ -230,7 +250,7 @@ void CChildView::DisplayRoomInfoSpace(CPaintDC& dc, const CRect& rect) {
 	dc.SelectObject(def_font);
 	font.DeleteObject();
 }
-void CChildView::DisplayLogSpace(CPaintDC& dc, const CRect& rect) {
+void CChildView::DisplayLogSpace(CDC& dc, const CRect& rect) {
 	CRect CommentSpace(rect);
 	CommentSpace.top = CommentSpace.bottom - DisplayLogSize;
 
@@ -325,7 +345,7 @@ void CChildView::DisplayLogSpace(CPaintDC& dc, const CRect& rect) {
 	dc.SelectObject(def_font);
 	font.DeleteObject();
 }
-void CChildView::DisplayTypingSpace(CPaintDC& dc, const CRect& rect) {
+void CChildView::DisplayTypingSpace(CDC& dc, const CRect& rect) {
 
 	CRect marginSpace(margin, margin, 0, 0);
 
