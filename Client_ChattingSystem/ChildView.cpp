@@ -12,6 +12,7 @@
 #endif
 
 #include "CreateRoomDlg.h"
+#include "ClientInfoDlg.h"
 
 // CChildView Constructor / Destructor
 
@@ -123,6 +124,8 @@ void CChildView::DisplayRoomList(CDC &dc) {
 }
 void CChildView::DisplayClientInfoSpace(CDC& dc) {
 	dc.FillSolidRect(clientInfoSpaceSize, RGB(236, 236, 237));
+
+	dc.FillSolidRect(clientInfoButton, RGB(255,255,255));
 }
 void CChildView::DisplayToolsSpace(CDC& dc, const CRect& rect) {
 	dc.FillSolidRect(toolsSpaceSize, RGB(100, 236, 237));
@@ -545,8 +548,16 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 	}
 	else if (this->page == Page::RoomList) {
-		
-		if (toolsSpaceSize.PtInRect(point)) {
+
+		if (clientInfoSpaceSize.PtInRect(point)) {
+			if (clientInfoButton.PtInRect(point)) {
+				ClientInfoDlg dlg(this->dataModule.GetMyName());
+				if (IDOK == dlg.DoModal()) {
+					// 이름 변경 로직 추가 예정
+				}
+			}
+		}
+		else if (toolsSpaceSize.PtInRect(point)) {
 			CRect createButtonArea = CRect(createButton.left - margin, createButton.top - margin,
 				createButton.right + margin, createButton.bottom + margin);
 			CRect closeButtonArea = CRect(closeButton.left - margin, closeButton.top - margin,

@@ -107,6 +107,9 @@ private:
 	const CRect typingSpaceSize = CRect(0, 520, 440, 600);
 
 	const CRect clientInfoSpaceSize = CRect(0, 0, 70, 600);
+	const CRect clientInfoButton = CRect(15, 45, 50, 80);
+
+
 	const CRect toolsSpaceSize = CRect(70, 0, 440, 80);
 	const CRect roomListSpaceSize = CRect(70, 80, 440, 600);
 
