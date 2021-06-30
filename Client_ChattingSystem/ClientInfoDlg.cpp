@@ -35,5 +35,6 @@ END_MESSAGE_MAP()
 
 void ClientInfoDlg::OnBnClickedOk()
 {
+	GetDlgItemText(IDC_ClientID, myName);
 	CDialogEx::OnOK();
 }

@@ -120,6 +120,19 @@ const std::vector<Client>& DataModule::GetClientList() {
 	return this->clientList;
 }
 
+bool DataModule::ChangeClientInfo(int clientID, std::string clientName) {
+	for (auto iter = clientList.begin(); iter != clientList.end(); iter++) {
+		if (iter->clientID == clientID) {
+			iter->name = clientName;
+			return true;
+		}
+	}
+	return false;
+}
+
+
+
+
 int DataModule::createRoomID() { static int id = 0; return id++; }
 
 

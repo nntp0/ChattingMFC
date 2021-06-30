@@ -28,9 +28,9 @@ bool DataModule::AddMessage(Message msg) {
 
 	return true;
 }
-bool DataModule::SetUserInfo(std::string userName, std::string roomName) {
+bool DataModule::SetUserInfo(std::string userName, std::string roomName = "") {
 	myName = CString(CA2CT(userName.c_str()));
-	currRoom = CString(CA2CT(roomName.c_str()));
+	if (roomName != "") currRoom = CString(CA2CT(roomName.c_str()));
 
 	return true;
 }

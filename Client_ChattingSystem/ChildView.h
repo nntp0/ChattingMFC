@@ -72,6 +72,7 @@ public:
 	void ReqSendChatting();
 	void ReqJoinRoom(int);
 	void ReqCreateRoom(CString);
+	void ReqChangeClientName(CString);
 
 	void ResJoinRoom();
 

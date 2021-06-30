@@ -25,6 +25,8 @@ enum class ResponseList
 	RoomJoined,
 	RoomList,
 
+	ChangeClientInfo,
+
 	Normal,
 };
 struct ResponseInfo {

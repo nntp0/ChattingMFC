@@ -162,6 +162,23 @@ void Processor::MessageFromServer(std::string msg) {
 		}
 			
 	}
+	else if (buf == "chcl") {
+		std::string buf = msg.substr(0, 2);
+		msg = msg.substr(2);
+		int len = stoi(buf);
+
+		std::string newName = msg.substr(0, len);
+		msg = msg.substr(len);
+
+		buf = msg.substr(0, 2);
+		msg = msg.substr(2);
+		len = stoi(buf);
+
+		std::string oldName = msg.substr(0, len);
+		msg = msg.substr(len);
+
+		display->UpdateUserInfo(newName, "");
+	}
 	else {
 		AfxMessageBox(_T("Protocol, Critical Error"));
 	}

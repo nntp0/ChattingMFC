@@ -21,5 +21,7 @@ public:
 
 	virtual Client* GetClient(int clientID);
 	virtual Room* GetRoom(int roomID);
+
+	virtual bool ChangeClientInfo(int, std::string);
 };
 #endif

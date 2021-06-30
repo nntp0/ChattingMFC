@@ -24,6 +24,8 @@ public:
 	virtual const std::vector<Room>& GetRoomList();
 	virtual const std::vector<Client>& GetClientList();
 
+	virtual bool ChangeClientInfo(int, std::string);
+
 public:
 
 	virtual Client* GetClient(int clientID);

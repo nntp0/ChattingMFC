@@ -251,6 +251,30 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 				break;
 			}
 
+			case MessageType::ChangeClientInfo:
+			{
+				Client* changeClient = this->dataModule->GetClient(stoi(decodedMessage.uid));
+				std::string oldName = changeClient->name;
+				std::string log = "[REQ] [ChangeClientInfo] [" + oldName + "] to [" + decodedMessage.body + "]";
+				this->displayModule->WriteLog(log);
+
+				if (this->dataModule->ChangeClientInfo(changeClient->clientID, decodedMessage.body)) {
+
+					ResponseInfo resInfo(changeClient->name, "", oldName);
+					std::string encodedMsg = MessageEncoding(ResponseList::ChangeClientInfo, resInfo);
+
+					//AfxMessageBox(CString(encodedMsg.c_str()));
+
+					this->transmission->SendTo(decodedMessage.uid, encodedMsg);
+				}
+				else {
+					std::string log = "[FAIL] [ChangeClientInfo]";
+					this->displayModule->WriteLog(log);
+				}
+
+				break;
+			}
+
 			default:
 				break;
 			}
@@ -351,6 +375,19 @@ std::string Processor::MessageEncoding(ResponseList type, ResponseInfo info) {
 			encodedMsg += info.extra;
 			break;
 		}
+		case ResponseList::ChangeClientInfo: {
+			encodedMsg += "chcl";
+
+			sprintf_s(buf, 5, "%02d", info.userName.length());
+			encodedMsg += buf;
+			encodedMsg += info.userName;
+
+			sprintf_s(buf, 5, "%02d", info.extra.length());
+			encodedMsg += buf;
+			encodedMsg += info.extra;
+
+			break;
+		}
 		default: {
 			break;
 		}
@@ -382,6 +419,9 @@ CustomMessage Processor::MessageDecoding(std::string message) {
 	}
 	else if (code == "norm") {
 		decodedMessage.type = MessageType::Normal;
+	}
+	else if (code == "chcl") {
+		decodedMessage.type = MessageType::ChangeClientInfo;
 	}
 	else {
 		// 잘못된 타입 정보, 전송 오류

@@ -553,7 +553,10 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 			if (clientInfoButton.PtInRect(point)) {
 				ClientInfoDlg dlg(this->dataModule.GetMyName());
 				if (IDOK == dlg.DoModal()) {
-					// 이름 변경 로직 추가 예정
+					CString myName = dlg.myName;
+
+					if (myName != "" && myName != this->dataModule.GetMyName())
+						ReqChangeClientName(myName);
 				}
 			}
 		}
@@ -691,6 +694,13 @@ void CChildView::ReqJoinRoom(int roomID) {
 
 	parentFrame->processor.RegisterEvent("cs" + msg);
 }
+void CChildView::ReqChangeClientName(CString myName) {
+	std::string msg("chcl");
+	msg += std::string(CT2CA(myName.GetString()));
+
+	parentFrame->processor.RegisterEvent("cs" + msg);
+}
+
 
 // Response
 void CChildView::ResJoinRoom() {
