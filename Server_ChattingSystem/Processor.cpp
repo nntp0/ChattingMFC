@@ -101,18 +101,17 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 
 				Client* targetClient = this->dataModule->GetClient(leftClient.clientID);
 
-				char roomID[10];
-				sprintf_s(roomID, 10, "%04d", targetClient->joinedRoom);
-				RegisterEvent("noti" + std::string(roomID) + targetClient->name + "´ÔÀÌ ÅðÀåÇÏ¼Ì½À´Ï´Ù.");
+				if (targetClient->joinedRoom) {
+					char roomID[10];
+					sprintf_s(roomID, 10, "%04d", targetClient->joinedRoom);
 
-				//
+					RegisterEvent("noti" + std::string(roomID) + targetClient->name + "´ÔÀÌ ÅðÀåÇÏ¼Ì½À´Ï´Ù.");
+				}
 				this->dataModule->LeaveRoom(leftClient);
 
 				ResponseInfo resInfo("", "", "");
 				std::string encodedMsg = MessageEncoding(ResponseList::RoomLeaved, resInfo);
 				this->transmission->SendTo(decodedMessage.uid, encodedMsg);
-
-				
 
 				break;
 			}
@@ -170,12 +169,11 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 				std::string encodedMsg = MessageEncoding(ResponseList::RoomJoined, resInfo);
 				this->transmission->SendTo(decodedMessage.uid, encodedMsg);
 
-				
-				char buf[10];
-				sprintf_s(buf, 10, "%04d", std::stoi(decodedMessage.body));
-				RegisterEvent("noti" + std::string(buf) + userName + "´ÔÀÌ ÀÔÀåÇÏ¼Ì½À´Ï´Ù.");
-
-
+				if (std::stoi(decodedMessage.body)) {
+					char buf[10];
+					sprintf_s(buf, 10, "%04d", std::stoi(decodedMessage.body));
+					RegisterEvent("noti" + std::string(buf) + userName + "´ÔÀÌ ÀÔÀåÇÏ¼Ì½À´Ï´Ù.");
+				}
 				break;
 			}
 
