@@ -11,6 +11,11 @@ void DataModule::INClearMessageList() {
 	messageList.clear();
 	mtxMessageList.unlock();
 }
+void DataModule::InClearClientList() {
+	mtxClientList.lock();
+	clientList.clear();
+	mtxClientList.unlock();
+}
 
 bool DataModule::UpdateRoomList(std::vector<Room> roomList) {
 	mtxRoomList.lock();
@@ -28,6 +33,16 @@ bool DataModule::AddMessage(Message msg) {
 
 	return true;
 }
+bool DataModule::AddClient(std::string clientName) {
+
+	mtxClientList.lock();
+	clientList.push_back(clientName);
+	mtxClientList.unlock();
+
+	return true;
+}
+
+
 bool DataModule::SetUserInfo(std::string userName, std::string roomName = "") {
 	myName = CString(CA2CT(userName.c_str()));
 	if (roomName != "") currRoom = CString(CA2CT(roomName.c_str()));

@@ -63,9 +63,28 @@ void Processor::MessageFromServer(std::string msg) {
 		msg = msg.substr(len);
 
 		display->UpdateUserInfo(uName, rName);
+		this->RegisterEvent("csclls");
 	}
 	else if (buf == "clls") {
-		std::string buf = "¹Ì±¸Çö";
+		std::string buf = msg.substr(0, 4);
+		msg = msg.substr(4);
+		int count = stoi(buf);
+
+		for (int i = 0; i < count; i++) {
+			std::string buf = msg.substr(0, 4);
+			msg = msg.substr(4);
+			UINT uID = stoi(buf);
+
+			buf = msg.substr(0, 2);
+			msg = msg.substr(2);
+			int len = stoi(buf);
+
+			std::string uName = msg.substr(0, len);
+			msg = msg.substr(len);
+
+			this->display->dataModule.AddClient(uName);
+		}
+
 	}
 	else if (buf == "rmcr") {
 		this->RegisterEvent("csrmls");
@@ -90,6 +109,8 @@ void Processor::MessageFromServer(std::string msg) {
 
 		display->UpdateUserInfo(uName, rName);
 		display->ResJoinRoom();
+
+		this->RegisterEvent("csclls");
 	}
 	else if (buf == "rmls") {
 		

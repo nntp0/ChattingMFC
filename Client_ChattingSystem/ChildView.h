@@ -104,6 +104,9 @@ private:
 
 	
 	const CRect roomInfoSpaceSize = CRect(0, 0, 440, 80);
+
+	const CRect roomInfoButton = CRect(15, 15, 65, 65);
+
 	const CRect chattingLogSpaceSize = CRect(0, 80, 440, 520);
 	const CRect typingSpaceSize = CRect(0, 520, 440, 600);
 

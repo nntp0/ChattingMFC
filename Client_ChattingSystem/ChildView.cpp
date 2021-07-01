@@ -13,6 +13,7 @@
 
 #include "CreateRoomDlg.h"
 #include "ClientInfoDlg.h"
+#include "RoomInfoDlg.h"
 
 // CChildView Constructor / Destructor
 
@@ -219,7 +220,7 @@ void CChildView::DisplayRoomInfoSpace(CDC& dc, const CRect& rect) {
 	brush.CreateSolidBrush(RGB(255, 255, 255));
 	CBrush* oldBrush = dc.SelectObject(&brush);
 
-	dc.Ellipse(15, 15, 65, 65);
+	dc.Ellipse(roomInfoButton);
 
 	pen.DeleteObject();
 	brush.DeleteObject();
@@ -533,6 +534,11 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 			if (closeButtonArea.PtInRect(point)) {
 				ReqLeaveRoom();
 			}
+			else if (roomInfoButton.PtInRect(point)) {
+				RoomInfoDlg dlg(this->dataModule.GetClientList());
+				if (IDOK == dlg.DoModal()) {
+				}
+			}
 			else {
 				isDrag = true;
 				GetCursorPos(&dragSPos);
@@ -679,6 +685,7 @@ void CChildView::ReqLeaveRoom() {
 	this->INClearBuffer();
 	this->dataModule.INClearRoomList();
 	this->dataModule.INClearMessageList();
+	this->dataModule.InClearClientList();
 	this->INHideCaret();
 
 	std::string msg("rmlv");
