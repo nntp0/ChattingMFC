@@ -17,11 +17,14 @@ bool Processor::Job() {
 
 	messageListLock.unlock();
 
+	//AfxMessageBox(CString(msg.c_str()));
 	auto type = msg.substr(0, 2);
 	msg = msg.substr(2);
 
 	// cs: client to server
 	// sc: server to client
+
+
 	if (type == "cs") {
 		MessageToServer(msg);
 	}
@@ -31,6 +34,8 @@ bool Processor::Job() {
 	else {
 		AfxMessageBox(_T("????"));
 	}
+
+	
 
 	return true;
 }
@@ -63,7 +68,6 @@ void Processor::MessageFromServer(std::string msg) {
 		msg = msg.substr(len);
 
 		display->UpdateUserInfo(uName, rName);
-		this->RegisterEvent("csclls");
 	}
 	else if (buf == "clls") {
 		std::string buf = msg.substr(0, 4);
@@ -85,6 +89,7 @@ void Processor::MessageFromServer(std::string msg) {
 			this->display->dataModule.AddClient(uName);
 		}
 
+		this->display->ResUserList();
 	}
 	else if (buf == "rmcr") {
 		this->RegisterEvent("csrmls");
@@ -109,8 +114,6 @@ void Processor::MessageFromServer(std::string msg) {
 
 		display->UpdateUserInfo(uName, rName);
 		display->ResJoinRoom();
-
-		this->RegisterEvent("csclls");
 	}
 	else if (buf == "rmls") {
 		

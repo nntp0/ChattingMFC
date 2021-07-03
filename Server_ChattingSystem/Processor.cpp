@@ -197,8 +197,8 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 				// 유저수(4자리) + 유저아이디(4자리) + 유저명 길이 + 유저명
 				std::string message = "";
 				char buf[5];
-				sprintf_s(buf, 5, "%04d", clientList.size());
-				message += buf;
+				int count = 0;
+
 				for (auto it = clientList.begin(); it != clientList.end(); it++) {
 					if (it->joinedRoom == roomID) {
 						sprintf_s(buf, 5, "%04d", it->clientID);
@@ -206,11 +206,20 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 						sprintf_s(buf, 5, "%02d", it->name.length());
 						message += buf;
 						message += it->name;
+						count++;
 					}
 				}
 
+				sprintf_s(buf, 5, "%04d", count);
+				message = buf + message;
+
+				AfxMessageBox(CString(message.c_str()));
+
 				ResponseInfo resInfo("", "", message);
 				std::string encodedMsg = MessageEncoding(ResponseList::ClientList, resInfo);
+				
+				AfxMessageBox(CString(encodedMsg.c_str()));
+
 				this->transmission->SendTo(decodedMessage.uid, encodedMsg);
 
 				break;

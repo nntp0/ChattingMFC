@@ -63,3 +63,7 @@ std::vector<CString> DataModule::GetRoomList() {
 
 	return roomNameList;
 }
+
+std::vector<std::string> DataModule::GetClientList() {
+	return clientList;
+}

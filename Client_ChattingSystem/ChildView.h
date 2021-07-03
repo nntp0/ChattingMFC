@@ -73,8 +73,10 @@ public:
 	void ReqJoinRoom(int);
 	void ReqCreateRoom(CString);
 	void ReqChangeClientName(CString);
+	void ReqUserList();
 
 	void ResJoinRoom();
+	void ResUserList();
 
 // Internal
 private:

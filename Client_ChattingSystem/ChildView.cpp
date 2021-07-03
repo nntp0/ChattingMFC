@@ -535,9 +535,8 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 				ReqLeaveRoom();
 			}
 			else if (roomInfoButton.PtInRect(point)) {
-				RoomInfoDlg dlg(this->dataModule.GetClientList());
-				if (IDOK == dlg.DoModal()) {
-				}
+				this->dataModule.InClearClientList();
+				ReqUserList();
 			}
 			else {
 				isDrag = true;
@@ -685,7 +684,6 @@ void CChildView::ReqLeaveRoom() {
 	this->INClearBuffer();
 	this->dataModule.INClearRoomList();
 	this->dataModule.INClearMessageList();
-	this->dataModule.InClearClientList();
 	this->INHideCaret();
 
 	std::string msg("rmlv");
@@ -708,6 +706,11 @@ void CChildView::ReqChangeClientName(CString myName) {
 	parentFrame->processor.RegisterEvent("cs" + msg);
 }
 
+void CChildView::ReqUserList() 
+{
+	parentFrame->processor.RegisterEvent("csclls");
+}
+
 
 // Response
 void CChildView::ResJoinRoom() {
@@ -715,4 +718,9 @@ void CChildView::ResJoinRoom() {
 	//AfxMessageBox(_T("Hello")); <= 유/무에 따라 Caret 보이는지 안보이는지가 결정된다. 이상한 버그
 	INShowCaret();
 	Invalidate();
+}
+void CChildView::ResUserList() {
+	RoomInfoDlg dlg(this->dataModule.GetClientList());
+	if (IDOK == dlg.DoModal()) {
+	}
 }

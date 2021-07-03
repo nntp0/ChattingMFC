@@ -35,9 +35,8 @@ public:
 	std::vector<Message> GetMessageList() {
 		return messageList;
 	}
-	std::vector<std::string> GetClientList() {
-		return clientList;
-	}
+	std::vector<std::string> GetClientList();
+
 	int GetRoomID(size_t index);
 	int GetRoomListSize() {
 		return RoomList.size();
