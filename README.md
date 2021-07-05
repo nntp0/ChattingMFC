@@ -38,8 +38,13 @@ RabbitMQ 브로커는 rabbitmq 3.8.17 을 다운로드 받았고, RabbitMQ clien
   1. Transmission: 클라이언트용 통신 모듈입니다. Exclusive 한 메세지 큐를 생성하고, Server Message큐에 해당 사실을 알려 통신을 연결합니다.
   2. Application: 모든 모듈을 담당하는 모듈입니다. Processor 에게 Transmission 에서 온 메세지를 전달하는 역할과 유저가 입력한 기능에 따른 작업을 전달하는 역할을 담당합니다.
   3. Processor: Application 이 담당해야하는 모든 작업을 처리하는 모듈입니다. 이 작업은 client 내 에서 처리될 수도 있고, server 로 메세지를 전송해야할 수도 있습니다.
-  4. View: 유저가 보고 Interact 하는 모듈입니다. 내용을 화면에 띄우고, 유저 입력 데이터 등을 보관합니다.
+  4. Display: 유저가 보고 Interact 하는 모듈입니다. 내용을 화면에 띄우고, 유저 입력 데이터 등을 보관합니다.
+  5. Data: 클라이언트가 처리해야할 정보를 관리하는 모듈입니다. 방의 개수나, 클라이언트 목록 등의 정보를 보관합니다.
 
   변경 예정 목록
-  - Server 에 비해 기능 분할이 완벽하게 이루어져 있지 않습니다. Refactoring 을 거쳐 보다 깔끔한 구성을 갖도록 개편할 예정입니다.
-  - Double Buffering 기능이 View Module 에 구현되어있지 않습니다. flickering 이 발생하고 있습니다.
+  - 여러 Dialog 가 지금 기본 MFC 디자인을 이용하고 있습니다. 디자인 개선이 필요합니다.
+  - 로직이 깔끔하지 않습니다. 로직을 다듬어야합니다.
+  
+  개선 목록
+  - Server 에 비해 기능 분할이 완벽하게 이루어져 있지 않습니다. Refactoring 을 거쳐 보다 깔끔한 구성을 갖도록 개편할 예정입니다. (완료)
+  - Double Buffering 기능이 View Module 에 구현되어있지 않습니다. flickering 이 발생하고 있습니다. (완료)
