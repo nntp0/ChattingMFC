@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "Processor.h"
 
-Processor::Processor() {}
+Processor::Processor() {
+	
+}
 Processor::~Processor () {}
 
 void Processor::SetModules(

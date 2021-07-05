@@ -149,4 +149,8 @@ void CMainFrame::Run() {
 
 	this->processor.SetModules(this->transmission, this->displayModule, this->dataModule);
 	this->processor.Start();
+
+	this->command = std::shared_ptr<CommandDlg>(new CommandDlg);
+	this->command->Create(IDD_Command);
+	this->command->ShowWindow(SW_SHOW);
 }
