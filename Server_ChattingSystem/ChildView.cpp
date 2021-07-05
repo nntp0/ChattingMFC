@@ -45,29 +45,4 @@ void CChildView::OnPaint()
 
 	CRect rect;
 	GetClientRect(&rect);
-
-	//auto pos = this->logList.GetHeadPosition();
-	////int count = this->logList.GetCount();
-	////while (count-- > 5) {
-	////	this->logList.GetNext(pos);
-	////}
-
-	//
-
-	////auto pos = this->logList.GetHeadPosition();
-	//while (pos != NULL) {
-	//	CString temp = this->logList.GetNext(pos);
-
-	//	rect.top = rect.top + 20;
-
-	//	dc.DrawText(temp.GetString(), temp.GetLength(), &rect, DT_LEFT);
-	//}
 }
-
-//void CChildView::DisplayLog(CString msg) {
-//	if (this->logList.GetCount() == max_logListSize) {
-//		this->logList.RemoveHead();
-//	}
-//	this->logList.AddTail(msg);
-//	Invalidate();
-//}
