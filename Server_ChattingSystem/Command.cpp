@@ -14,8 +14,8 @@
 IMPLEMENT_DYNAMIC(CommandDlg, CDialogEx)
 
 CommandDlg::CommandDlg(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_Command, pParent) {
-
+	: CDialogEx(IDD_Command, pParent) 
+{
 }
 CommandDlg::~CommandDlg()
 {
@@ -34,5 +34,12 @@ END_MESSAGE_MAP()
 
 void CommandDlg::OnBnClickedOk()
 {
-	AfxMessageBox(_T("HelloWorld"));
+	GetDlgItemText(IDC_Command, commandLine);
+
+	if (commandLine == "") return;
+
+	SetDlgItemText(IDC_Command, _T(""));
+	((CListBox*)GetDlgItem(IDC_CommandResult))->AddString(commandLine);
+
+	((CMainFrame*)GetParent())->Tick();
 }

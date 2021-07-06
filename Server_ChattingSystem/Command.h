@@ -1,6 +1,6 @@
 #pragma once
 
-
+#include "iServer.h"
 // CreateRoomDlg 대화 상자
 
 class CommandDlg : public CDialogEx
@@ -23,4 +23,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedOk();
+
+private:
+	CString commandLine;
 };
