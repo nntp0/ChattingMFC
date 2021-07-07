@@ -13,6 +13,7 @@ enum class EventList
 	ClientDisconnection,
 	ReceiveMessage,
 	Notification,
+	SystemMessage,
 };
 
 enum class ResponseList

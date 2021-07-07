@@ -14,6 +14,7 @@ public:
 	virtual void Disconnect(UID);
 
 	virtual void RecvMessage(std::string msg);
+	virtual void ProcCommand(std::string msg);
 
 	virtual void Run();
 };

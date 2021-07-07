@@ -39,7 +39,13 @@ void CommandDlg::OnBnClickedOk()
 	if (commandLine == "") return;
 
 	SetDlgItemText(IDC_Command, _T(""));
+	mtxCommandResultList.Lock();
 	((CListBox*)GetDlgItem(IDC_CommandResult))->AddString(commandLine);
-
-	((CMainFrame*)GetParent())->Tick();
+	mtxCommandResultList.Unlock();
+	((CMainFrame*)GetParent())->ProcCommand(std::string(CT2CA(commandLine.operator LPCWSTR())));
+}
+void CommandDlg::MessageResponse(CString commandResult) {
+	mtxCommandResultList.Lock();
+	((CListBox*)GetDlgItem(IDC_CommandResult))->AddString(commandResult);
+	mtxCommandResultList.Unlock();
 }

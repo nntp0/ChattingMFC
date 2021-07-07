@@ -9,11 +9,13 @@ Processor::~Processor () {}
 void Processor::SetModules(
 	std::shared_ptr<iTransmissionServer> transmission,
 	std::shared_ptr<iDisplayModule> display,
-	std::shared_ptr<iDataModule> data) {
+	std::shared_ptr<iDataModule> data,
+	std::shared_ptr<iCommand> command) {
 	
 	this->transmission = transmission;
 	this->displayModule = display;
 	this->dataModule = data;
+	this->command = command;
 }
 
 
@@ -315,6 +317,13 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 
 			break;
 		}
+
+		case EventList::SystemMessage:
+		{
+			this->command->MessageResponse(CString(("Your command : " + args).c_str()));
+			break;
+		}
+
 		default:
 		{
 			break;
@@ -467,6 +476,9 @@ bool Processor::Job() {
 	}
 	else if (type == "noti") {
 		ProcessEvent(EventList::Notification, msg);
+	}
+	else if (type == "cmnd") {
+		ProcessEvent(EventList::SystemMessage, msg);
 	}
 	// *** Error Handling 고려, 개선해야함 ***
 	else {

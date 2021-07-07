@@ -1,9 +1,10 @@
 #pragma once
 
 #include "iServer.h"
+#include "iCommand.h"
 // CreateRoomDlg 대화 상자
 
-class CommandDlg : public CDialogEx
+class CommandDlg : public CDialogEx, public iCommand
 {
 	DECLARE_DYNAMIC(CommandDlg)
 
@@ -26,4 +27,7 @@ public:
 
 private:
 	CString commandLine;
+	CMutex mtxCommandResultList;
+public:
+	void MessageResponse(CString commandResult);
 };

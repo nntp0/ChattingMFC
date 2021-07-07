@@ -139,6 +139,10 @@ void CMainFrame::RecvMessage(std::string msg) {
 	auto idleProcessor = FindIdleProcessor();
 	idleProcessor->RegisterEvent("norm" + msg);
 }
+void CMainFrame::ProcCommand(std::string msg) {
+	auto idleProcessor = FindIdleProcessor();
+	idleProcessor->RegisterEvent("cmnd" + msg);
+}
 
 void CMainFrame::Run() {
 	this->transmission->SetServer(this);
@@ -147,10 +151,10 @@ void CMainFrame::Run() {
 	this->displayModule = std::shared_ptr<Logger>(new Logger);
 	this->displayModule->Start();
 
-	this->processor.SetModules(this->transmission, this->displayModule, this->dataModule);
-	this->processor.Start();
-
 	this->command = std::shared_ptr<CommandDlg>(new CommandDlg);
 	this->command->Create(IDD_Command);
 	this->command->ShowWindow(SW_SHOW);
+
+	this->processor.SetModules(this->transmission, this->displayModule, this->dataModule, this->command);
+	this->processor.Start();
 }

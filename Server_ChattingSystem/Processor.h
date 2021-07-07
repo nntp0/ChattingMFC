@@ -8,6 +8,7 @@
 #include "iDisplayModule.h"
 #include "iDataModule.h"
 #include "iTransmissionServer.h"
+#include "iCommand.h"
 
 #include "NNTPlib.h"
 
@@ -25,7 +26,8 @@ public:
 	void SetModules(
 		std::shared_ptr<iTransmissionServer>, 
 		std::shared_ptr<iDisplayModule>, 
-		std::shared_ptr<iDataModule>
+		std::shared_ptr<iDataModule>,
+		std::shared_ptr<iCommand>
 	);
 	
 
@@ -40,6 +42,7 @@ private:
 	std::shared_ptr<iTransmissionServer> transmission;
 	std::shared_ptr<iDisplayModule> displayModule;
 	std::shared_ptr<iDataModule> dataModule;
+	std::shared_ptr<iCommand> command;
 
 	// method override
 private:
