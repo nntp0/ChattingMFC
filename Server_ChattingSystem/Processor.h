@@ -37,6 +37,8 @@ private:
 	std::string MessageEncoding(ResponseList, ResponseInfo);
 	CustomMessage MessageDecoding(std::string);
 
+	CustomCommand CommandParse(std::string);
+
 	// Modules
 private:
 	std::shared_ptr<iTransmissionServer> transmission;

@@ -320,8 +320,24 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 
 		case EventList::SystemMessage:
 		{
-			this->command->MessageResponse(CString(("Your command : " + args).c_str()));
-			break;
+			auto decodedCommand = this->CommandParse(args);
+
+			switch (decodedCommand.type) {
+				case CommandType::ClientList:
+				{
+					AfxMessageBox(_T("ClientList"));
+					break;
+				}
+				case CommandType::Error:
+				{
+					AfxMessageBox(_T("Error"));
+					break;
+				}
+				default:
+				{
+					this->command->MessageResponse(CString(("Your command : " + args).c_str()));
+				}
+			}
 		}
 
 		default:
@@ -455,6 +471,20 @@ CustomMessage Processor::MessageDecoding(std::string message) {
 	decodedMessage.body = message.substr(8);
 
 	return decodedMessage;
+}
+
+CustomCommand Processor::CommandParse(std::string command) {
+	std::string code = command.substr(0, 4);
+
+	CustomCommand decodedCommand;
+	if (code == "cllr") {
+		decodedCommand.type = CommandType::ClientList;
+	}
+	else {
+		decodedCommand.type = CommandType::Error;
+	}
+
+	return decodedCommand;
 }
 
 bool Processor::Job() {

@@ -44,5 +44,14 @@ struct CustomMessage {
 	MessageType type = MessageType::Normal;
 	std::string body;
 };
+enum class CommandType {
+	ClientList,
 
+	Help,
+
+	Error,
+};
+struct CustomCommand {
+	CommandType type = CommandType::Error;
+};
 #endif
