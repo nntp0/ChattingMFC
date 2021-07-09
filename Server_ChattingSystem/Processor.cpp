@@ -325,7 +325,34 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 			switch (decodedCommand.type) {
 				case CommandType::ClientList:
 				{
-					AfxMessageBox(_T("ClientList"));
+					std::string log = "[CMD] [ClientList]";
+					this->displayModule->WriteLog(log);
+
+					std::string message = "";
+					char buf[10];
+					int count = 1;
+
+					auto clientList = this->dataModule->GetClientList();
+
+					if (clientList.size() == 0) {
+						this->command->MessageResponse(_T("No Client"));
+						break;
+					}
+
+					for (auto it = clientList.begin(); it != clientList.end(); it++) {
+						message = "";
+
+						sprintf_s(buf, 10, "%4d: ", count);
+						message += buf;
+						sprintf_s(buf, 10, "%04d", it->clientID);
+						message += buf;
+						message += "/";
+						message += it->name;
+						count++;
+
+						this->command->MessageResponse(CString(message.c_str()));
+					}
+
 					break;
 				}
 				case CommandType::Error:
@@ -336,12 +363,15 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 				default:
 				{
 					this->command->MessageResponse(CString(("Your command : " + args).c_str()));
+					break;
 				}
 			}
+			break;
 		}
 
 		default:
 		{
+
 			break;
 		}
 	}
