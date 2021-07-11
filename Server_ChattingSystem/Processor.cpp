@@ -355,6 +355,38 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 
 					break;
 				}
+				case CommandType::RoomList:
+				{
+					std::string log = "[CMD] [RoomList]";
+					this->displayModule->WriteLog(log);
+
+					std::string message = "";
+					char buf[10];
+					int count = 1;
+
+					auto roomList = this->dataModule->GetRoomList();
+
+					if (roomList.size() == 0) {
+						this->command->MessageResponse(_T("No Room"));
+						break;
+					}
+
+					for (auto it = roomList.begin(); it != roomList.end(); it++) {
+						message = "";
+
+						sprintf_s(buf, 10, "%4d: ", count);
+						message += buf;
+						sprintf_s(buf, 10, "%04d", it->roomID);
+						message += buf;
+						message += "/";
+						message += it->name;
+						count++;
+
+						this->command->MessageResponse(CString(message.c_str()));
+					}
+
+					break;
+				}
 				case CommandType::Error:
 				{
 					AfxMessageBox(_T("Error"));
@@ -507,8 +539,11 @@ CustomCommand Processor::CommandParse(std::string command) {
 	std::string code = command.substr(0, 4);
 
 	CustomCommand decodedCommand;
-	if (code == "cllr") {
+	if (code == "clls") {
 		decodedCommand.type = CommandType::ClientList;
+	}
+	else if (code == "rmls") {
+		decodedCommand.type = CommandType::RoomList;
 	}
 	else {
 		decodedCommand.type = CommandType::Error;

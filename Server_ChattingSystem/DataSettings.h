@@ -46,7 +46,7 @@ struct CustomMessage {
 };
 enum class CommandType {
 	ClientList,
-
+	RoomList,
 	Help,
 
 	Error,
