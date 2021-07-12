@@ -535,14 +535,38 @@ CustomMessage Processor::MessageDecoding(std::string message) {
 	return decodedMessage;
 }
 
+std::vector<std::string> split(const std::string& command, char keyWord = ' ')
+{
+	std::vector<std::string> splittedCode;
+	
+	if (command.size() == 0) return splittedCode;
+
+	const char* temp = command.c_str();
+	int front = 0, cnt = 0;
+
+	while (temp[front+cnt] != '\0') {
+		cnt++;
+		if (temp[front+cnt] == keyWord) {
+			splittedCode.push_back(command.substr(front, cnt));
+			front += cnt;
+			cnt = 0;
+		}
+	}
+	splittedCode.push_back(command.substr(front, cnt));
+
+	return splittedCode;
+}
+
 CustomCommand Processor::CommandParse(std::string command) {
-	std::string code = command.substr(0, 4);
+	std::vector<std::string> codeList = split(command);
+
+	auto iter = codeList.cbegin();
 
 	CustomCommand decodedCommand;
-	if (code == "clls") {
+	if (*iter == "clls") {
 		decodedCommand.type = CommandType::ClientList;
 	}
-	else if (code == "rmls") {
+	else if (*iter == "rmls") {
 		decodedCommand.type = CommandType::RoomList;
 	}
 	else {
