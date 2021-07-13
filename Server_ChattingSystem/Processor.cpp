@@ -387,6 +387,19 @@ void Processor::ProcessEvent(EventList eType, std::string args) {
 
 					break;
 				}
+				case CommandType::Help:
+				{
+					std::string message("clls: Client List 출력");
+					this->command->MessageResponse(CString(message.c_str()));
+
+					message = "rmls: Room List 출력";
+					this->command->MessageResponse(CString(message.c_str()));
+
+					message = "help: 명령어 목록 출력";
+					this->command->MessageResponse(CString(message.c_str()));
+
+					break;
+				}
 				case CommandType::Error:
 				{
 					AfxMessageBox(_T("Error"));
@@ -568,6 +581,9 @@ CustomCommand Processor::CommandParse(std::string command) {
 	}
 	else if (*iter == "rmls") {
 		decodedCommand.type = CommandType::RoomList;
+	}
+	else if (*iter == "help") {
+		decodedCommand.type = CommandType::Help;
 	}
 	else {
 		decodedCommand.type = CommandType::Error;
