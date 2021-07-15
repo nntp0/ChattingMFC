@@ -506,7 +506,7 @@ std::string Processor::MessageEncoding(ResponseList type, ResponseInfo info) {
 }
 
 // 유저 ID (4자리) + 코드 (4자리) + 추가정보
-CustomMessage Processor::MessageDecoding(std::string message) {
+CustomMessage Processor::MessageDecoding(const std::string& message) {
 	CustomMessage decodedMessage;
 	decodedMessage.uid = message.substr(0, 4);
 
