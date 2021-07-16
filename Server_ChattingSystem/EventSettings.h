@@ -14,6 +14,8 @@ enum class EventList
 	ReceiveMessage,
 	Notification,
 	SystemMessage,
+
+	HeartBeat,
 };
 
 enum class ResponseList
@@ -29,6 +31,8 @@ enum class ResponseList
 	ChangeClientInfo,
 
 	Normal,
+
+	HeartBeat,
 };
 struct ResponseInfo {
 	std::string userName;
