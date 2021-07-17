@@ -30,7 +30,7 @@ RabbitMQ 브로커는 rabbitmq 3.8.17 을 다운로드 받았고, RabbitMQ clien
 
   변경 예정 목록
   - Server 는 현재 MFC 의존적입니다. (Display & Data 모듈, MFC) 이후에, 서버 측을 MFC 에서 분리하고 console 기반으로 변형할 예정입니다.
-  - Command 모듈을 작성할 예정입니다. 해당 모듈은 접속한 Client & Room 에 명령을 내리거나, 공지사항을 독자적으로 생성해 전달 할 수 있도록 구현될 예정입니다. (완료)
+  - Heartbeat algorithm 추가예정입니다. (서버나 클라이언트가 예측하지 못한 종료시 상대방이 알아채는 방법)
 
 ###
 클라이언트는 이용자가 입력한 정보에 따라 해당하는 작업을 처리합니다.
@@ -45,7 +45,3 @@ RabbitMQ 브로커는 rabbitmq 3.8.17 을 다운로드 받았고, RabbitMQ clien
   변경 예정 목록
   - 여러 Dialog 가 지금 기본 MFC 디자인을 이용하고 있습니다. 디자인 개선이 필요합니다.
   - 로직이 깔끔하지 않습니다. 로직을 다듬어야합니다.
-  
-  개선 목록
-  - Server 에 비해 기능 분할이 완벽하게 이루어져 있지 않습니다. Refactoring 을 거쳐 보다 깔끔한 구성을 갖도록 개편할 예정입니다. (완료)
-  - Double Buffering 기능이 View Module 에 구현되어있지 않습니다. flickering 이 발생하고 있습니다. (완료)
