@@ -39,7 +39,7 @@ struct ResponseInfo {
 	std::string roomName;
 	std::string extra;
 
-	ResponseInfo(std::string userName, std::string roomName, std::string extra) 
+	ResponseInfo(const std::string& userName, const std::string& roomName, const std::string& extra) 
 		: userName(userName), roomName(roomName), extra(extra) {}
 };
 

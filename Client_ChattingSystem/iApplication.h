@@ -7,6 +7,6 @@
 __interface iApplication {
 public:
 	virtual void Tick();
-	virtual void RecvMessage(std::string msg);
+	virtual void RecvMessage(const std::string& msg);
 };
 #endif

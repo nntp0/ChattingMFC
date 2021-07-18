@@ -15,7 +15,7 @@ struct Client {
 	int clientID;
 	int joinedRoom;
 
-	Client(std::string name, int clientID, int joinedRoom) 
+	Client(const std::string& name, int clientID, int joinedRoom) 
 		: name(name), clientID(clientID), joinedRoom(joinedRoom) {}
 };
 struct Room {
